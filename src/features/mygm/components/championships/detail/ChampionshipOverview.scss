@@ -1,0 +1,252 @@
+@use "../../../../../styles/tokens" as t;
+
+.championship-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  overflow: hidden;
+  background: t.$surface;
+  border: 1px solid t.$border;
+  border-radius: 12px;
+
+  &__visual {
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    padding: 24px;
+    background: t.$background;
+  }
+
+  &__thumbnail {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    color: t.$text-muted;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    &--title {
+      width: 100%;
+      height: 200px;
+
+      img {
+        object-fit: contain;
+      }
+    }
+
+    &--holder {
+      width: 52px;
+      height: 52px;
+      overflow: hidden;
+      background: t.$background;
+      border: 1px solid t.$border;
+      border-radius: 50%;
+
+      img {
+        object-fit: cover;
+        object-position: top;
+      }
+    }
+  }
+
+  &__content {
+    display: grid;
+    gap: 24px;
+    min-width: 0;
+    padding: 20px;
+  }
+
+  &__header {
+    min-width: 0;
+
+    h2 {
+      margin: 0 0 16px;
+      color: t.$text;
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__category {
+    margin: 0 0 12px;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    span {
+      padding: 5px 10px;
+      background: t.$background;
+      border: 1px solid t.$border;
+      border-radius: 6px;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+    }
+  }
+
+  &__current {
+    min-width: 0;
+
+    h3 {
+      margin: 0 0 16px;
+      color: t.$text;
+      font-size: 1rem;
+    }
+  }
+
+  &__holders {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    a {
+      min-width: 0;
+      padding-block: 10px;
+      color: t.$text;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.5;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+
+      &:hover {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  &__message {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  &__since {
+    margin: 16px 0 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  &__show-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    max-width: 100%;
+    margin-top: 8px;
+    color: t.$text;
+    font-size: 0.875rem;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    overflow-wrap: anywhere;
+
+    &:hover {
+      color: var(--career-accent, #{t.$accent});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+  }
+
+  &__hint {
+    margin: 12px 0 0;
+    color: t.$text-muted;
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+    padding-top: 20px;
+    border-top: 1px solid t.$border;
+
+    > div {
+      min-width: 0;
+    }
+
+    dt {
+      margin-bottom: 8px;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+
+    dd {
+      margin: 0;
+      color: t.$text;
+      font-size: 1.125rem;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__visual {
+      padding: 32px;
+    }
+
+    &__thumbnail--title {
+      height: 240px;
+    }
+
+    &__content {
+      padding: 24px;
+    }
+
+    &__stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: t.$screen-md-min) {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+
+    &__visual {
+      align-content: center;
+    }
+  }
+
+  @media (min-width: t.$screen-xl-min) {
+    &__thumbnail--title {
+      height: 300px;
+    }
+
+    &__content {
+      padding: 32px;
+    }
+  }
+}

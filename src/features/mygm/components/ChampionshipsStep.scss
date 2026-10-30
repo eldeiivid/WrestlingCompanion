@@ -1,0 +1,105 @@
+@use "../../../styles/tokens" as t;
+
+.championships-step {
+  &__description {
+    margin: -12px 0 24px;
+    color: t.$text-muted;
+  }
+
+  &__filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  &__search {
+    grid-column: 1 / -1;
+  }
+
+  &__count {
+    font-weight: 600;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  &__mitb {
+    margin-top: 24px;
+    padding: 20px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 10px;
+
+    p {
+      margin: 12px 0 0;
+      color: t.$text-muted;
+      font-size: 0.875rem;
+    }
+  }
+
+  .new-career__button:disabled {
+    opacity: 0.45;
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__filters {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: t.$screen-md-min) {
+    &__filters {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    &__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}
+
+.championship-slot {
+  min-width: 0;
+  padding: 20px;
+  background: t.$background;
+  border: 1px solid t.$border;
+  border-radius: 10px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    margin-bottom: 20px;
+
+    img {
+      width: 80px;
+      height: 56px;
+      flex-shrink: 0;
+      object-fit: contain;
+    }
+
+    > svg {
+      flex-shrink: 0;
+      color: t.$text-muted;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .new-career__field + .new-career__field {
+    margin-top: 16px;
+  }
+
+  select:disabled {
+    opacity: 0.45;
+  }
+}

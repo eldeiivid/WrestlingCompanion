@@ -1,0 +1,42 @@
+@use "./LoginScreen";
+@use "../../../styles/tokens" as t;
+
+.register {
+  &__footer {
+    margin: 24px 0 0;
+    text-align: center;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+
+    a {
+      color: t.$text;
+      font-weight: 600;
+      text-underline-offset: 4px;
+    }
+  }
+
+  &__confirmation {
+    padding: 24px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: t.$radius;
+
+    > svg {
+      color: t.$accent;
+    }
+
+    h3 {
+      margin: 16px 0 8px;
+    }
+
+    p {
+      margin: 0;
+      color: t.$text-muted;
+      overflow-wrap: anywhere;
+    }
+
+    a {
+      text-decoration: none;
+    }
+  }
+}

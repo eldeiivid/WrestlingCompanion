@@ -1,0 +1,150 @@
+@use "../../../../styles/tokens" as t;
+
+.results-review {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+
+  &__header {
+    h2 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+    }
+
+    p {
+      margin: 0;
+      color: t.$text-muted;
+      line-height: 1.5;
+    }
+  }
+
+  &__segments {
+    display: grid;
+    gap: 16px;
+  }
+
+  &__card {
+    min-width: 0;
+    padding: 16px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+  }
+
+  &__card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    > div {
+      min-width: 0;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      overflow-wrap: anywhere;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 8px 14px;
+      background: t.$surface;
+      border: 1px solid t.$border;
+      border-radius: 8px;
+      color: t.$text;
+      font: inherit;
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  &__position,
+  &__metadata {
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  &__position {
+    margin: 0 0 8px;
+  }
+
+  &__metadata {
+    margin: 8px 0 0;
+  }
+
+  &__details {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+
+    dt {
+      margin-bottom: 6px;
+      color: t.$text-muted;
+      font-size: 0.8125rem;
+    }
+
+    dd {
+      margin: 0;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__outcome {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid t.$border;
+
+    h4 {
+      margin: 0 0 8px;
+      font-size: 0.875rem;
+    }
+
+    p {
+      margin: 8px 0 0;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.6;
+    }
+  }
+
+  &__hint {
+    margin: 20px 0 0;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  &__warning {
+    margin: 16px 0 0;
+    color: #fcd34d;
+    line-height: 1.5;
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__card {
+      padding: 20px;
+    }
+  }
+
+  @media (min-width: t.$screen-md-min) {
+    &__details {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}

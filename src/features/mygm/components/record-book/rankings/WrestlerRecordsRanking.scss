@@ -1,0 +1,151 @@
+@use "../../../../../styles/tokens" as t;
+
+.wrestler-records-ranking {
+  &__row {
+    display: grid;
+    grid-template-columns: auto 56px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+  }
+
+  &__position {
+    display: grid;
+    place-items: center;
+    min-width: 36px;
+    min-height: 44px;
+    padding: 4px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  &__portrait {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    overflow: hidden;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 50%;
+    color: t.$text-muted;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+  }
+
+  &__content {
+    min-width: 0;
+
+    h3 {
+      margin: 0;
+      color: t.$text;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+    }
+
+    p {
+      margin: 6px 0 0;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+  }
+
+  &__value {
+    display: flex;
+    grid-column: 1 / -1;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+    padding-top: 16px;
+    border-top: 1px solid t.$border;
+
+    strong {
+      color: t.$text;
+      font-size: 1.75rem;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    span {
+      color: t.$text-muted;
+      font-size: 0.875rem;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__row {
+      grid-template-columns: auto 64px minmax(0, 1fr) minmax(90px, auto);
+      gap: 16px;
+      padding: 20px;
+    }
+
+    &__position {
+      min-width: 44px;
+      font-size: 0.875rem;
+    }
+
+    &__portrait {
+      width: 64px;
+      height: 64px;
+    }
+
+    &__content {
+      h3 {
+        font-size: 1rem;
+      }
+    }
+
+    &__value {
+      grid-column: auto;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      padding-top: 0;
+      padding-left: 16px;
+      border-top: 0;
+      border-left: 1px solid t.$border;
+      text-align: right;
+    }
+  }
+
+  @media (min-width: t.$screen-xl-min) {
+    &__row {
+      padding: 24px;
+    }
+  }
+}

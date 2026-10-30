@@ -1,0 +1,267 @@
+@use "../../../../../styles/tokens" as t;
+
+.wrestler-contract-history {
+  min-width: 0;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    > div {
+      min-width: 0;
+    }
+
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1.25rem;
+    }
+
+    p {
+      margin: 8px 0 0;
+      color: t.$text-muted;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+  }
+
+  &__count {
+    margin: 0 0 16px;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+  }
+
+  &__stages {
+    display: grid;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__stage {
+    min-width: 0;
+    padding: 16px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+  }
+
+  &__stage-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    > div {
+      min-width: 0;
+    }
+
+    h3 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1rem;
+      overflow-wrap: anywhere;
+    }
+
+    p {
+      margin: 8px 0 0;
+      color: t.$text-muted;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+  }
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 6px;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &--active {
+      border-color: #52876a;
+      color: #91d5ac;
+    }
+
+    &--scheduled {
+      border-color: var(--career-accent, #{t.$accent});
+      color: t.$text;
+    }
+
+    &--expired {
+      border-color: #b58a3d;
+      color: #f0c674;
+    }
+
+    &--terminated {
+      border-color: #b85c5c;
+      color: #efabab;
+    }
+  }
+
+  &__details {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+
+    > div {
+      min-width: 0;
+    }
+
+    dt {
+      margin-bottom: 6px;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+
+    dd {
+      margin: 0;
+      color: t.$text;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__events {
+    display: grid;
+    gap: 16px;
+    margin: 24px 0 0;
+    padding: 20px 0 0;
+    border-top: 1px solid t.$border;
+    list-style: none;
+  }
+
+  &__event {
+    position: relative;
+    min-width: 0;
+    padding: 0 0 4px 20px;
+    border-left: 2px solid t.$border;
+
+    &::before {
+      position: absolute;
+      top: 4px;
+      left: -5px;
+      width: 8px;
+      height: 8px;
+      background: var(--career-accent, #{t.$accent});
+      border-radius: 50%;
+      content: "";
+    }
+
+    h4 {
+      margin: 0 0 8px;
+      color: t.$text;
+      font-size: 0.875rem;
+    }
+
+    p {
+      margin: 6px 0 0;
+      color: t.$text-muted;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .wrestler-contract-history__event-period {
+      margin: 0 0 8px;
+      font-size: 0.75rem;
+    }
+  }
+
+  &__no-actions {
+    margin: 20px 0 0;
+    padding-top: 16px;
+    border-top: 1px solid t.$border;
+    color: t.$text-muted;
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  &__state {
+    margin: 0;
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+    color: t.$text-muted;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+
+    p {
+      margin: 0 0 16px;
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: var(--career-accent, #{t.$accent});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+
+    span {
+      color: t.$text-muted;
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__stage {
+      padding: 24px;
+    }
+
+    &__details {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: t.$screen-xl-min) {
+    &__details {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+}

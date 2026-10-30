@@ -1,0 +1,177 @@
+@use "../../../../styles/tokens" as t;
+
+.season-draft-roster-review {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+
+  &__header {
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1.25rem;
+    }
+
+    p {
+      margin: 8px 0 0;
+      color: t.$text-muted;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+  }
+
+  &__notice {
+    margin: 0;
+    padding: 16px;
+    background: t.$surface;
+    border: 1px solid #b58a3d;
+    border-radius: 10px;
+    color: #f0c674;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  &__groups {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    min-width: 0;
+  }
+
+  &__group {
+    min-width: 0;
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+  }
+
+  &__group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    h3 {
+      min-width: 0;
+      margin: 0;
+      color: t.$text;
+      font-size: 1rem;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+
+    & + & {
+      padding-top: 12px;
+      border-top: 1px solid t.$border;
+    }
+  }
+
+  &__portrait {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 50%;
+    color: t.$text-muted;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+  }
+
+  &__person {
+    min-width: 0;
+
+    p {
+      margin: 0;
+      color: t.$text;
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    span {
+      display: block;
+      margin-top: 5px;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+  }
+
+  &__empty {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font: inherit;
+    font-size: 0.875rem;
+    text-align: center;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: var(--career-accent, #{t.$accent});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__group {
+      padding: 24px;
+    }
+  }
+
+  @media (min-width: t.$screen-lg-min) {
+    &__groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}

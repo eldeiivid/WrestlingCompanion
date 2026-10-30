@@ -1,0 +1,64 @@
+@use "../../../../../styles/tokens" as t;
+
+.career-welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  background: t.$surface;
+  border: 1px solid t.$border;
+  border-radius: 12px;
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+
+  p {
+    max-width: 560px;
+    margin: 0;
+    color: t.$text-muted;
+  }
+
+  &__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-shrink: 0;
+    min-height: 48px;
+    padding: 12px 18px;
+
+    border: 1px solid var(--career-accent, #{t.$accent});
+    border-radius: 10px;
+    background: t.$background;
+    color: t.$text;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      background: color-mix(
+        in srgb,
+        var(--career-accent, #{t.$accent}) 14%,
+        #{t.$background}
+      );
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__action {
+      align-self: flex-start;
+    }
+  }
+
+  @media (min-width: t.$screen-lg-min) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    &__action {
+      align-self: center;
+    }
+  }
+}

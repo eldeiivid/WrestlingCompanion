@@ -1,0 +1,206 @@
+@use "../../../../styles/tokens" as t;
+
+.season-balances-step {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+
+  &__header {
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1.25rem;
+    }
+
+    p {
+      margin: 8px 0 0;
+      color: t.$text-muted;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+  }
+
+  &__hint {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  &__fields {
+    display: grid;
+    gap: 20px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  &__legend {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  &__inputs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  &__input-group {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    min-width: 0;
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    color: t.$text;
+    font-size: 0.875rem;
+
+    input {
+      box-sizing: border-box;
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      padding: 12px;
+      background: t.$background;
+      border: 1px solid t.$border;
+      border-radius: 8px;
+      color: t.$text;
+      font: inherit;
+
+      &::placeholder {
+        color: t.$text-muted;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline-offset: 3px;
+      }
+
+      &[aria-invalid="true"] {
+        border-color: #ef8080;
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  &__field-hint {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  &__error,
+  &__success {
+    margin: 0;
+    padding: 12px 16px;
+    border: 1px solid;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  &__error {
+    border-color: #ef8080;
+    color: #ef8080;
+  }
+
+  &__success {
+    border-color: #52876a;
+    color: #91d5ac;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid t.$border;
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 44px;
+    padding: 12px 18px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: var(--career-accent, #{t.$accent});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    &--primary {
+      background: var(--career-accent, #{t.$accent});
+      border-color: var(--career-accent, #{t.$accent});
+      color: #fff;
+
+      &:hover:not(:disabled) {
+        filter: brightness(1.1);
+      }
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__input-group {
+      padding: 24px;
+    }
+
+    &__actions {
+      flex-direction: row;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (min-width: t.$screen-md-min) {
+    &__inputs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      &:has(> :only-child) {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  }
+}

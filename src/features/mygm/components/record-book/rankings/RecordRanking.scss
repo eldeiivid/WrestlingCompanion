@@ -1,0 +1,140 @@
+@use "../../../../../styles/tokens" as t;
+
+.record-ranking {
+  min-width: 0;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    > div {
+      min-width: 0;
+    }
+
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1.25rem;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    p {
+      max-width: 680px;
+      margin: 8px 0 0;
+      color: t.$text-muted;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+  }
+
+  &__content {
+    min-width: 0;
+  }
+
+  &__summary {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin-bottom: 16px;
+
+    p {
+      margin: 0;
+      color: t.$text-muted;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+  }
+
+  &__list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    > li {
+      min-width: 0;
+    }
+  }
+
+  &__state {
+    margin: 0;
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+
+    p {
+      margin: 0;
+    }
+
+    button {
+      margin-top: 16px;
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font: inherit;
+    font-size: 0.875rem;
+    text-align: center;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: var(--career-accent, #{t.$accent});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+
+    span {
+      color: t.$text-muted;
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__state {
+      padding: 24px;
+    }
+
+    &__list {
+      gap: 16px;
+    }
+  }
+}

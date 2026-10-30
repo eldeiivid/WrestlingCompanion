@@ -1,0 +1,40 @@
+@use "../../../../../styles/tokens" as t;
+
+.rivalry-level {
+  min-width: 0;
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  &__maximum {
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    font-weight: 400;
+  }
+
+  &__bar {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  &__step {
+    height: 6px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 4px;
+
+    &--active {
+      background: var(--career-accent, #{t.$accent});
+      border-color: var(--career-accent, #{t.$accent});
+    }
+  }
+}

@@ -1,0 +1,90 @@
+@use "../../../styles/tokens" as t;
+
+.dashboard-screen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+
+  &__heading {
+    p {
+      margin: 0 0 6px;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.75rem;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__notice {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+  }
+
+  &__error {
+    padding: 24px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+
+    p {
+      margin: 0 0 16px;
+      color: t.$text-muted;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 10px 16px;
+      background: t.$background;
+      border: 1px solid t.$border;
+      border-radius: 10px;
+      color: t.$text;
+    }
+  }
+
+  @media (min-width: t.$screen-lg-min) {
+    gap: 32px;
+
+    &__heading h1 {
+      font-size: 2rem;
+    }
+  }
+}
+
+.dashboard-screen > .news-carousel,
+.dashboard-screen > .news-widget {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.dashboard-screen > .latest-show {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.dashboard-screen > .featured-rivalries {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.dashboard-screen > .champions-widget {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.dashboard-screen > .career-shortcuts {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.dashboard-screen > .record-book-widget {
+  grid-column: 1 / -1;
+  min-width: 0;
+}

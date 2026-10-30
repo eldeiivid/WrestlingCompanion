@@ -1,0 +1,154 @@
+@use "../../../../styles/tokens" as t;
+
+.season-draft-review-step {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+    }
+
+    p {
+      max-width: 65ch;
+      margin: 0;
+      color: t.$text-muted;
+      line-height: 1.6;
+    }
+  }
+
+  &__fields {
+    display: grid;
+    gap: 24px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    > legend {
+      margin-bottom: 20px;
+      padding: 0;
+      color: t.$text-muted;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+  }
+
+  &__state,
+  &__balances {
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+  }
+
+  &__balances > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+  }
+
+  &__totals {
+    display: grid;
+    gap: 20px;
+    margin: 0;
+
+    dt {
+      margin-bottom: 6px;
+      color: t.$text-muted;
+      font-size: 0.875rem;
+    }
+
+    dd {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__message,
+  &__error {
+    margin: 0;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  &__message {
+    color: t.$text-muted;
+    font-size: 0.875rem;
+  }
+
+  &__error {
+    color: #fca5a5;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid t.$border;
+  }
+
+  &__button {
+    min-height: 44px;
+    padding: 10px 16px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font: inherit;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: var(--career-accent, #{t.$accent});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    &--primary {
+      background: var(--career-accent, #{t.$accent});
+      border-color: var(--career-accent, #{t.$accent});
+      color: #fff;
+      font-weight: 600;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__totals {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    &__actions {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+}

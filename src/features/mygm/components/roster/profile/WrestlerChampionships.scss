@@ -1,0 +1,113 @@
+@use "../../../../../styles/tokens" as t;
+
+.wrestler-championships {
+  min-width: 0;
+  padding: 20px;
+  background: t.$surface;
+  border: 1px solid t.$border;
+  border-radius: 12px;
+
+  > h2 {
+    margin: 0 0 20px;
+    font-size: 1.25rem;
+  }
+
+  &__empty {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    padding: 16px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 10px;
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__image {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100px;
+    color: t.$text-muted;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__category {
+    margin: 0 0 8px;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+  }
+
+  &__holders,
+  &__stats {
+    margin: 0;
+
+    dt {
+      margin-bottom: 5px;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+    }
+
+    dd {
+      margin: 0;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__won {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid t.$border;
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: t.$screen-lg-min) {
+    padding: 24px;
+  }
+}

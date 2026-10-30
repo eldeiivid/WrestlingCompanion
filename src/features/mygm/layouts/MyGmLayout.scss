@@ -1,0 +1,104 @@
+@use "../../../styles/tokens" as t;
+
+.mygm-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: t.$background;
+
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  > .career-header {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  &__content {
+    grid-column: 1;
+    grid-row: 2;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    max-width: 1600px;
+    overflow-y: auto;
+    margin: 0 auto;
+    padding: 24px 16px calc(112px + env(safe-area-inset-bottom, 0px));
+
+    box-sizing: border-box;
+    overscroll-behavior-y: contain;
+  }
+
+  &__notice {
+    margin-bottom: 24px;
+    padding: 16px;
+    border: 1px solid t.$border;
+    border-radius: 10px;
+
+    p {
+      margin-top: 0;
+      color: t.$text-muted;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 8px 16px;
+      background: t.$surface;
+      border: 1px solid t.$border;
+      border-radius: 8px;
+      color: t.$text;
+    }
+  }
+
+  &__status {
+    display: grid;
+    place-items: center;
+    min-height: 100dvh;
+    padding: 24px;
+    text-align: center;
+
+    section {
+      max-width: 480px;
+    }
+
+    p {
+      color: t.$text-muted;
+    }
+
+    a {
+      display: block;
+      margin-top: 20px;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 10px 18px;
+      background: t.$surface;
+      border: 1px solid t.$border;
+      border-radius: 10px;
+      color: t.$text;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__content {
+      padding: 32px 24px calc(112px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
+  @media (min-width: t.$screen-lg-min) {
+    grid-template-columns: 232px minmax(0, 1fr);
+
+    &__content {
+      grid-column: 2;
+      padding-bottom: 32px;
+    }
+  }
+}

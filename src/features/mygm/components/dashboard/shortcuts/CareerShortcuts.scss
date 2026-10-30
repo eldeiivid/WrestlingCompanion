@@ -1,0 +1,93 @@
+@use "../../../../../styles/tokens" as t;
+
+.career-shortcuts {
+  min-width: 0;
+
+  > h2 {
+    margin: 0 0 20px;
+    font-size: 1.25rem;
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    > li {
+      min-width: 0;
+    }
+  }
+
+  &__link {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    box-sizing: border-box;
+    gap: 14px;
+    height: 100%;
+    min-height: 100px;
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+    color: t.$text;
+    text-decoration: none;
+
+    &:hover {
+      border-color: var(--career-accent, #{t.$accent});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+    }
+  }
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 10px;
+    color: var(--career-accent, #{t.$accent});
+  }
+
+  &__content {
+    min-width: 0;
+
+    h3 {
+      margin: 0 0 6px;
+      font-size: 0.9375rem;
+      overflow-wrap: anywhere;
+    }
+
+    p {
+      margin: 0;
+      color: t.$text-muted;
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__arrow {
+    color: t.$text-muted;
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: t.$screen-lg-min) {
+    &__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+}

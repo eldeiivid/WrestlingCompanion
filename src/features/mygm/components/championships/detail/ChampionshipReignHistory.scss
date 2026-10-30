@@ -1,0 +1,295 @@
+@use "../../../../../styles/tokens" as t;
+
+.championship-reign-history {
+  min-width: 0;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    > div {
+      min-width: 0;
+    }
+
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1.25rem;
+    }
+
+    p {
+      margin: 8px 0 0;
+      color: t.$text-muted;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+  }
+
+  &__count {
+    margin: 0 0 16px;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+  }
+
+  &__list {
+    display: grid;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__card {
+    display: grid;
+    gap: 20px;
+    min-width: 0;
+    padding: 16px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+
+    > button {
+      justify-self: start;
+    }
+  }
+
+  &__card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    h3 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1rem;
+    }
+  }
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 6px;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &--current {
+      border-color: #52876a;
+      color: #91d5ac;
+    }
+  }
+
+  &__holders {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    a {
+      min-width: 0;
+      padding-block: 10px;
+      color: t.$text;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.5;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+
+      &:hover {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  &__portrait {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    overflow: hidden;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 50%;
+    color: t.$text-muted;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+  }
+
+  &__details {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+
+    > div {
+      min-width: 0;
+    }
+
+    dt {
+      margin-bottom: 6px;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+
+    dd {
+      margin: 0;
+      color: t.$text;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__matches {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    padding-top: 16px;
+    border-top: 1px solid t.$border;
+
+    p {
+      margin: 0;
+      color: t.$text-muted;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      justify-self: start;
+      min-height: 44px;
+      max-width: 100%;
+      color: t.$text;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      overflow-wrap: anywhere;
+
+      &:hover {
+        color: var(--career-accent, #{t.$accent});
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  &__message {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  &__state {
+    margin: 0;
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+    color: t.$text-muted;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+
+    p {
+      margin: 0 0 16px;
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font: inherit;
+    font-size: 0.875rem;
+    text-align: center;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: var(--career-accent, #{t.$accent});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+
+    span {
+      color: t.$text-muted;
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__card {
+      padding: 24px;
+    }
+
+    &__details {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: t.$screen-xl-min) {
+    &__details {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+}

@@ -1,0 +1,204 @@
+@use "../../../../styles/tokens" as t;
+
+.news-history-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 20px;
+  background: t.$surface;
+  border: 1px solid t.$border;
+  border-radius: 12px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  &__category {
+    padding: 5px 10px;
+    background: t.$background;
+    border: 1px solid var(--career-accent, #{t.$accent});
+    border-radius: 6px;
+    color: t.$text;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  &__period {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  > h2 {
+    margin: 0;
+    color: t.$text;
+    font-size: 1.125rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  &__description {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  &__championship {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+    padding: 12px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 10px;
+    color: t.$text;
+    text-decoration: none;
+
+    > span:last-child {
+      min-width: 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    &:hover {
+      border-color: var(--career-accent, #{t.$accent});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+    }
+  }
+
+  &__thumbnail {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    color: t.$text-muted;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    &--title {
+      width: 80px;
+      height: 64px;
+
+      img {
+        object-fit: contain;
+      }
+    }
+
+    &--person {
+      width: 44px;
+      height: 44px;
+      overflow: hidden;
+      background: t.$background;
+      border: 1px solid t.$border;
+      border-radius: 50%;
+
+      img {
+        object-fit: cover;
+        object-position: top;
+      }
+    }
+  }
+
+  &__people {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    a {
+      min-width: 0;
+      padding-block: 10px;
+      color: t.$text;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+
+      &:hover {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid t.$border;
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font: inherit;
+    font-size: 0.875rem;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--career-accent, #{t.$accent});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    padding: 24px;
+
+    &__thumbnail--title {
+      width: 100px;
+      height: 80px;
+    }
+
+    &__people {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}

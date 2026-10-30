@@ -1,0 +1,175 @@
+@use "../../../../../styles/tokens" as t;
+
+.rivalry-modal {
+  position: fixed;
+  inset: auto 0 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  max-height: 92vh;
+  max-height: 92dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: t.$surface;
+  border: 1px solid t.$border;
+  border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+  color: t.$text;
+
+  &[open] {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  &::backdrop {
+    background: rgb(0 0 0 / 70%);
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    min-width: 0;
+    padding: 20px;
+    border-bottom: 1px solid t.$border;
+
+    > div {
+      min-width: 0;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.125rem;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__eyebrow {
+    margin: 0 0 8px;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__close {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font-size: 1.5rem;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 2px;
+    }
+  }
+
+  &__content {
+    display: grid;
+    align-content: start;
+    gap: 24px;
+    min-width: 0;
+    min-height: 0;
+    padding: 20px 20px calc(24px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    > span {
+      padding: 6px 10px;
+      background: t.$background;
+      border: 1px solid t.$border;
+      border-radius: 6px;
+      font-size: 0.75rem;
+    }
+  }
+
+  &__facts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    margin: 0;
+    padding: 20px 0;
+    border-top: 1px solid t.$border;
+    border-bottom: 1px solid t.$border;
+
+    > div {
+      min-width: 0;
+    }
+
+    dt {
+      margin-bottom: 6px;
+      color: t.$text-muted;
+      font-size: 0.8125rem;
+    }
+
+    dd {
+      margin: 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__message,
+  &__state p {
+    margin: 0;
+    color: t.$text-muted;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  &__button {
+    min-height: 44px;
+    margin-top: 16px;
+    padding: 10px 16px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font: inherit;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 2px;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    inset: 0;
+    width: calc(100% - 48px);
+    max-width: 760px;
+    max-height: 88vh;
+    max-height: 88dvh;
+    margin: auto;
+    border-bottom: 1px solid t.$border;
+    border-radius: 16px;
+
+    &__header,
+    &__content {
+      padding: 24px;
+    }
+
+    &__facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}

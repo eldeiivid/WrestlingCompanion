@@ -1,0 +1,88 @@
+@use "../../../../../styles/tokens" as t;
+
+.wrestler-active-rivalries {
+  min-width: 0;
+  padding: 20px;
+  background: t.$surface;
+  border: 1px solid t.$border;
+  border-radius: 12px;
+
+  > h2 {
+    margin: 0 0 20px;
+    font-size: 1.25rem;
+  }
+
+  &__empty {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    > li {
+      min-width: 0;
+    }
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    gap: 20px;
+    height: 100%;
+    min-width: 0;
+    padding: 16px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 10px;
+
+    > h3 {
+      margin: 0;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__started {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  &__button {
+    min-height: 44px;
+    margin-top: auto;
+    padding: 10px 14px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font: inherit;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 2px;
+    }
+  }
+
+  @media (min-width: t.$screen-md-min) {
+    &__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: t.$screen-lg-min) {
+    padding: 24px;
+  }
+}

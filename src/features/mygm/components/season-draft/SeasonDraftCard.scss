@@ -1,0 +1,171 @@
+@use "../../../../styles/tokens" as t;
+
+.season-draft-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: t.$surface;
+  border: 1px solid t.$border;
+  border-radius: 12px;
+
+  &--selected {
+    border-color: var(--career-accent, #{t.$accent});
+    box-shadow: inset 0 0 0 1px var(--career-accent, #{t.$accent});
+  }
+
+  &__image {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: t.$background;
+    color: t.$text-muted;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    padding: 20px;
+  }
+
+  &__header {
+    display: grid;
+    gap: 12px;
+
+    h3 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1rem;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    span {
+      padding: 4px 8px;
+      background: t.$background;
+      border: 1px solid t.$border;
+      border-radius: 6px;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+    }
+  }
+
+  &__class {
+    margin: 0;
+    color: t.$text;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+
+    span {
+      display: block;
+      margin-top: 6px;
+      color: t.$text-muted;
+      font-size: 0.8rem;
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding-top: 16px;
+    border-top: 1px solid t.$border;
+
+    > div {
+      min-width: 0;
+    }
+
+    dt {
+      margin-bottom: 6px;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+
+    dd {
+      margin: 0;
+      color: t.$text;
+      font-size: 0.875rem;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__previous {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  &__selection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    margin-top: auto;
+    padding: 12px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    cursor: pointer;
+
+    input {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      accent-color: var(--career-accent, #{t.$accent});
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline-offset: 3px;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+      }
+    }
+
+    &:hover,
+    &:focus-within {
+      border-color: var(--career-accent, #{t.$accent});
+    }
+
+    &:has(input:disabled) {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__image {
+      aspect-ratio: 1;
+    }
+  }
+}

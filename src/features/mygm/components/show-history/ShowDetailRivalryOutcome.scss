@@ -1,0 +1,25 @@
+@use "../../../../styles/tokens" as t;
+
+.show-rivalry-outcome {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid t.$border;
+
+  h4 {
+    margin: 0 0 10px;
+    font-size: 0.875rem;
+  }
+
+  p {
+    margin: 8px 0 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  &__name {
+    color: t.$text !important;
+    font-weight: 600;
+  }
+}

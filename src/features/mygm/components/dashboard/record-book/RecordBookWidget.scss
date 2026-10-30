@@ -1,0 +1,227 @@
+@use "../../../../../styles/tokens" as t;
+
+.record-book-widget {
+  min-width: 0;
+
+  &__header {
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+    }
+
+    p {
+      margin: 0;
+      color: t.$text-muted;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+  }
+
+  &__categories {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  &__category {
+    min-width: 0;
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+  }
+
+  &__category-header {
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    p {
+      margin: 0;
+      color: t.$text-muted;
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+  }
+
+  &__list {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 28px 44px minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+    min-width: 0;
+
+    & + & {
+      padding-top: 16px;
+      border-top: 1px solid t.$border;
+    }
+  }
+
+  &__rank {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 6px;
+    color: var(--career-accent, #{t.$accent});
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  &__thumbnail {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    overflow: hidden;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text-muted;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    &--title img {
+      object-fit: contain;
+    }
+
+    &--wrestler img {
+      object-fit: cover;
+    }
+  }
+
+  &__entry {
+    min-width: 0;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  &__description {
+    margin: 5px 0 0;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  &__metric {
+    margin: 8px 0 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  &__empty {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  &__state {
+    padding: 24px 20px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+
+    p {
+      margin: 0;
+      color: t.$text-muted;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__button {
+    min-height: 44px;
+    margin-top: 16px;
+    padding: 10px 16px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font: inherit;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 2px;
+    }
+  }
+
+  @media (min-width: t.$screen-md-min) {
+    &__categories {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}
+
+.record-book-widget {
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    > div {
+      min-width: 0;
+    }
+  }
+
+  &__category {
+    display: flex;
+    flex-direction: column;
+
+    > .record-book-widget__link {
+      align-self: flex-start;
+      margin-top: auto;
+      padding-top: 16px;
+    }
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    max-width: 100%;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-underline-offset: 4px;
+    overflow-wrap: anywhere;
+
+    &:hover {
+      color: t.$text;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+  }
+}

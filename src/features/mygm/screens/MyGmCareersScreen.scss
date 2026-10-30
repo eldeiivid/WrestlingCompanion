@@ -1,0 +1,183 @@
+@use "../../../styles/tokens" as t;
+
+.mygm-careers {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    text-decoration: none;
+
+    &:hover {
+      color: t.$text;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 32px 0;
+
+    h1 {
+      margin: 8px 0;
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+    }
+
+    p:last-child {
+      margin: 0;
+      color: t.$text-muted;
+    }
+  }
+
+  &__eyebrow {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 12px 18px;
+    border: 1px solid t.$border;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+
+    &--primary {
+      background: t.$accent;
+      border-color: t.$accent;
+      color: #fff;
+
+      &:hover {
+        background: t.$accent-hover;
+        border-color: t.$accent-hover;
+      }
+    }
+
+    &--secondary {
+      background: t.$surface;
+      color: t.$text;
+
+      &:hover {
+        border-color: t.$text-muted;
+      }
+    }
+  }
+
+  &__status {
+    color: t.$text-muted;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: t.$radius;
+    text-align: center;
+
+    > svg {
+      color: t.$text-muted;
+    }
+
+    h2 {
+      margin: 20px 0 8px;
+      font-size: 1.25rem;
+    }
+
+    p {
+      max-width: 440px;
+      margin: 0 0 24px;
+      color: t.$text-muted;
+    }
+  }
+
+  &__list {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.career-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: t.$surface;
+  border: 1px solid t.$border;
+  border-radius: t.$radius;
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: t.$background;
+    border-radius: 10px;
+    color: t.$accent;
+  }
+
+  &__details {
+    flex: 1;
+    min-width: 0;
+
+    h2 {
+      margin: 0 0 6px;
+      font-size: 1.125rem;
+      overflow-wrap: anywhere;
+    }
+
+    p {
+      margin: 0;
+      color: t.$text-muted;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .mygm-careers {
+    padding: 24px 20px 48px;
+
+    &__header {
+      align-items: flex-start;
+      flex-direction: column;
+
+      > a {
+        width: 100%;
+      }
+    }
+  }
+
+  .career-card {
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 20px;
+
+    > a {
+      width: 100%;
+    }
+  }
+}

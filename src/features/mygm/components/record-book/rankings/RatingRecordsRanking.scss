@@ -1,0 +1,164 @@
+@use "../../../../../styles/tokens" as t;
+
+.rating-records-ranking {
+  &__row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 16px;
+    padding: 16px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+  }
+
+  &__position {
+    display: grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 4px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    color: t.$text;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    justify-self: end;
+    width: 52px;
+    height: 52px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 10px;
+    color: t.$text-muted;
+  }
+
+  &__content {
+    display: grid;
+    grid-column: 1 / -1;
+    gap: 10px;
+    min-width: 0;
+
+    h3 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1rem;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__period {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  &__match-type,
+  &__event {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  &__show-link {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+    min-height: 44px;
+    max-width: 100%;
+    color: t.$text;
+    font-size: 0.875rem;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    overflow-wrap: anywhere;
+
+    &:hover {
+      color: var(--career-accent, #{t.$accent});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+  }
+
+  &__value {
+    display: flex;
+    grid-column: 1 / -1;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+    padding-top: 16px;
+    border-top: 1px solid t.$border;
+
+    > span:last-child {
+      color: t.$text-muted;
+      font-size: 0.875rem;
+    }
+  }
+
+  &__score {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: #f0c674;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    strong {
+      color: t.$text;
+      font-size: 1.75rem;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__row {
+      grid-template-columns: auto 52px minmax(0, 1fr);
+      padding: 24px;
+    }
+
+    &__icon {
+      justify-self: start;
+    }
+
+    &__content {
+      grid-column: auto;
+    }
+  }
+
+  @media (min-width: t.$screen-xl-min) {
+    &__row {
+      grid-template-columns: auto 52px minmax(0, 1fr) minmax(90px, auto);
+      align-items: center;
+    }
+
+    &__value {
+      grid-column: auto;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      padding-top: 0;
+      padding-left: 20px;
+      border-top: 0;
+      border-left: 1px solid t.$border;
+      text-align: right;
+    }
+  }
+}

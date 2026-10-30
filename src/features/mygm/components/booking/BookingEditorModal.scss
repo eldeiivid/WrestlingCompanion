@@ -1,0 +1,102 @@
+@use "../../../../styles/tokens" as t;
+
+.booking-editor-modal {
+  width: 100%;
+  max-width: none;
+  max-height: calc(100vh - 16px);
+  max-height: calc(100dvh - 16px);
+  margin: auto 0 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid t.$border;
+  border-radius: 16px 16px 0 0;
+  background: t.$surface;
+  color: t.$text;
+  color-scheme: dark;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 40%);
+
+  &::backdrop {
+    background: rgb(0 0 0 / 75%);
+  }
+
+  &__surface {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    max-height: calc(100vh - 18px);
+    max-height: calc(100dvh - 18px);
+  }
+
+  &__header {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid t.$border;
+
+    h2 {
+      min-width: 0;
+      margin: 0;
+      font-size: 1.125rem;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__close {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid t.$border;
+    border-radius: 8px;
+    background: t.$background;
+    color: t.$text;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  &__body {
+    min-width: 0;
+    min-height: 0;
+    padding: 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    width: calc(100% - 48px);
+    max-width: 800px;
+    max-height: calc(100vh - 48px);
+    max-height: calc(100dvh - 48px);
+    margin: auto;
+    border-radius: 16px;
+
+    &__surface {
+      max-height: calc(100vh - 50px);
+      max-height: calc(100dvh - 50px);
+    }
+
+    &__header {
+      padding: 16px 24px;
+    }
+
+    &__body {
+      padding: 24px;
+    }
+  }
+}

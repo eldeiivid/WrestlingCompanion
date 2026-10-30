@@ -1,0 +1,72 @@
+@use "../../../../styles/tokens" as t;
+
+.promo-effect-preview {
+  margin-top: 24px;
+  padding: 16px;
+  background: t.$surface;
+  border: 1px solid t.$border;
+  border-radius: 10px;
+
+  h4 {
+    margin: 0 0 8px;
+    font-size: 0.875rem;
+  }
+
+  &__name {
+    margin: 0 0 16px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  &__changes {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+
+    dt {
+      margin-bottom: 6px;
+      color: t.$text-muted;
+      font-size: 0.8125rem;
+    }
+
+    dd {
+      margin: 0;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__next {
+    font-weight: 600;
+    color: #86efac;
+  }
+
+  &__hint {
+    margin: 16px 0 0;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  &__error {
+    margin: 20px 0 0;
+    color: #fcd34d;
+    line-height: 1.5;
+  }
+
+  &__sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__changes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}
