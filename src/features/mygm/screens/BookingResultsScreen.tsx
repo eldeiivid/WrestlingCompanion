@@ -55,14 +55,6 @@ function getSegmentNavigationLabel(segment: BookingSegmentSummary): string {
   return `${segment.position}. ${label} — ${participants}`;
 }
 
-function isValidFinalBalance(value: string): boolean {
-  if (!/^\d+$/.test(value)) {
-    return false;
-  }
-
-  return BigInt(value) <= BigInt("9223372036854775807");
-}
-
 function BookingResultsFlow({
   careerId,
   booking,

@@ -1,10 +1,4 @@
-import {
-  Link,
-  Navigate,
-  Route,
-  Routes,
-  useOutletContext,
-} from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import LoginScreen from "../features/auth/screens/LoginScreen";
 import CreateAccountScreen from "../features/auth/screens/CreateAccountScreen";
@@ -13,7 +7,6 @@ import { useAuth } from "../features/auth/hooks/useAuth";
 import MyGmCareersScreen from "../features/mygm/screens/MyGmCareersScreen";
 import NewCareerScreen from "../features/mygm/screens/NewCareerScreen";
 import MyGmLayout from "../features/mygm/layouts/MyGmLayout";
-import type { MyGmOutletContext } from "../features/mygm/types/mygm.types";
 import DashboardScreen from "../features/mygm/screens/DashboardScreen";
 import BookingScreen from "../features/mygm/screens/BookingScreen";
 import BookingResultsScreen from "../features/mygm/screens/BookingResultsScreen";
@@ -32,30 +25,6 @@ import CareerSettingsScreen from "../features/mygm/screens/settings/CareerSettin
 import SeasonDraftScreen from "../features/mygm/screens/season-draft/SeasonDraftScreen";
 
 import "./App.scss";
-
-function CareerDashboardScreen() {
-  const { career } = useOutletContext<MyGmOutletContext>();
-
-  return (
-    <section>
-      <Link to="/mygm">Back to careers</Link>
-
-      <h1>{career.name}</h1>
-    </section>
-  );
-}
-
-function CareerSectionScreen({ title }: { title: string }) {
-  const { career } = useOutletContext<MyGmOutletContext>();
-
-  return (
-    <section>
-      <h1>{title}</h1>
-
-      <Link to={`/mygm/${career.id}`}>Back to dashboard</Link>
-    </section>
-  );
-}
 
 export default function App() {
   const { isAuthenticated, isLoading, initializationError } = useAuth();

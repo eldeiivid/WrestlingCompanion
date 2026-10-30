@@ -1,7 +1,6 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 import WrestlerSigningAction from "../../components/market/WrestlerSigningAction";
-import WrestlerTerminationAction from "../../components/market/WrestlerTerminationAction";
 import WrestlerProfileView from "../../components/roster/profile/WrestlerProfileView";
 import { useMarketProfile } from "../../hooks/market/useMarketProfile";
 

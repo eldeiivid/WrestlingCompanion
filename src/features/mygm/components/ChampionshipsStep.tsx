@@ -99,7 +99,7 @@ export default function ChampionshipsStep({
 }: ChampionshipsStepProps) {
   const { titles, isLoading, errorMessage, retry } = useChampionshipCatalog();
 
-  const [search, setSearch] = useState("");
+  const [search] = useState("");
   const [gender, setGender] = useState("");
   const [division, setDivision] = useState("");
   const [category, setCategory] = useState("");
