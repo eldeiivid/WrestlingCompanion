@@ -29,14 +29,14 @@ function getRegistrationError(error: unknown): string {
 }
 
 export default function CreateAccountScreen() {
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp } = useAuth();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [pending, setPending] = useState<"email" | "google" | null>(null);
+  const [pending, setPending] = useState<"email" | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [confirmationSent, setConfirmationSent] = useState(false);
 
@@ -76,21 +76,6 @@ export default function CreateAccountScreen() {
       }
     } catch (error) {
       setErrorMessage(getRegistrationError(error));
-    } finally {
-      setPending(null);
-    }
-  }
-
-  async function handleGoogleSignIn() {
-    if (isSubmitting) return;
-
-    setErrorMessage("");
-    setPending("google");
-
-    try {
-      await signInWithGoogle();
-    } catch {
-      setErrorMessage("Unable to start Google sign-in. Please try again.");
     } finally {
       setPending(null);
     }
@@ -146,21 +131,6 @@ export default function CreateAccountScreen() {
             </div>
           ) : (
             <>
-              <button
-                className="login__button login__button--secondary"
-                type="button"
-                onClick={handleGoogleSignIn}
-                disabled={isSubmitting}
-              >
-                <span className="login__google-icon" aria-hidden="true">
-                  G
-                </span>
-
-                {pending === "google"
-                  ? "Opening Google…"
-                  : "Continue with Google"}
-              </button>
-
               <div className="login__divider">
                 <span>or with your email</span>
               </div>
