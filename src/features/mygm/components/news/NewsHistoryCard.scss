@@ -1,91 +1,69 @@
 @use "../../../../styles/tokens" as t;
 
 .news-history-card {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  --news-accent: var(--career-accent, #{t.$accent});
+  --news-ink: color-mix(in srgb, var(--news-accent) 60%, #{t.$text});
+
+  position: relative;
+  display: grid;
+  grid-template-areas:
+    "visual"
+    "content";
   min-width: 0;
-  padding: 20px;
-  background: t.$surface;
-  border: 1px solid t.$border;
-  border-radius: 12px;
+  overflow: hidden;
+  background-color: #101216;
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(#101216, 0.3),
+      rgba(#101216, 0.65) 45%,
+      #101216 100%
+    ),
+    url("../../../../assets/backgrounds/news-arena.png");
+  background-position: center top;
+  background-size: cover;
+  border: 1px solid rgba(t.$text, 0.08);
+  border-radius: 22px;
+  isolation: isolate;
 
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  &__category {
-    padding: 5px 10px;
-    background: t.$background;
-    border: 1px solid var(--career-accent, #{t.$accent});
-    border-radius: 6px;
-    color: t.$text;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-
-  &__period {
-    margin: 0;
-    color: t.$text-muted;
-    font-size: 0.75rem;
-    line-height: 1.6;
-  }
-
-  > h2 {
-    margin: 0;
-    color: t.$text;
-    font-size: 1.125rem;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-  }
-
-  &__description {
-    margin: 0;
-    color: t.$text-muted;
-    font-size: 0.875rem;
-    line-height: 1.6;
-    overflow-wrap: anywhere;
-  }
-
-  &__championship {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+  &__visual {
+    position: relative;
+    grid-area: visual;
     min-width: 0;
-    padding: 12px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 10px;
-    color: t.$text;
-    text-decoration: none;
+    height: 240px;
 
-    > span:last-child {
-      min-width: 0;
-      font-size: 0.875rem;
-      font-weight: 600;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
+    &::after {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        transparent 50%,
+        rgba(#101216, 0.25) 75%,
+        #101216 100%
+      );
+      pointer-events: none;
+      content: "";
     }
+  }
 
-    &:hover {
-      border-color: var(--career-accent, #{t.$accent});
-    }
+  &__portraits {
+    position: absolute;
+    inset: 12px 10px 0;
+    display: grid;
+    align-items: end;
+    min-width: 0;
 
-    &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 3px;
+    &--solo {
+      inset-inline: 14%;
     }
   }
 
   &__thumbnail {
     display: grid;
-    flex-shrink: 0;
     place-items: center;
-    color: t.$text-muted;
+    min-width: 0;
+    color: rgba(t.$text-muted, 0.65);
 
     img {
       display: block;
@@ -93,62 +71,180 @@
       height: 100%;
     }
 
+    &--person {
+      width: 100%;
+      height: 228px;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
+      mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
+
+      img {
+        object-fit: cover;
+        object-position: center top;
+      }
+    }
+
     &--title {
-      width: 80px;
-      height: 64px;
+      width: 100%;
+      height: 54px;
 
       img {
         object-fit: contain;
       }
     }
+  }
 
-    &--person {
-      width: 44px;
-      height: 44px;
-      overflow: hidden;
-      background: t.$background;
-      border: 1px solid t.$border;
-      border-radius: 50%;
+  &__visual-fallback {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    color: var(--news-ink);
+    opacity: 0.6;
+  }
 
-      img {
-        object-fit: cover;
-        object-position: top;
-      }
+  &__more {
+    position: absolute;
+    z-index: 2;
+    top: 16px;
+    right: 16px;
+    display: grid;
+    place-items: center;
+    min-width: 36px;
+    min-height: 32px;
+    padding: 0 8px;
+    background: rgba(#101216, 0.85);
+    border: 1px solid rgba(t.$text, 0.12);
+    border-radius: 10px;
+    color: t.$text;
+    font-size: 0.75rem;
+    font-weight: 650;
+  }
+
+  &__championship {
+    position: absolute;
+    z-index: 2;
+    right: 14px;
+    bottom: 10px;
+    display: grid;
+    box-sizing: border-box;
+    gap: 6px;
+    width: 148px;
+    min-height: 92px;
+    padding: 10px;
+    background: rgba(#101216, 0.9);
+    border: 1px solid rgba(t.$text, 0.12);
+    border-radius: 14px;
+    color: t.$text;
+    text-align: center;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+
+    > span:last-child {
+      min-width: 0;
+      font-size: 0.625rem;
+      font-weight: 600;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    &:hover {
+      border-color: var(--news-ink);
     }
   }
 
+  &__content {
+    position: relative;
+    z-index: 2;
+    grid-area: content;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    min-width: 0;
+    padding: 12px 20px 24px;
+
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.035em;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  &__category {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--news-ink);
+    font-size: 0.6875rem;
+    font-weight: 650;
+    line-height: 1.5;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &__period {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+    line-height: 1.5;
+  }
+
+  &__description {
+    max-width: 56ch;
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+  }
+
   &__people {
-    display: grid;
-    gap: 12px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0 16px;
     margin: 0;
     padding: 0;
     list-style: none;
 
     li {
-      display: flex;
-      align-items: center;
-      gap: 12px;
       min-width: 0;
+      max-width: 100%;
     }
 
     a {
-      min-width: 0;
-      padding-block: 10px;
+      display: inline-flex;
+      align-items: center;
+      box-sizing: border-box;
+      min-height: 44px;
+      max-width: 100%;
+      padding-block: 8px;
       color: t.$text;
-      font-size: 0.875rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
       line-height: 1.5;
       text-decoration: none;
       overflow-wrap: anywhere;
 
       &:hover {
+        color: var(--news-ink);
         text-decoration: underline;
         text-underline-offset: 4px;
-      }
-
-      &:focus-visible {
-        outline: 2px solid var(--career-accent, #{t.$accent});
-        outline-offset: 3px;
-        border-radius: 4px;
       }
     }
   }
@@ -157,48 +253,141 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px 12px;
+    width: 100%;
     margin-top: auto;
-    padding-top: 16px;
-    border-top: 1px solid t.$border;
+    padding-top: 4px;
   }
 
   &__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    gap: 8px;
     min-height: 44px;
-    padding: 10px 16px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
+    max-width: 100%;
+    padding: 10px 14px;
+    background: rgba(t.$text, 0.035);
+    border: 1px solid rgba(t.$text, 0.12);
+    border-radius: 10px;
     color: t.$text;
     font: inherit;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5;
     text-align: center;
     text-decoration: none;
     cursor: pointer;
 
-    &:hover {
-      border-color: var(--career-accent, #{t.$accent});
+    svg {
+      flex-shrink: 0;
     }
 
-    &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 3px;
+    &:hover {
+      background: rgba(t.$text, 0.07);
+      border-color: var(--news-ink);
+    }
+
+    &--rivalry {
+      color: var(--news-ink);
     }
   }
 
-  @media (min-width: t.$screen-sm-min) {
-    padding: 24px;
+  a,
+  button {
+    &:focus-visible {
+      outline: 2px solid var(--news-ink);
+      outline-offset: 3px;
+      border-radius: 10px;
+    }
+  }
 
-    &__thumbnail--title {
-      width: 100px;
-      height: 80px;
+  @container (min-width: 640px) {
+    &__visual {
+      height: 280px;
     }
 
-    &__people {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    &__thumbnail--person {
+      height: 268px;
+    }
+
+    &__content {
+      padding: 16px 28px 28px;
+    }
+
+    &__championship {
+      right: 24px;
+      bottom: 14px;
+      width: 168px;
+      padding: 12px;
+    }
+
+    &__thumbnail--title {
+      height: 64px;
+    }
+  }
+
+  @container (min-width: 850px) {
+    grid-template-areas: "content visual";
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: 340px;
+    background-image:
+      linear-gradient(
+        90deg,
+        #101216 0%,
+        rgba(#101216, 0.94) 35%,
+        rgba(#101216, 0.35) 75%,
+        rgba(#101216, 0.2) 100%
+      ),
+      url("../../../../assets/backgrounds/news-arena.png");
+
+    &__content {
+      justify-content: center;
+      padding: 32px;
+    }
+
+    &__visual {
+      align-self: stretch;
+      height: auto;
+      min-height: 340px;
+
+      &::after {
+        background:
+          linear-gradient(90deg, #101216, transparent 22%),
+          linear-gradient(180deg, transparent 65%, rgba(#101216, 0.8));
+      }
+    }
+
+    &__portraits {
+      inset: 20px 12px 0;
+
+      &--solo {
+        inset-inline: 16%;
+      }
+    }
+
+    &__thumbnail--person {
+      height: 100%;
+    }
+
+    &__championship {
+      right: 20px;
+      bottom: 20px;
+    }
+
+    &__actions {
+      margin-top: 4px;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &__button,
+    &__championship {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease;
     }
   }
 }

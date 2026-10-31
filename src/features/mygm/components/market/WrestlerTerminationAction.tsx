@@ -31,8 +31,9 @@ export default function WrestlerTerminationAction({
   return (
     <div>
       <button
-        className="wrestler-profile__button"
+        className="wrestler-profile__button wrestler-contract-actions__terminate"
         type="button"
+        aria-haspopup="dialog"
         onClick={() => setIsOpen(true)}
       >
         Terminate contract

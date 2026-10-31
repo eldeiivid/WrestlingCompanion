@@ -1,19 +1,23 @@
 @use "../../../../styles/tokens" as t;
 
 .career-settings-screen {
+  --settings-accent: var(--career-accent, #{t.$accent});
+  --settings-ink: color-mix(in srgb, var(--settings-accent) 60%, #{t.$text});
+
+  container-type: inline-size;
   display: grid;
-  gap: 24px;
+  gap: 28px;
   width: 100%;
+  max-width: 1200px;
   min-width: 0;
-  // max-width: 1000px;
   margin: 0 auto;
 
   &__header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    flex-wrap: wrap;
     gap: 16px;
+    min-width: 0;
 
     > div {
       min-width: 0;
@@ -23,31 +27,36 @@
       margin: 0;
       color: t.$text;
       font-size: clamp(1.75rem, 4vw, 2.25rem);
+      font-weight: 700;
       line-height: 1.2;
+      letter-spacing: -0.045em;
       overflow-wrap: anywhere;
     }
   }
 
   &__eyebrow {
-    margin: 0 0 8px;
-    color: t.$text-muted;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
+    margin: 0 0 10px;
+    color: var(--settings-ink);
+    font-size: 0.625rem;
+    font-weight: 650;
+    line-height: 1.5;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
   &__description {
-    max-width: 680px;
+    max-width: 620px;
     margin: 12px 0 0;
     color: t.$text-muted;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: 0.8125rem;
+    line-height: 1.65;
   }
 
   &__identity {
     margin: 12px 0 0;
     color: t.$text;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 500;
     line-height: 1.6;
     overflow-wrap: anywhere;
   }
@@ -67,19 +76,22 @@
   }
 
   &__state {
-    padding: 24px;
+    padding: 24px 20px;
     background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 12px;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 20px;
     color: t.$text-muted;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: 0.8125rem;
+    line-height: 1.65;
     overflow-wrap: anywhere;
 
     h2 {
-      margin: 0 0 12px;
+      margin: 0 0 10px;
       color: t.$text;
-      font-size: 1.125rem;
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: -0.02em;
     }
 
     p {
@@ -87,7 +99,7 @@
     }
 
     button {
-      margin-top: 16px;
+      margin-top: 20px;
     }
   }
 
@@ -95,39 +107,71 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    gap: 8px;
     min-height: 44px;
-    padding: 10px 16px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
+    padding: 10px 14px;
+    background: rgba(t.$text, 0.025);
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 10px;
     color: t.$text;
     font: inherit;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5;
     text-align: center;
     cursor: pointer;
 
+    svg {
+      flex-shrink: 0;
+    }
+
     &:hover:not(:disabled) {
-      border-color: var(--career-accent, #{t.$accent});
+      background: rgba(t.$text, 0.05);
+      border-color: var(--settings-ink);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline: 2px solid var(--settings-ink);
       outline-offset: 3px;
     }
 
     &:disabled {
-      opacity: 0.45;
+      opacity: 0.4;
       cursor: not-allowed;
     }
   }
 
-  @media (min-width: t.$screen-sm-min) {
-    &__sections {
-      gap: 32px;
+  &__refresh {
+    flex-shrink: 0;
+    width: 44px;
+    padding: 0;
+
+    > span {
+      display: none;
     }
   }
 
-  @media (min-width: t.$screen-xl-min) {
-    gap: 32px;
+  @container (min-width: 560px) {
+    &__refresh {
+      width: auto;
+      padding: 10px 14px;
+
+      > span {
+        display: inline;
+      }
+    }
+
+    &__state {
+      padding: 28px;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &__button {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease;
+    }
   }
 }

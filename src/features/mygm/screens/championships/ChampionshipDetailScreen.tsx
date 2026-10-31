@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
 import { Link, useOutletContext, useParams } from "react-router-dom";
+import { ArrowLeft, RefreshCw } from "lucide-react";
 
 import ChampionshipOverview from "../../components/championships/detail/ChampionshipOverview";
 import ChampionshipReignHistory from "../../components/championships/detail/ChampionshipReignHistory";
@@ -73,36 +74,39 @@ export default function ChampionshipDetailScreen() {
   return (
     <section className="championship-detail-screen" aria-labelledby={headingId}>
       <header className="championship-detail-screen__header">
-        <Link
-          className="championship-detail-screen__back-link"
-          to={`/mygm/${career.id}/titles`}
-        >
-          ← Back to championships
-        </Link>
-
-        <div className="championship-detail-screen__heading">
-          <div>
-            <p className="championship-detail-screen__eyebrow">Title history</p>
-
-            <h1 id={headingId}>
-              {isBriefcase ? "Briefcase details" : "Championship details"}
-            </h1>
-
-            <p className="championship-detail-screen__description">
-              {isBriefcase
-                ? "Explore current and previous briefcase holders."
-                : "Explore current champions, reign history and successful defenses."}
-            </p>
-          </div>
+        <div className="championship-detail-screen__toolbar">
+          <Link
+            className="championship-detail-screen__back-link"
+            to={`/mygm/${career.id}/titles`}
+          >
+            <ArrowLeft size={17} aria-hidden="true" />
+            <span>Back to championships</span>
+          </Link>
 
           <button
-            className="championship-detail-screen__button"
+            className="championship-detail-screen__button championship-detail-screen__refresh"
             type="button"
             disabled={isLoading || !titleId}
+            aria-label="Refresh title details"
             onClick={retry}
           >
-            Refresh
+            <RefreshCw size={16} aria-hidden="true" />
+            <span>Refresh</span>
           </button>
+        </div>
+
+        <div className="championship-detail-screen__heading">
+          <p className="championship-detail-screen__eyebrow">Title history</p>
+
+          <h1 id={headingId}>
+            {isBriefcase ? "Briefcase details" : "Championship details"}
+          </h1>
+
+          <p className="championship-detail-screen__description">
+            {isBriefcase
+              ? "Follow the briefcase and everyone who has held it."
+              : "Follow the champions, their reigns and every successful defense."}
+          </p>
         </div>
       </header>
 

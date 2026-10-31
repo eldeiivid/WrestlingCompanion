@@ -1,9 +1,16 @@
 @use "../../../../styles/tokens" as t;
 
 .sign-wrestler-modal {
-  box-sizing: border-box;
+  --sign-modal-accent: var(--career-accent, #{t.$accent});
+  --sign-modal-ink: color-mix(
+    in srgb,
+    var(--sign-modal-accent) 60%,
+    #{t.$text}
+  );
+
   position: fixed;
   inset: auto 0 0;
+  box-sizing: border-box;
   width: 100%;
   max-width: 100%;
   max-height: 92dvh;
@@ -11,9 +18,10 @@
   padding: 0;
   overflow: hidden;
   background: t.$surface;
-  border: 1px solid t.$border;
+  border: 1px solid rgba(t.$text, 0.1);
   border-bottom: 0;
-  border-radius: 16px 16px 0 0;
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 24px 80px rgba(#000, 0.35);
   color: t.$text;
   color-scheme: dark;
 
@@ -23,7 +31,8 @@
   }
 
   &::backdrop {
-    background: rgb(0 0 0 / 75%);
+    background: rgba(#05070b, 0.72);
+    backdrop-filter: blur(5px);
   }
 
   &__header {
@@ -32,23 +41,28 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
-    padding: 20px;
-    border-bottom: 1px solid t.$border;
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid rgba(t.$text, 0.08);
 
     > div {
       min-width: 0;
+      padding-top: 3px;
     }
 
     h2 {
       margin: 0;
       font-size: 1.25rem;
+      font-weight: 650;
+      letter-spacing: -0.035em;
+      line-height: 1.3;
       overflow-wrap: anywhere;
     }
 
     p {
-      margin: 8px 0 0;
-      color: t.$text-muted;
-      font-size: 0.875rem;
+      margin: 7px 0 0;
+      color: var(--sign-modal-ink);
+      font-size: 0.8125rem;
+      line-height: 1.5;
       overflow-wrap: anywhere;
     }
   }
@@ -60,18 +74,14 @@
     width: 44px;
     height: 44px;
     padding: 0;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
-    color: t.$text;
+    background: rgba(t.$text, 0.04);
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 12px;
+    color: t.$text-muted;
     cursor: pointer;
 
-    &:hover:not(:disabled) {
-      border-color: var(--career-accent, #{t.$accent});
-    }
-
     &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline: 2px solid var(--sign-modal-accent);
       outline-offset: 3px;
     }
 
@@ -84,18 +94,19 @@
   &__form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
     min-height: 0;
+    padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
     overflow-y: auto;
     overscroll-behavior-y: contain;
-    padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+    scrollbar-width: thin;
   }
 
   &__description {
     margin: 0;
     color: t.$text-muted;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: 0.8125rem;
+    line-height: 1.7;
   }
 
   &__fields {
@@ -111,9 +122,12 @@
     position: absolute;
     width: 1px;
     height: 1px;
+    margin: -1px;
+    padding: 0;
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
+    border: 0;
   }
 
   &__field {
@@ -121,108 +135,122 @@
     flex-direction: column;
     gap: 8px;
     min-width: 0;
-    font-size: 0.875rem;
+
+    > span:first-child {
+      color: t.$text;
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 1.5;
+    }
 
     input {
       box-sizing: border-box;
       width: 100%;
       min-width: 0;
-      min-height: 44px;
-      padding: 12px;
+      min-height: 48px;
+      padding: 12px 14px;
       background: t.$background;
-      border: 1px solid t.$border;
-      border-radius: 8px;
+      border: 1px solid rgba(t.$text, 0.12);
+      border-radius: 10px;
       color: t.$text;
       font: inherit;
+      font-size: 1rem;
+      font-variant-numeric: tabular-nums;
 
       &::placeholder {
         color: t.$text-muted;
+        font-size: 0.8125rem;
       }
 
       &:focus-visible {
-        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline: 2px solid var(--sign-modal-accent);
         outline-offset: 2px;
-      }
-
-      &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
       }
     }
   }
 
+  &__fields:disabled input {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
   &__hint {
     color: t.$text-muted;
-    font-size: 0.8rem;
-    line-height: 1.5;
+    font-size: 0.6875rem;
+    line-height: 1.6;
     overflow-wrap: anywhere;
   }
 
   &__summary {
     display: grid;
-    gap: 12px;
+    gap: 16px;
+    min-width: 0;
     padding: 16px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 10px;
+    background: color-mix(in srgb, var(--sign-modal-accent) 8%, #{t.$surface});
+    border: 1px solid
+      color-mix(in srgb, var(--sign-modal-accent) 22%, transparent);
+    border-radius: 14px;
 
     p {
       display: flex;
       flex-direction: column;
       gap: 6px;
+      min-width: 0;
       margin: 0;
       color: t.$text-muted;
-      font-size: 0.875rem;
+      font-size: 0.6875rem;
+      line-height: 1.6;
       overflow-wrap: anywhere;
     }
 
     strong {
-      color: t.$text;
-      font-weight: 600;
+      color: var(--sign-modal-ink);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
     }
   }
 
   &__error {
     margin: 0;
-    padding: 12px 16px;
-    border: 1px solid #ef8080;
-    border-radius: 8px;
-    color: #ef8080;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    padding: 12px 14px;
+    background: rgba(t.$error, 0.05);
+    border: 1px solid rgba(t.$error, 0.2);
+    border-radius: 10px;
+    color: t.$error;
+    font-size: 0.75rem;
+    line-height: 1.7;
     overflow-wrap: anywhere;
   }
 
   &__actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
     padding-top: 20px;
-    border-top: 1px solid t.$border;
+    border-top: 1px solid rgba(t.$text, 0.08);
   }
 
   &__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     min-width: 0;
-    min-height: 44px;
-    padding: 12px 18px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
-    color: t.$text;
+    min-height: 46px;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid rgba(t.$text, 0.12);
+    border-radius: 10px;
+    color: t.$text-muted;
     font: inherit;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 600;
+    line-height: 1.5;
     cursor: pointer;
 
-    &:hover:not(:disabled) {
-      border-color: var(--career-accent, #{t.$accent});
-    }
-
     &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline: 2px solid var(--sign-modal-accent);
       outline-offset: 3px;
     }
 
@@ -232,13 +260,17 @@
     }
 
     &--primary {
-      background: var(--career-accent, #{t.$accent});
-      border-color: var(--career-accent, #{t.$accent});
-      color: #fff;
-
-      &:hover:not(:disabled) {
-        filter: brightness(1.1);
-      }
+      background: color-mix(
+        in srgb,
+        var(--sign-modal-accent) 18%,
+        #{t.$surface}
+      );
+      border-color: color-mix(
+        in srgb,
+        var(--sign-modal-accent) 40%,
+        transparent
+      );
+      color: var(--sign-modal-ink);
     }
   }
 
@@ -248,24 +280,87 @@
     max-width: 560px;
     max-height: 88dvh;
     margin: auto;
-    border-bottom: 1px solid t.$border;
-    border-radius: 16px;
+    border-bottom: 1px solid rgba(t.$text, 0.1);
+    border-radius: 24px;
 
-    &__header {
-      padding: 24px;
-    }
-
+    &__header,
     &__form {
       padding: 24px;
     }
 
+    &__summary {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
     &__actions {
-      flex-direction: row;
+      display: flex;
       justify-content: flex-end;
     }
 
     &__button {
       min-width: 120px;
+      padding-inline: 18px;
     }
+  }
+}
+
+@media (hover: hover) {
+  .sign-wrestler-modal {
+    &__close:hover:not(:disabled),
+    &__button:hover:not(:disabled) {
+      background: rgba(t.$text, 0.06);
+      color: t.$text;
+    }
+
+    &__button--primary:hover:not(:disabled) {
+      background: color-mix(
+        in srgb,
+        var(--sign-modal-accent) 28%,
+        #{t.$surface}
+      );
+      color: var(--sign-modal-ink);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sign-wrestler-modal {
+    &[open] {
+      animation: signing-modal-enter 220ms ease-out;
+    }
+
+    &[open]::backdrop {
+      animation: signing-backdrop-enter 220ms ease-out;
+    }
+
+    &__close,
+    &__button {
+      transition:
+        background-color 160ms ease,
+        color 160ms ease;
+    }
+  }
+}
+
+@keyframes signing-modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes signing-backdrop-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }

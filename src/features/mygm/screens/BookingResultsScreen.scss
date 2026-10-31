@@ -1,179 +1,134 @@
 @use "../../../styles/tokens" as t;
 
 .booking-results-screen {
+  --results-accent: var(--career-accent, #{t.$accent});
+  --results-ink: color-mix(in srgb, var(--results-accent) 60%, #{t.$text});
+
+  container-type: inline-size;
   display: grid;
   gap: 24px;
   width: 100%;
+  max-width: 1200px;
   min-width: 0;
-  max-width: 1100px;
   margin: 0 auto;
 
   &__header {
     min-width: 0;
 
     h1 {
-      margin: 0 0 8px;
-      font-size: 1.75rem;
+      margin: 0;
+      color: t.$text;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.2;
     }
   }
 
-  &__back {
+  &__back-link {
     display: inline-flex;
     align-items: center;
+    gap: 8px;
     min-height: 44px;
-    margin-bottom: 12px;
-    color: t.$text;
-    font-size: 0.875rem;
+    margin-bottom: 16px;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    line-height: 1.5;
     text-decoration: none;
 
-    &:hover {
-      text-decoration: underline;
+    svg {
+      flex-shrink: 0;
+      color: var(--results-ink);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 3px;
+      outline: 2px solid var(--results-accent);
+      outline-offset: 4px;
+      border-radius: 4px;
     }
   }
 
   &__eyebrow {
     margin: 0 0 8px;
-    color: t.$text-muted;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  &__description,
-  &__hint,
-  &__message {
-    margin: 0;
-    color: t.$text-muted;
+    color: var(--results-ink);
+    font-size: 0.6875rem;
+    font-weight: 600;
     line-height: 1.6;
+    overflow-wrap: anywhere;
   }
 
-  &__hint {
-    font-size: 0.875rem;
+  &__description {
+    margin: 10px 0 0;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    line-height: 1.7;
   }
 
   &__flow {
     display: grid;
     gap: 20px;
     min-width: 0;
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  &__draft-notice {
+    margin: 0;
+    padding: 12px 14px;
+    background: rgba(t.$text, 0.025);
+    border: 1px solid rgba(t.$text, 0.06);
+    border-radius: 10px;
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+    line-height: 1.7;
   }
 
   &__panel {
     min-width: 0;
-    padding: 20px;
-    border: 1px solid t.$border;
-    border-radius: t.$radius;
-    background: t.$surface;
-  }
-
-  &__progress {
-    margin: 0 0 20px;
-    font-size: 0.875rem;
-    font-weight: 600;
-  }
-
-  &__error,
-  &__warning {
-    margin: 0 0 16px;
-    line-height: 1.6;
-  }
-
-  &__error {
-    color: #ff9a9a;
-  }
-
-  &__warning {
-    color: #e2b66e;
-  }
-
-  &__button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    padding: 10px 18px;
-    border: 1px solid t.$border;
-    border-radius: 8px;
-    background: t.$background;
-    color: t.$text;
-    font: inherit;
-    font-weight: 600;
-    cursor: pointer;
-
-    &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 3px;
-    }
-
-    &:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-  }
-
-  @media (min-width: t.$screen-sm-min) {
-    &__panel {
-      padding: 24px;
-    }
-  }
-
-  @media (min-width: t.$screen-md-min) {
-    &__header h1 {
-      font-size: 2rem;
-    }
-  }
-
-  &__navigation {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 24px;
-  }
-
-  &__button--primary {
-    border-color: var(--career-accent, #{t.$accent});
-    background: var(--career-accent, #{t.$accent});
-    color: #fff;
   }
 
   &__segment-navigation {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 20px;
   }
 
   &__segment-picker {
     display: grid;
-    min-width: 0;
     gap: 8px;
+    min-width: 0;
 
     > span {
       color: t.$text-muted;
-      font-size: 0.875rem;
+      font-size: 0.75rem;
+      line-height: 1.5;
     }
 
     select {
+      box-sizing: border-box;
       width: 100%;
       min-width: 0;
-      min-height: 46px;
+      min-height: 48px;
       padding: 10px 12px;
-      border: 1px solid t.$border;
-      border-radius: 8px;
-      background: t.$background;
+      background: t.$surface;
+      border: 1px solid rgba(t.$text, 0.12);
+      border-radius: 10px;
       color: t.$text;
       font: inherit;
+      font-size: 1rem;
       color-scheme: dark;
 
       &:focus-visible {
-        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline: 2px solid var(--results-accent);
         outline-offset: 2px;
+      }
+
+      &:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
       }
     }
   }
@@ -181,29 +136,229 @@
   &__segment-count {
     margin: 0;
     color: t.$text-muted;
-    font-size: 0.8125rem;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.6;
   }
 
-  @media (min-width: t.$screen-sm-min) {
+  &__progress {
+    margin-bottom: 24px;
+
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+      color: t.$text-muted;
+      font-size: 0.6875rem;
+      line-height: 1.5;
+    }
+
+    strong {
+      color: var(--results-ink);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    progress {
+      display: block;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      overflow: hidden;
+      background: rgba(t.$text, 0.08);
+      border: 0;
+      border-radius: 999px;
+      color: var(--results-ink);
+      accent-color: var(--results-ink);
+
+      &::-webkit-progress-bar {
+        background: rgba(t.$text, 0.08);
+        border-radius: 999px;
+      }
+
+      &::-webkit-progress-value {
+        background: var(--results-ink);
+        border-radius: 999px;
+      }
+
+      &::-moz-progress-bar {
+        background: var(--results-ink);
+        border-radius: 999px;
+      }
+    }
+  }
+
+  &__hint,
+  &__message,
+  &__navigation-hint {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  &__navigation-hint {
+    margin-top: 20px;
+    font-size: 0.75rem;
+  }
+
+  &__navigation {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(t.$text, 0.08);
+
+    + .booking-results-screen__message {
+      margin-top: 16px;
+      color: var(--results-ink);
+      font-size: 0.75rem;
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    gap: 8px;
+    min-height: 46px;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid rgba(t.$text, 0.12);
+    border-radius: 10px;
+    color: t.$text;
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--results-accent);
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    &--primary {
+      background: color-mix(in srgb, var(--results-accent) 18%, #{t.$surface});
+      border-color: color-mix(in srgb, var(--results-accent) 35%, transparent);
+      color: var(--results-ink);
+    }
+  }
+
+  &__error,
+  &__warning {
+    margin: 16px 0;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  &__error {
+    background: rgba(t.$error, 0.05);
+    border: 1px solid rgba(t.$error, 0.2);
+    color: t.$error;
+  }
+
+  &__warning {
+    background: rgba(#f3c77a, 0.04);
+    border: 1px solid rgba(#f3c77a, 0.18);
+    color: #f3c77a;
+  }
+
+  &__closing-notice {
+    margin-top: 24px;
+    padding: 16px;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 14px;
+
+    strong {
+      display: block;
+      color: t.$text;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    p {
+      margin: 6px 0 0;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      line-height: 1.7;
+    }
+  }
+
+  /* The screen already shows overall segment progress. */
+  .match-results__progress {
+    display: none;
+  }
+}
+
+@container (min-width: 640px) {
+  .booking-results-screen {
     &__segment-navigation {
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: end;
+      gap: 20px;
     }
 
     &__segment-count {
-      padding-bottom: 12px;
+      padding-bottom: 14px;
+    }
+
+    &__navigation {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      > button {
+        max-width: 50%;
+      }
     }
   }
+}
 
-  fieldset.booking-results-screen__flow {
-    min-inline-size: 0;
-    margin: 0;
-    padding: 0;
-    border: 0;
+@media (hover: hover) {
+  .booking-results-screen {
+    &__back-link:hover {
+      color: t.$text;
+    }
+
+    &__button:hover:not(:disabled) {
+      background: rgba(t.$text, 0.04);
+      border-color: rgba(t.$text, 0.22);
+    }
+
+    &__button--primary:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--results-accent) 26%, #{t.$surface});
+      border-color: var(--results-ink);
+    }
   }
+}
 
-  .booking-results-screen__button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+@media (prefers-reduced-motion: no-preference) {
+  .booking-results-screen {
+    &__back-link,
+    &__button {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease;
+    }
   }
 }

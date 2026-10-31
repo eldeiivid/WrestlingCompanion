@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { UserRound } from "lucide-react";
+import { ArrowUpRight, Crown, UserRound } from "lucide-react";
 
 import RecordRanking from "./RecordRanking";
 import { useWrestlerRecords } from "../../../hooks/record-book/useRecordBookRankings";
@@ -78,7 +78,7 @@ function WrestlerPortrait({ src }: { src: string | null }) {
       {src && !failed ? (
         <img src={src} alt="" loading="lazy" onError={() => setFailed(true)} />
       ) : (
-        <UserRound size={40} />
+        <UserRound size={48} strokeWidth={1.25} />
       )}
     </span>
   );
@@ -107,23 +107,33 @@ export default function WrestlerRecordsRanking({
       onPageChange={goToPage}
     >
       {data?.items.map((item) => (
-        <li className="wrestler-records-ranking__row" key={item.wrestler.id}>
+        <li
+          className={`wrestler-records-ranking__row${
+            item.rank === 1 ? " wrestler-records-ranking__row--leader" : ""
+          }`}
+          key={item.wrestler.id}
+        >
           <span
             className="wrestler-records-ranking__position"
             aria-label={`Rank ${item.rank}`}
           >
-            #{item.rank}
+            {item.rank === 1 && <Crown size={15} aria-hidden="true" />}
+
+            <span>#{item.rank}</span>
           </span>
 
-          <WrestlerPortrait
-            key={`portrait:${item.wrestler.id}:${item.wrestler.image_url}`}
-            src={item.wrestler.image_url}
-          />
+          <div className="wrestler-records-ranking__visual">
+            <WrestlerPortrait
+              key={`portrait:${item.wrestler.id}:${item.wrestler.image_url}`}
+              src={item.wrestler.image_url}
+            />
+          </div>
 
           <div className="wrestler-records-ranking__content">
             <h3>
               <Link to={`/mygm/${careerId}/roster/${item.wrestler.id}`}>
                 {item.wrestler.name}
+                <ArrowUpRight size={15} aria-hidden="true" />
               </Link>
             </h3>
 

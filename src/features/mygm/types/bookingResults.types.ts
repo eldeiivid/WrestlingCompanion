@@ -111,8 +111,12 @@ export type BookingFeudResultDraft =
       winningSide: BookingFeudSide | null;
     };
 
+export type BookingFeudActionDraft = BookingFeudResultDraft & {
+  id: string;
+};
+
 export type BookingFeudResultsDraft = Partial<
-  Record<string, BookingFeudResultDraft>
+  Record<string, BookingFeudActionDraft[]>
 >;
 
 export interface BookingPromoWrestlerState {

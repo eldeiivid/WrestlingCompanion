@@ -1,0 +1,82 @@
+@use "../../../../styles/tokens" as t;
+
+.wrestler-signing-action {
+  --signing-accent: var(--career-accent, #{t.$text-muted});
+  --signing-ink: color-mix(in srgb, var(--signing-accent) 60%, #{t.$text});
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  min-width: 0;
+  padding: 20px;
+  background: t.$surface;
+  border: 1px solid rgba(t.$text, 0.08);
+  border-radius: 20px;
+
+  &__heading {
+    flex: 1 1 240px;
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    p {
+      max-width: 440px;
+      margin: 6px 0 0;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      line-height: 1.6;
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    gap: 8px;
+    max-width: 100%;
+    min-height: 44px;
+    padding: 10px 16px;
+    background: color-mix(in srgb, var(--signing-accent) 12%, #{t.$surface});
+    border: 1px solid color-mix(in srgb, var(--signing-accent) 30%, transparent);
+    border-radius: 10px;
+    color: var(--signing-ink);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5;
+    cursor: pointer;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--signing-accent);
+      outline-offset: 3px;
+    }
+  }
+}
+
+@media (hover: hover) {
+  .wrestler-signing-action__button:hover {
+    background: color-mix(in srgb, var(--signing-accent) 20%, #{t.$surface});
+    border-color: var(--signing-ink);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wrestler-signing-action__button {
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+}

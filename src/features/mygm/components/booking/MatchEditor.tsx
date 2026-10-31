@@ -22,6 +22,9 @@ import type {
   BookingMatchTitleOption,
 } from "../../types/booking.types";
 import "./MatchEditor.scss";
+import MatchParticipantPicker, {
+  MatchEditorImage,
+} from "./MatchParticipantPicker";
 
 interface MatchEditorProps {
   careerId: string;
@@ -590,9 +593,9 @@ function MatchEditorForm({
       <fieldset className="match-editor__fields" disabled={isSaving}>
         <legend className="match-editor__legend">Match configuration</legend>
 
-        <div className="match-editor__configuration">
+        <section className="match-editor__setup" aria-label="Match setup">
           <label className="match-editor__field">
-            <span>Format</span>
+            <span>Match format</span>
 
             <select
               value={formatId}
@@ -609,29 +612,56 @@ function MatchEditorForm({
             </select>
           </label>
 
-          <label className="match-editor__field">
-            <span>Stipulation</span>
+          <fieldset className="match-editor__stipulations" disabled={!formatId}>
+            <legend>Stipulation</legend>
 
-            <select
-              value={stipulationId}
-              required
-              disabled={!formatId}
-              onChange={(event) => {
-                setStipulationId(event.target.value);
-                setSaveError("");
-              }}
-            >
-              <option value="">Select a stipulation</option>
+            {!formatId ? (
+              <p className="match-editor__hint">
+                Choose a format to see its available stipulations.
+              </p>
+            ) : availableStipulations.length === 0 ? (
+              <p className="match-editor__hint">
+                No stipulations are available for this format.
+              </p>
+            ) : (
+              <div className="match-editor__stipulation-grid">
+                {availableStipulations.map((stipulation) => (
+                  <label
+                    className="match-editor__stipulation"
+                    key={stipulation.id}
+                  >
+                    <input
+                      type="radio"
+                      name={`${participantsTitleId}-stipulation`}
+                      value={stipulation.id}
+                      checked={stipulationId === stipulation.id}
+                      required
+                      onChange={() => {
+                        setStipulationId(stipulation.id);
+                        setSaveError("");
+                      }}
+                    />
 
-              {availableStipulations.map((stipulation) => (
-                <option key={stipulation.id} value={stipulation.id}>
-                  {stipulation.name}
-                  {financesEnabled ? ` — ${formatMoney(stipulation.cost)}` : ""}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+                    <span
+                      className="match-editor__stipulation-image"
+                      aria-hidden="true"
+                    >
+                      <MatchEditorImage src={stipulation.image_url} />
+                    </span>
+
+                    <span className="match-editor__stipulation-copy">
+                      <strong>{stipulation.name}</strong>
+
+                      {financesEnabled && (
+                        <span>{formatMoney(stipulation.cost)}</span>
+                      )}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </fieldset>
+        </section>
 
         {selectedFormat && (
           <section
@@ -707,63 +737,15 @@ function MatchEditorForm({
               </p>
             )}
 
-            <div className="match-editor__participant-grid">
-              {participantSlots.map((slot, index) => {
-                const currentId = participantIds[index] ?? "";
-
-                const visibleWrestlers = options.wrestlers.filter(
-                  (wrestler) =>
-                    wrestler.id === currentId ||
-                    genderFilter === "all" ||
-                    wrestler.gender === genderFilter,
-                );
-
-                return (
-                  <label
-                    className="match-editor__field"
-                    key={`${slot.side}-${slot.member}`}
-                  >
-                    <span>
-                      Team {slot.side} · Wrestler {slot.member}
-                    </span>
-
-                    <select
-                      value={currentId}
-                      required
-                      onChange={(event) =>
-                        handleParticipantChange(index, event.target.value)
-                      }
-                    >
-                      <option value="">Select a wrestler</option>
-
-                      {visibleWrestlers.map((wrestler) => {
-                        const selectedElsewhere = participantIds.some(
-                          (id, selectedIndex) =>
-                            id === wrestler.id && selectedIndex !== index,
-                        );
-
-                        return (
-                          <option
-                            key={wrestler.id}
-                            value={wrestler.id}
-                            disabled={
-                              !wrestler.is_available || selectedElsewhere
-                            }
-                          >
-                            {wrestler.name}
-                            {!wrestler.is_available
-                              ? " — Already booked"
-                              : selectedElsewhere
-                                ? " — Selected"
-                                : ""}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </label>
-                );
-              })}
-            </div>
+            <MatchParticipantPicker
+              key={selectedFormat.id}
+              slots={participantSlots}
+              participantIds={participantIds}
+              wrestlers={options.wrestlers}
+              genderFilter={genderFilter}
+              disabled={isSaving}
+              onChange={handleParticipantChange}
+            />
           </section>
         )}
 
@@ -829,11 +811,26 @@ function MatchEditorForm({
                 </>
               )}
 
-              {titleId && !selectedTitle && (
-                <p className="match-editor__error">
-                  The selected championship is no longer compatible. Choose
-                  another championship or turn off Title match.
-                </p>
+              {selectedTitle && (
+                <div className="match-editor__title-preview">
+                  <div className="match-editor__title-image" aria-hidden="true">
+                    <MatchEditorImage src={selectedTitle.image_url} />
+                  </div>
+
+                  <div>
+                    <strong>{selectedTitle.name}</strong>
+
+                    <p className="match-editor__title-status">
+                      {selectedTitle.is_vacant
+                        ? "This championship is vacant."
+                        : selectedTitle.holders.length > 0
+                          ? `Current champions: ${selectedTitle.holders
+                              .map((holder) => holder.name)
+                              .join(" & ")}`
+                          : "Holder unavailable"}
+                    </p>
+                  </div>
+                </div>
               )}
             </>
           )}

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CalendarDays, Star, Swords } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Crown, Star, Swords } from "lucide-react";
 
 import RecordRanking from "./RecordRanking";
 import { useRatingRecords } from "../../../hooks/record-book/useRecordBookRankings";
@@ -85,14 +85,17 @@ export default function RatingRecordsRanking({
     >
       {data?.items.map((item) => (
         <li
-          className="rating-records-ranking__row"
+          className={`rating-records-ranking__row${
+            item.rank === 1 ? " rating-records-ranking__row--leader" : ""
+          }`}
           key={`${item.kind}:${item.id}`}
         >
           <span
             className="rating-records-ranking__position"
             aria-label={`Rank ${item.rank}`}
           >
-            #{item.rank}
+            {item.rank === 1 && <Crown size={15} aria-hidden="true" />}
+            <span>#{item.rank}</span>
           </span>
 
           <span className="rating-records-ranking__icon" aria-hidden="true">
@@ -140,6 +143,7 @@ export default function RatingRecordsRanking({
               to={`/mygm/${careerId}/history/${item.event.id}`}
             >
               View show results
+              <ArrowUpRight size={16} aria-hidden="true" />
             </Link>
           </div>
 

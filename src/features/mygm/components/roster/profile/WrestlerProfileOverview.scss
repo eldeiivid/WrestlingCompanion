@@ -1,83 +1,197 @@
 @use "../../../../../styles/tokens" as t;
 
 .wrestler-overview {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  --profile-accent: var(--career-accent, #{t.$text-muted});
+  --profile-ink: color-mix(in srgb, var(--profile-accent) 60%, #{t.$text});
+
+  container-type: inline-size;
   min-width: 0;
   overflow: hidden;
   background: t.$surface;
-  border: 1px solid t.$border;
-  border-radius: 12px;
+  border: 1px solid rgba(t.$text, 0.08);
+  border-radius: 24px;
+
+  &__hero {
+    display: grid;
+    grid-template-areas:
+      "portrait"
+      "identity";
+    min-width: 0;
+    background-color: #101216;
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(#101216, 0.12),
+        rgba(#101216, 0.5) 50%,
+        #101216 85%
+      ),
+      url("../../../../../assets/backgrounds/news-arena.png");
+    background-position: center top;
+    background-size: cover;
+  }
 
   &__portrait {
+    position: relative;
+    grid-area: portrait;
     display: grid;
     place-items: center;
     min-width: 0;
-    height: 300px;
+    height: 270px;
     overflow: hidden;
-    background: t.$background;
-    border-bottom: 1px solid t.$border;
     color: t.$text-muted;
+    background: radial-gradient(
+      ellipse at 50% 60%,
+      color-mix(in srgb, var(--profile-accent) 16%, transparent),
+      transparent 72%
+    );
 
     img {
+      display: block;
       width: 100%;
+      max-width: 380px;
       height: 100%;
-      object-fit: contain;
-      object-position: center bottom;
+      object-fit: cover;
+      object-position: center top;
+      -webkit-mask-image: linear-gradient(#000 0%, #000 70%, transparent 98%);
+      mask-image: linear-gradient(#000 0%, #000 70%, transparent 98%);
     }
   }
 
-  &__content {
-    display: grid;
-    align-content: start;
-    gap: 24px;
+  &__identity {
+    position: relative;
+    grid-area: identity;
+    align-self: center;
     min-width: 0;
-    padding: 20px;
-  }
+    padding: 4px 20px 24px;
 
-  &__header h2 {
-    margin: 0 0 16px;
-    font-size: 1.5rem;
-    line-height: 1.2;
-    overflow-wrap: anywhere;
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: clamp(1.75rem, 6cqi, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
   }
 
   &__category {
-    margin: 0 0 10px;
-    color: t.$text-muted;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    display: inline-flex;
+    max-width: 100%;
+    margin: 0 0 12px;
+    padding: 5px 9px;
+    background: rgba(t.$background, 0.75);
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 7px;
+    color: var(--profile-ink);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
   }
 
-  &__badges {
+  &__meta {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    margin: 12px 0 0;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 12px 0 0;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    line-height: 1.5;
 
     > span {
-      padding: 5px 9px;
-      background: t.$background;
-      border: 1px solid t.$border;
-      border-radius: 6px;
-      font-size: 0.75rem;
+      flex-shrink: 0;
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+    }
+
+    &--on-roster {
+      color: var(--profile-ink);
     }
   }
 
-  &__section {
+  &__skills {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    max-width: 360px;
+    margin: 24px 0 0;
     padding-top: 20px;
-    border-top: 1px solid t.$border;
+    border-top: 1px solid rgba(t.$text, 0.1);
+
+    > div {
+      min-width: 0;
+    }
+
+    dt {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      line-height: 1.5;
+
+      svg {
+        flex-shrink: 0;
+        color: var(--profile-ink);
+      }
+    }
+
+    dd {
+      margin: 8px 0 0;
+      font-size: 1.75rem;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+
+      > span {
+        color: t.$text-muted;
+        font-size: 0.875rem;
+        font-weight: 400;
+      }
+
+      > .wrestler-overview__unknown {
+        font-size: 0.8125rem;
+      }
+    }
+  }
+
+  &__information {
+    display: grid;
+    min-width: 0;
+    padding: 0 20px;
+  }
+
+  &__section {
+    min-width: 0;
+    padding: 24px 0;
+    border-top: 1px solid rgba(t.$text, 0.08);
 
     h3 {
-      margin: 0 0 16px;
-      font-size: 0.9375rem;
+      margin: 0 0 18px;
+      color: t.$text;
+      font-size: 0.875rem;
+      font-weight: 600;
     }
   }
 
   &__details {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 16px;
     margin: 0;
 
     > div {
@@ -85,16 +199,18 @@
     }
 
     dt {
-      margin-bottom: 5px;
+      margin-bottom: 6px;
       color: t.$text-muted;
-      font-size: 0.75rem;
+      font-size: 0.6875rem;
+      line-height: 1.5;
     }
 
     dd {
       margin: 0;
-      font-size: 0.875rem;
-      font-weight: 600;
-      line-height: 1.5;
+      color: t.$text;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      line-height: 1.6;
       overflow-wrap: anywhere;
     }
   }
@@ -102,36 +218,75 @@
   &__hint {
     margin: 16px 0 0;
     color: t.$text-muted;
-    font-size: 0.8125rem;
-    line-height: 1.5;
+    font-size: 0.75rem;
+    line-height: 1.6;
   }
 
-  @media (min-width: t.$screen-sm-min) {
-    &__details {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+  &__contract {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 20px 0 0;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    line-height: 1.6;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &--expiring {
+      color: #f3c77a;
+    }
+
+    &--expired {
+      color: t.$error;
     }
   }
+}
 
-  @media (min-width: t.$screen-md-min) {
-    grid-template-columns:
-      minmax(0, 0.8fr)
-      minmax(0, 1.2fr);
+@container (min-width: 680px) {
+  .wrestler-overview {
+    &__hero {
+      grid-template-areas: "identity portrait";
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      background-image:
+        linear-gradient(
+          90deg,
+          rgba(#101216, 0.97),
+          rgba(#101216, 0.7) 45%,
+          rgba(#101216, 0.15)
+        ),
+        url("../../../../../assets/backgrounds/news-arena.png");
+      background-position: center;
+    }
+
+    &__identity {
+      padding: 32px;
+    }
 
     &__portrait {
-      align-self: start;
-      height: 400px;
-      border-bottom: 0;
+      align-self: stretch;
+      height: auto;
+      min-height: 340px;
+
+      img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        max-width: none;
+        height: 100%;
+      }
     }
 
-    &__content {
-      padding: 24px;
-      border-left: 1px solid t.$border;
+    &__information {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      column-gap: 40px;
+      padding: 0 32px;
     }
-  }
 
-  @media (min-width: t.$screen-lg-min) {
-    &__header h2 {
-      font-size: 2rem;
+    &__section {
+      padding: 28px 0;
     }
   }
 }

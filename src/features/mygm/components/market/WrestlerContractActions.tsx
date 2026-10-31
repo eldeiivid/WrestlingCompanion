@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { CalendarPlus } from "lucide-react";
 
 import ExtendContractModal from "./ExtendContractModal";
 import WrestlerTerminationAction from "./WrestlerTerminationAction";
 
 import type { MyGmCareerDetails } from "../../types/mygm.types";
 import type { WrestlerProfileData } from "../../types/roster/wrestlerProfile.types";
+
+import "./WrestlerContractActions.scss";
 
 interface WrestlerContractActionsProps {
   career: MyGmCareerDetails;
@@ -27,7 +30,6 @@ export default function WrestlerContractActions({
   }
 
   const endTick = membership.contract_end_tick;
-
   const canExtend = endTick !== null && endTick >= profile.current_tick;
 
   function handleExtended() {
@@ -36,26 +38,39 @@ export default function WrestlerContractActions({
   }
 
   return (
-    <div className="wrestler-profile__contract-actions">
-      {canExtend && (
-        <button
-          className="wrestler-profile__button"
-          type="button"
-          onClick={() => setIsExtensionOpen(true)}
-        >
-          Extend contract
-        </button>
-      )}
+    <section className="wrestler-contract-actions" aria-label="Manage contract">
+      <div className="wrestler-contract-actions__heading">
+        <h2>Manage contract</h2>
+        <p>
+          {canExtend
+            ? "Extend this contract or release the wrestler from your roster."
+            : "Release the wrestler from your roster."}
+        </p>
+      </div>
 
-      <WrestlerTerminationAction
-        key={`terminate:${membership.id}`}
-        careerId={career.id}
-        membershipId={membership.id}
-        wrestlerName={wrestler.name}
-        hasChampionships={profile.championships.length > 0}
-        hasActiveRivalries={profile.rivalries.length > 0}
-        onTerminated={onChanged}
-      />
+      <div className="wrestler-contract-actions__buttons">
+        {canExtend && (
+          <button
+            className="wrestler-profile__button wrestler-contract-actions__extend"
+            type="button"
+            aria-haspopup="dialog"
+            onClick={() => setIsExtensionOpen(true)}
+          >
+            <CalendarPlus size={17} aria-hidden="true" />
+            Extend contract
+          </button>
+        )}
+
+        <WrestlerTerminationAction
+          key={`terminate:${membership.id}`}
+          careerId={career.id}
+          membershipId={membership.id}
+          wrestlerName={wrestler.name}
+          hasChampionships={profile.championships.length > 0}
+          hasActiveRivalries={profile.rivalries.length > 0}
+          onTerminated={onChanged}
+        />
+      </div>
 
       {isExtensionOpen && canExtend && endTick !== null && (
         <ExtendContractModal
@@ -71,6 +86,6 @@ export default function WrestlerContractActions({
           onExtended={handleExtended}
         />
       )}
-    </div>
+    </section>
   );
 }

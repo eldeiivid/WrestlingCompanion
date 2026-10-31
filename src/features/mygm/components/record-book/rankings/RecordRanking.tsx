@@ -1,5 +1,6 @@
 import { useId } from "react";
 import type { ReactNode } from "react";
+import { ChevronLeft, ChevronRight, Medal, RefreshCw } from "lucide-react";
 
 import "./RecordRanking.scss";
 
@@ -41,12 +42,14 @@ export default function RecordRanking({
         </div>
 
         <button
-          className="record-ranking__button"
+          className="record-ranking__button record-ranking__refresh"
           type="button"
+          aria-label={`Refresh ${title.toLowerCase()}`}
           disabled={isLoading}
           onClick={onRetry}
         >
-          Refresh
+          <RefreshCw size={17} aria-hidden="true" />
+          <span>Refresh</span>
         </button>
       </header>
 
@@ -57,6 +60,8 @@ export default function RecordRanking({
           </p>
         ) : errorMessage ? (
           <div className="record-ranking__state">
+            <h3>The ranking could not be loaded</h3>
+
             <p role="alert">{errorMessage}</p>
 
             <button
@@ -64,22 +69,33 @@ export default function RecordRanking({
               type="button"
               onClick={onRetry}
             >
+              <RefreshCw size={16} aria-hidden="true" />
               Try again
             </button>
           </div>
         ) : totalCount === 0 ? (
-          <p className="record-ranking__state">{emptyMessage}</p>
+          <div className="record-ranking__state record-ranking__state--empty">
+            <span className="record-ranking__empty-icon" aria-hidden="true">
+              <Medal size={32} strokeWidth={1.5} />
+            </span>
+
+            <h3>A place in the record books awaits</h3>
+            <p>{emptyMessage}</p>
+          </div>
         ) : (
           <>
             <div className="record-ranking__summary">
               <p role="status">
-                {totalCount} {totalCount === 1 ? "record" : "records"}
+                <strong>{totalCount.toLocaleString("en-US")}</strong>{" "}
+                {totalCount === 1 ? "record" : "records"}
               </p>
 
               <p>Tied records share the same rank.</p>
             </div>
 
-            <ol className="record-ranking__list">{children}</ol>
+            <ol className="record-ranking__list" role="list">
+              {children}
+            </ol>
 
             {totalPages > 1 && (
               <nav
@@ -87,25 +103,27 @@ export default function RecordRanking({
                 aria-label={`${title} pagination`}
               >
                 <button
-                  className="record-ranking__button"
+                  className="record-ranking__button record-ranking__page-button"
                   type="button"
+                  aria-label="Previous page"
                   disabled={page <= 1}
                   onClick={() => onPageChange(page - 1)}
                 >
-                  Previous
+                  <ChevronLeft size={18} aria-hidden="true" />
                 </button>
 
                 <span>
-                  Page {page} of {totalPages}
+                  Page <strong>{page}</strong> of {totalPages}
                 </span>
 
                 <button
-                  className="record-ranking__button"
+                  className="record-ranking__button record-ranking__page-button"
                   type="button"
+                  aria-label="Next page"
                   disabled={page >= totalPages}
                   onClick={() => onPageChange(page + 1)}
                 >
-                  Next
+                  <ChevronRight size={18} aria-hidden="true" />
                 </button>
               </nav>
             )}

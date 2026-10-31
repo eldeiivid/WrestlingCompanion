@@ -1,110 +1,301 @@
 @use "../../../../styles/tokens" as t;
 
 .career-roster {
+  --roster-accent: var(--career-accent, #{t.$text-muted});
+  --roster-ink: color-mix(in srgb, var(--roster-accent) 60%, #{t.$text});
+
   display: grid;
   gap: 24px;
   min-width: 0;
+  container-type: inline-size;
+  width: 100%;
+  max-width: 1200px;
 
   &__header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
+    gap: 16px;
+  }
 
-    > div {
-      min-width: 0;
-    }
-
-    h1 {
-      margin: 0 0 12px;
-      font-size: 1.75rem;
-      line-height: 1.2;
-    }
+  &__heading-copy {
+    flex: 1;
+    min-width: 0;
   }
 
   &__eyebrow {
-    margin: 0 0 12px;
-    color: t.$text-muted;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    margin: 0 0 8px;
+    color: var(--roster-ink);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
   }
 
-  &__description {
-    margin: 0;
-    color: t.$text-muted;
-    line-height: 1.5;
+  &__title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.875rem, 4vw, 2.625rem);
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 1.15;
+    }
   }
 
   &__total {
+    padding: 4px 8px;
+    background: t.$surface;
+    border-radius: 8px;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__description {
     margin: 12px 0 0;
     color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  &__market,
+  &__refresh {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid t.$border;
+    border-radius: 13px;
+    color: t.$text-muted;
+    text-decoration: none;
+  }
+
+  &__refresh {
+    background: t.$surface;
+
+    &:hover:not(:disabled) {
+      color: t.$text;
+      border-color: var(--roster-accent);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+    }
+  }
+
+  &__market {
+    background: color-mix(in srgb, var(--roster-accent) 12%, #{t.$background});
+    border-color: color-mix(in srgb, var(--roster-accent) 28%, transparent);
+    color: var(--roster-ink);
+
+    > span,
+    > svg:last-child {
+      display: none;
+    }
+
+    &:hover {
+      border-color: var(--roster-accent);
+    }
+  }
+
+  &__tools {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  &__search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    min-height: 50px;
+    padding: 0 14px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 14px;
+
+    > svg {
+      flex-shrink: 0;
+      color: t.$text-muted;
+    }
+
+    &:focus-within {
+      border-color: var(--roster-accent);
+      box-shadow: 0 0 0 3px
+        color-mix(in srgb, var(--roster-accent) 12%, transparent);
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      min-height: 48px;
+      padding: 12px 0;
+      background: transparent;
+      border: 0;
+      color: t.$text;
+      font-size: 1rem;
+
+      &::placeholder {
+        color: t.$text-muted;
+      }
+
+      &:focus-visible {
+        outline: none;
+      }
+    }
+  }
+
+  &__toolbar {
+    display: flex;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  &__sort {
+    flex: 1;
+    min-width: 0;
+
+    select {
+      width: 100%;
+      min-width: 0;
+      min-height: 48px;
+      padding: 10px 12px;
+      background: t.$surface;
+      border: 1px solid t.$border;
+      border-radius: 13px;
+      color: t.$text;
+      font-size: 1rem;
+    }
+  }
+
+  &__filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    gap: 8px;
+    min-height: 48px;
+    padding: 10px 14px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 13px;
+    color: t.$text-muted;
     font-size: 0.8125rem;
+    font-weight: 600;
+    max-height: 48px;
+
+    > span {
+      display: grid;
+      place-items: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 4px;
+      background: color-mix(in srgb, var(--roster-accent) 16%, transparent);
+      border-radius: 6px;
+      color: var(--roster-ink);
+      font-size: 0.625rem;
+    }
+
+    &.is-active {
+      border-color: var(--roster-accent);
+      color: var(--roster-ink);
+    }
   }
 
   &__filters {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: end;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
     min-width: 0;
     margin: 0;
-    padding: 20px;
+    padding: 18px;
     background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 12px;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 18px;
+
+    &[hidden] {
+      display: none;
+    }
   }
 
   &__field {
     display: grid;
-    min-width: 0;
     gap: 8px;
+    min-width: 0;
 
     > span {
       color: t.$text-muted;
-      font-size: 0.8125rem;
+      font-size: 0.6875rem;
     }
 
-    input,
     select {
-      box-sizing: border-box;
       width: 100%;
       min-width: 0;
-      min-height: 46px;
-      padding: 10px 12px;
+      min-height: 48px;
+      padding: 10px;
       background: t.$background;
       border: 1px solid t.$border;
-      border-radius: 8px;
+      border-radius: 11px;
       color: t.$text;
-      font: inherit;
-      color-scheme: dark;
-
-      &:focus-visible {
-        outline: 2px solid var(--career-accent, #{t.$accent});
-        outline-offset: 2px;
-      }
-    }
-
-    input::placeholder {
-      color: t.$text-muted;
+      font-size: 1rem;
     }
   }
 
   &__body {
     min-width: 0;
+    scroll-margin-top: 24px;
   }
 
-  &__results {
-    margin: 0 0 20px;
-    color: t.$text-muted;
-    font-size: 0.875rem;
+  &__results-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 44px;
+    margin-bottom: 12px;
+
+    p {
+      margin: 0;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 8px;
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      color: var(--roster-ink);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
   }
 
   &__list {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    min-width: 0;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -114,50 +305,49 @@
     }
   }
 
+  &__state {
+    display: grid;
+    justify-items: center;
+    gap: 16px;
+    padding: 36px 20px;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 22px;
+    color: t.$text-muted;
+    text-align: center;
+
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1.125rem;
+      letter-spacing: -0.025em;
+    }
+
+    p {
+      max-width: 48ch;
+      margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+  }
+
   &__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-sizing: border-box;
+    gap: 8px;
     min-height: 44px;
     padding: 10px 16px;
-    background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 8px;
-    color: t.$text;
-    font: inherit;
-    cursor: pointer;
-
-    &:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 2px;
-    }
-  }
-
-  &__state {
-    padding: 24px 20px;
-    background: t.$surface;
+    background: t.$background;
     border: 1px solid t.$border;
     border-radius: 12px;
+    color: t.$text;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
 
-    h2 {
-      margin: 0 0 12px;
-      font-size: 1.125rem;
-    }
-
-    p {
-      margin: 0;
-      color: t.$text-muted;
-      line-height: 1.5;
-    }
-
-    .career-roster__button {
-      margin-top: 20px;
+    &:hover {
+      border-color: var(--roster-accent);
     }
   }
 
@@ -165,13 +355,38 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
     gap: 16px;
-    margin-top: 24px;
+    margin-top: 28px;
+
+    button {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      background: t.$surface;
+      border: 1px solid t.$border;
+      border-radius: 12px;
+      color: t.$text;
+
+      &:hover:not(:disabled) {
+        border-color: var(--roster-accent);
+      }
+
+      &:disabled {
+        opacity: 0.35;
+      }
+    }
 
     > span {
       color: t.$text-muted;
-      font-size: 0.875rem;
+      font-size: 0.75rem;
+      font-variant-numeric: tabular-nums;
+
+      strong {
+        color: t.$text;
+        font-weight: 600;
+      }
     }
   }
 
@@ -179,59 +394,103 @@
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
     overflow: hidden;
+    margin: 0;
+    padding: 0;
     clip-path: inset(50%);
     white-space: nowrap;
   }
+}
 
-  @media (min-width: t.$screen-sm-min) {
-    &__filters,
-    &__list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+@container (min-width: #{t.$screen-sm-min}) {
+  .career-roster {
+    &__market {
+      width: auto;
+      padding: 10px 14px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+
+      > span,
+      > svg:last-child {
+        display: inline;
+      }
     }
 
-    &__search {
-      grid-column: 1 / -1;
-    }
-  }
-
-  @media (min-width: t.$screen-md-min) {
-    &__header h1 {
-      font-size: 2rem;
-    }
-  }
-
-  @media (min-width: t.$screen-lg-min) {
-    &__filters,
     &__list {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    &__search {
-      grid-column: span 2;
+      gap: 16px;
     }
   }
+}
 
-  @media (min-width: t.$screen-xl-min) {
-    &__filters,
-    &__list {
+@container (min-width: #{t.$screen-md-min}) {
+  .career-roster {
+    &__tools {
+      grid-template-columns:
+        minmax(0, 1fr)
+        minmax(280px, 0.85fr);
+    }
+
+    &__filters {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+  }
+}
 
-    &__search {
-      grid-column: span 3;
-    }
+@container (min-width: #{t.$screen-lg-min}) {
+  .career-roster__list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
 
-    &__reset {
-      grid-column: 1 / -1;
-      justify-self: start;
-    }
+@container (min-width: #{t.$screen-xl-min}) {
+  .career-roster__list {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 1500px) {
+  .career-roster__list {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@keyframes career-roster-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
 
-  @media (min-width: t.$screen-f-min) {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes career-roster-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .career-roster {
+    &__filters:not([hidden]),
     &__list {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      animation: career-roster-enter 200ms ease-out both;
+    }
+
+    &__market,
+    &__refresh,
+    &__filter-toggle,
+    &__button {
+      transition:
+        border-color 160ms ease,
+        color 160ms ease;
+    }
+
+    &__spinner {
+      animation: career-roster-spin 900ms linear infinite;
     }
   }
 }

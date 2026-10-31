@@ -1,6 +1,12 @@
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
-import { UserRound } from "lucide-react";
+import {
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  RefreshCw,
+  UserRound,
+} from "lucide-react";
 
 import { useChampionshipReigns } from "../../../hooks/championships/useChampionshipReigns";
 
@@ -24,14 +30,20 @@ function formatPeriod(tick: number): string {
 }
 
 function HolderPortrait({ src }: { src: string | null }) {
-  const [failed, setFailed] = useState(false);
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
 
   return (
     <span className="championship-reign-history__portrait" aria-hidden="true">
-      {src && !failed ? (
-        <img src={src} alt="" loading="lazy" onError={() => setFailed(true)} />
+      {src && src !== failedUrl ? (
+        <img
+          src={src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onError={() => setFailedUrl(src)}
+        />
       ) : (
-        <UserRound size={24} />
+        <UserRound size={30} strokeWidth={1.25} />
       )}
     </span>
   );
@@ -59,18 +71,20 @@ export default function ChampionshipReignHistory({
 
           <p>
             {isBriefcase
-              ? "Current and previous briefcase holders."
-              : "Current and previous champions, reigns and defenses."}
+              ? "Everyone who has held this briefcase."
+              : "The champions and defenses behind this title’s history."}
           </p>
         </div>
 
         <button
-          className="championship-reign-history__button"
+          className="championship-reign-history__button championship-reign-history__refresh"
           type="button"
           disabled={isLoading}
+          aria-label="Refresh title history"
           onClick={retry}
         >
-          Refresh
+          <RefreshCw size={16} aria-hidden="true" />
+          <span>Refresh</span>
         </button>
       </header>
 
@@ -108,129 +122,167 @@ export default function ChampionshipReignHistory({
                     : "holder periods"
                   : data.total_count === 1
                     ? "reign"
-                    : "reigns"}
+                    : "reigns"}{" "}
+                recorded
               </p>
 
               <ol className="championship-reign-history__list">
-                {data.items.map((reign) => (
-                  <li
-                    className="championship-reign-history__card"
-                    key={reign.id}
-                  >
-                    <header className="championship-reign-history__card-header">
-                      <h3>
-                        {isBriefcase
-                          ? reign.is_current
-                            ? "Current holders"
-                            : "Previous holders"
-                          : reign.is_current
-                            ? "Current reign"
-                            : "Previous reign"}
-                      </h3>
+                {data.items.map((reign) => {
+                  const holderNames = reign.holders
+                    .map((holder) => holder.name)
+                    .join(" & ");
 
-                      <span
-                        className={`championship-reign-history__status${
-                          reign.is_current
-                            ? " championship-reign-history__status--current"
-                            : ""
-                        }`}
-                      >
-                        {reign.is_current ? "Current" : "Ended"}
-                      </span>
-                    </header>
+                  return (
+                    <li
+                      className="championship-reign-history__card"
+                      key={reign.id}
+                    >
+                      <header className="championship-reign-history__card-header">
+                        <div className="championship-reign-history__identity">
+                          <h3>
+                            {isBriefcase
+                              ? reign.is_current
+                                ? "Current holder period"
+                                : "Previous holder period"
+                              : reign.is_current
+                                ? "Current reign"
+                                : "Previous reign"}
+                          </h3>
 
-                    {reign.holders.length > 0 ? (
-                      <ul className="championship-reign-history__holders">
-                        {reign.holders.map((holder) => (
-                          <li key={holder.id}>
-                            <HolderPortrait
-                              key={`${holder.id}:${holder.image_url}`}
-                              src={holder.image_url}
-                            />
+                          {reign.holders.length > 0 ? (
+                            <ul className="championship-reign-history__holders">
+                              {reign.holders.map((holder) => (
+                                <li key={holder.id}>
+                                  <HolderPortrait src={holder.image_url} />
 
-                            <Link to={`/mygm/${careerId}/roster/${holder.id}`}>
-                              {holder.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="championship-reign-history__message">
-                        Holder information is unavailable.
-                      </p>
-                    )}
+                                  <Link
+                                    to={`/mygm/${careerId}/roster/${holder.id}`}
+                                  >
+                                    {holder.name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="championship-reign-history__message">
+                              Holder information is unavailable.
+                            </p>
+                          )}
+                        </div>
 
-                    <dl className="championship-reign-history__details">
-                      <div>
-                        <dt>Started</dt>
-                        <dd>{formatPeriod(reign.won_tick)}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Ended</dt>
-                        <dd>
-                          {reign.lost_tick === null
-                            ? "Ongoing"
-                            : formatPeriod(reign.lost_tick)}
-                        </dd>
-                      </div>
-
-                      {!isBriefcase && (
-                        <>
-                          <div>
-                            <dt>Reign length</dt>
-                            <dd>
-                              {reign.duration_weeks}{" "}
-                              {reign.duration_weeks === 1 ? "week" : "weeks"}
-                            </dd>
-                          </div>
-
-                          <div>
-                            <dt>Successful defenses</dt>
-                            <dd>{reign.defenses}</dd>
-                          </div>
-                        </>
-                      )}
-                    </dl>
-
-                    <div className="championship-reign-history__matches">
-                      {reign.won_match ? (
-                        <Link
-                          to={`/mygm/${careerId}/history/${reign.won_match.event_id}`}
+                        <span
+                          className={`championship-reign-history__status${
+                            reign.is_current
+                              ? " championship-reign-history__status--current"
+                              : ""
+                          }`}
                         >
-                          View acquisition show: {reign.won_match.event_name}
-                        </Link>
-                      ) : (
-                        <p>No acquisition match is recorded.</p>
-                      )}
+                          {reign.is_current ? "Current" : "Ended"}
+                        </span>
+                      </header>
 
-                      {reign.end_type === "match" &&
-                        (reign.lost_match ? (
-                          <Link
-                            to={`/mygm/${careerId}/history/${reign.lost_match.event_id}`}
+                      <dl className="championship-reign-history__details">
+                        <div>
+                          <dt>Started</dt>
+                          <dd>{formatPeriod(reign.won_tick)}</dd>
+                        </div>
+
+                        <div>
+                          <dt>Ended</dt>
+                          <dd>
+                            {reign.lost_tick === null
+                              ? "Ongoing"
+                              : formatPeriod(reign.lost_tick)}
+                          </dd>
+                        </div>
+
+                        {!isBriefcase && (
+                          <>
+                            <div>
+                              <dt>Reign length</dt>
+                              <dd>
+                                {reign.duration_weeks}{" "}
+                                {reign.duration_weeks === 1 ? "week" : "weeks"}
+                              </dd>
+                            </div>
+
+                            <div>
+                              <dt>Successful defenses</dt>
+                              <dd>{reign.defenses}</dd>
+                            </div>
+                          </>
+                        )}
+                      </dl>
+
+                      <div className="championship-reign-history__matches">
+                        <div>
+                          <span className="championship-reign-history__match-label">
+                            Acquisition
+                          </span>
+
+                          {reign.won_match ? (
+                            <Link
+                              to={`/mygm/${careerId}/history/${reign.won_match.event_id}`}
+                              aria-label={`View acquisition show: ${reign.won_match.event_name}`}
+                            >
+                              <span>{reign.won_match.event_name}</span>
+                              <ArrowUpRight size={15} aria-hidden="true" />
+                            </Link>
+                          ) : (
+                            <p>No acquisition match is recorded.</p>
+                          )}
+                        </div>
+
+                        {reign.end_type === "match" && (
+                          <div>
+                            <span className="championship-reign-history__match-label">
+                              Loss
+                            </span>
+
+                            {reign.lost_match ? (
+                              <Link
+                                to={`/mygm/${careerId}/history/${reign.lost_match.event_id}`}
+                                aria-label={`View loss show: ${reign.lost_match.event_name}`}
+                              >
+                                <span>{reign.lost_match.event_name}</span>
+                                <ArrowUpRight size={15} aria-hidden="true" />
+                              </Link>
+                            ) : (
+                              <p>The recorded end match is unavailable.</p>
+                            )}
+                          </div>
+                        )}
+
+                        {reign.end_type === "without_match" && (
+                          <div>
+                            <span className="championship-reign-history__match-label">
+                              End of reign
+                            </span>
+                            <p>Ended without a recorded match.</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {!isBriefcase && reign.defenses > 0 && (
+                        <footer className="championship-reign-history__card-footer">
+                          <button
+                            className="championship-reign-history__button championship-reign-history__defenses"
+                            type="button"
+                            aria-haspopup="dialog"
+                            aria-label={`View ${reign.defenses} successful defenses for ${
+                              holderNames || "this reign"
+                            }, started ${formatPeriod(reign.won_tick)}`}
+                            onClick={() => onViewDefenses(reign)}
                           >
-                            View loss show: {reign.lost_match.event_name}
-                          </Link>
-                        ) : (
-                          <p>The recorded end match is unavailable.</p>
-                        ))}
-
-                      {reign.end_type === "without_match" && (
-                        <p>Ended without a recorded match.</p>
+                            View defenses
+                            <span>{reign.defenses}</span>
+                            <ArrowUpRight size={16} aria-hidden="true" />
+                          </button>
+                        </footer>
                       )}
-                    </div>
-
-                    {!isBriefcase && reign.defenses > 0 && (
-                      <button
-                        className="championship-reign-history__button"
-                        type="button"
-                        onClick={() => onViewDefenses(reign)}
-                      >
-                        View defenses
-                      </button>
-                    )}
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ol>
 
               {data.total_pages > 1 && (
@@ -246,9 +298,10 @@ export default function ChampionshipReignHistory({
                     className="championship-reign-history__button"
                     type="button"
                     disabled={page <= 1}
+                    aria-label="Previous page"
                     onClick={() => goToPage(page - 1)}
                   >
-                    Previous
+                    <ChevronLeft size={18} aria-hidden="true" />
                   </button>
 
                   <span>
@@ -259,9 +312,10 @@ export default function ChampionshipReignHistory({
                     className="championship-reign-history__button"
                     type="button"
                     disabled={page >= data.total_pages}
+                    aria-label="Next page"
                     onClick={() => goToPage(page + 1)}
                   >
-                    Next
+                    <ChevronRight size={18} aria-hidden="true" />
                   </button>
                 </nav>
               )}

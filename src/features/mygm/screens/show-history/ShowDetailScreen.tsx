@@ -6,6 +6,7 @@ import ShowDetailPromoCard from "../../components/show-history/ShowDetailPromoCa
 import { useShowDetail } from "../../hooks/show-history/useShowDetail";
 import type { MyGmOutletContext } from "../../types/mygm.types";
 import "./ShowDetailScreen.scss";
+import { ArrowLeft } from "lucide-react";
 
 function getMatchPositionLabel(
   matchId: string,
@@ -54,7 +55,8 @@ export default function ShowDetailScreen() {
     <section className="show-detail" aria-labelledby={headingId}>
       <header className="show-detail__header">
         <Link className="show-detail__back-link" to={historyPath}>
-          ← Back to show history
+          <ArrowLeft size={17} aria-hidden="true" />
+          <span>Back to show history</span>
         </Link>
 
         <p className="show-detail__eyebrow">Completed show</p>
@@ -93,7 +95,11 @@ export default function ShowDetailScreen() {
 
         {!isLoading && !errorMessage && data && (
           <>
-            <ShowDetailOverview event={data.event} summary={data.summary} />
+            <ShowDetailOverview
+              event={data.event}
+              summary={data.summary}
+              brandLogoUrl={career.brand_logo_url}
+            />
 
             <section
               className="show-detail__segments"

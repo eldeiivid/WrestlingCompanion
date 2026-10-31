@@ -1,4 +1,13 @@
+import { useId, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import {
+  ChevronLeft,
+  ChevronRight,
+  RefreshCw,
+  Search,
+  SlidersHorizontal,
+  Trophy,
+} from "lucide-react";
 
 import ChampionshipCard from "../../components/championships/ChampionshipCard";
 import { useChampionships } from "../../hooks/championships/useChampionships";
@@ -39,13 +48,17 @@ const statusOptions: {
   value: ChampionshipStatusFilter;
   label: string;
 }[] = [
-  { value: "all", label: "All statuses" },
+  { value: "all", label: "All titles" },
   { value: "held", label: "Held" },
   { value: "vacant", label: "Vacant / Unclaimed" },
 ];
 
 export default function ChampionshipsScreen() {
   const { career } = useOutletContext<MyGmOutletContext>();
+
+  const headingId = useId();
+  const filtersId = useId();
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const {
     data,
@@ -60,36 +73,41 @@ export default function ChampionshipsScreen() {
     retry,
   } = useChampionships(career.id);
 
+  const activeFilterCount = [
+    filters.gender !== "all",
+    filters.category !== "all",
+  ].filter(Boolean).length;
+
   const hasFilters =
-    filters.gender !== "all" ||
-    filters.category !== "all" ||
-    filters.status !== "all" ||
-    filters.search !== "";
+    activeFilterCount > 0 || filters.status !== "all" || filters.search !== "";
 
   return (
-    <div className="championships-screen">
+    <section className="championships-screen" aria-labelledby={headingId}>
       <header className="championships-screen__header">
         <div>
-          <p className="championships-screen__eyebrow">Your brand</p>
+          <p className="championships-screen__eyebrow">Your brand’s gold</p>
 
-          <h1>Championships</h1>
+          <h1 id={headingId}>Championships</h1>
 
           <p className="championships-screen__description">
-            Explore your championships, current holders and title history.
+            Follow your champions, their reigns and the history behind each
+            title.
           </p>
         </div>
 
         <button
-          className="championships-screen__button"
+          className="championships-screen__button championships-screen__refresh"
           type="button"
           disabled={isLoading}
+          aria-label="Refresh championships"
           onClick={retry}
         >
-          Refresh
+          <RefreshCw size={17} aria-hidden="true" />
+          <span>Refresh</span>
         </button>
       </header>
 
-      {data && (
+      {data && !errorMessage && (
         <section aria-label="Championship overview">
           <dl className="championships-screen__summary">
             <div>
@@ -117,21 +135,68 @@ export default function ChampionshipsScreen() {
         </section>
       )}
 
-      <section
-        className="championships-screen__filters"
-        aria-label="Championship filters"
+      <div
+        className="championships-screen__statuses"
+        role="group"
+        aria-label="Filter by championship status"
       >
-        <label className="championships-screen__field championships-screen__field--search">
-          <span>Search</span>
+        {statusOptions.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            aria-pressed={filters.status === option.value}
+            onClick={() => updateFilters({ status: option.value })}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="championships-screen__tools">
+        <label className="championships-screen__search">
+          <span className="championships-screen__sr-only">
+            Search by title name
+          </span>
+
+          <Search size={18} aria-hidden="true" />
 
           <input
             type="search"
             value={filters.search}
             maxLength={200}
-            placeholder="Search by title name"
+            placeholder="Search championships"
             onChange={(event) => updateFilters({ search: event.target.value })}
           />
         </label>
+
+        <button
+          className="championships-screen__button championships-screen__filter-toggle"
+          type="button"
+          aria-expanded={filtersOpen}
+          aria-controls={filtersId}
+          onClick={() => setFiltersOpen((open) => !open)}
+        >
+          <SlidersHorizontal size={16} aria-hidden="true" />
+          Filters
+          {activeFilterCount > 0 && (
+            <span className="championships-screen__filter-count">
+              <span className="championships-screen__sr-only">
+                Active filters:{" "}
+              </span>
+              {activeFilterCount}
+            </span>
+          )}
+        </button>
+      </div>
+
+      <fieldset
+        className="championships-screen__filters"
+        id={filtersId}
+        hidden={!filtersOpen}
+      >
+        <legend className="championships-screen__sr-only">
+          Additional championship filters
+        </legend>
 
         <label className="championships-screen__field">
           <span>Gender</span>
@@ -178,47 +243,34 @@ export default function ChampionshipsScreen() {
             ))}
           </select>
         </label>
-
-        <label className="championships-screen__field">
-          <span>Status</span>
-
-          <select
-            value={filters.status}
-            onChange={(event) => {
-              const option = statusOptions.find(
-                (item) => item.value === event.target.value,
-              );
-
-              if (option) {
-                updateFilters({ status: option.value });
-              }
-            }}
-          >
-            {statusOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <div className="championships-screen__filter-actions">
-          <button
-            className="championships-screen__button"
-            type="button"
-            disabled={!hasFilters}
-            onClick={resetFilters}
-          >
-            Reset filters
-          </button>
-        </div>
-      </section>
+      </fieldset>
 
       <section
         className="championships-screen__results"
         aria-label="Championship results"
         aria-busy={isLoading}
       >
+        <div className="championships-screen__results-header">
+          <div>
+            {!isLoading && !errorMessage && data && (
+              <p className="championships-screen__count" role="status">
+                <strong>{data.total_count}</strong>{" "}
+                {data.total_count === 1 ? "title" : "titles"} found
+              </p>
+            )}
+          </div>
+
+          {hasFilters && (
+            <button
+              className="championships-screen__reset"
+              type="button"
+              onClick={resetFilters}
+            >
+              Reset filters
+            </button>
+          )}
+        </div>
+
         {isLoading ? (
           <p className="championships-screen__state" role="status">
             {isSearching
@@ -227,6 +279,7 @@ export default function ChampionshipsScreen() {
           </p>
         ) : errorMessage ? (
           <div className="championships-screen__state">
+            <h2>Championships could not be loaded</h2>
             <p role="alert">{errorMessage}</p>
 
             <button
@@ -239,18 +292,17 @@ export default function ChampionshipsScreen() {
           </div>
         ) : data ? (
           <>
-            <p className="championships-screen__count" role="status">
-              {data.total_count} {data.total_count === 1 ? "title" : "titles"}{" "}
-              found
-            </p>
-
             {data.items.length === 0 ? (
-              <div className="championships-screen__state">
-                <h2>No titles found</h2>
+              <div className="championships-screen__state championships-screen__empty">
+                <Trophy size={34} strokeWidth={1.25} aria-hidden="true" />
+
+                <h2>
+                  {hasFilters ? "No matching titles" : "No championships yet"}
+                </h2>
 
                 <p>
                   {hasFilters
-                    ? "Try another search or adjust your filters."
+                    ? "Try another search or reset your filters."
                     : "No active titles are assigned to this brand."}
                 </p>
 
@@ -286,9 +338,10 @@ export default function ChampionshipsScreen() {
                   className="championships-screen__button"
                   type="button"
                   disabled={page <= 1}
+                  aria-label="Previous page"
                   onClick={() => goToPage(page - 1)}
                 >
-                  Previous
+                  <ChevronLeft size={18} aria-hidden="true" />
                 </button>
 
                 <span>
@@ -299,15 +352,16 @@ export default function ChampionshipsScreen() {
                   className="championships-screen__button"
                   type="button"
                   disabled={page >= data.total_pages}
+                  aria-label="Next page"
                   onClick={() => goToPage(page + 1)}
                 >
-                  Next
+                  <ChevronRight size={18} aria-hidden="true" />
                 </button>
               </nav>
             )}
           </>
         ) : null}
       </section>
-    </div>
+    </section>
   );
 }

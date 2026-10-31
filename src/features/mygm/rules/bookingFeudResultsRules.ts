@@ -4,6 +4,7 @@ import type {
   BookingFeudResultDraft,
   BookingFeudResultsDraft,
   BookingNewFeudMember,
+  BookingFeudActionDraft,
 } from "../types/bookingResults.types";
 
 interface FeudParticipant {
@@ -276,6 +277,78 @@ export function getBookingFeudResultError(
   return null;
 }
 
+export function getBookingFeudActionKey(
+  result: BookingFeudResultDraft,
+  feuds: readonly BookingActiveFeud[],
+): string | null {
+  if (result.action === "none") {
+    return null;
+  }
+
+  if (result.action === "create") {
+    return getCandidateKey(result.kind, result.members);
+  }
+
+  const feud = feuds.find((item) => item.id === result.feudId);
+
+  return feud ? getActiveFeudKey(feud) : null;
+}
+
+export function getBookingFeudResultsError(
+  segment: BookingSegmentSummary,
+  results: readonly BookingFeudActionDraft[] | undefined,
+  feuds: readonly BookingActiveFeud[],
+): string | null {
+  if (!supportsBookingFeudResults(segment)) {
+    return null;
+  }
+
+  if (!results || results.length === 0) {
+    return "Choose no rivalry change or add at least one rivalry action.";
+  }
+
+  if (
+    results.length > 1 &&
+    results.some((result) => result.action === "none")
+  ) {
+    return "No rivalry change cannot be combined with other actions.";
+  }
+
+  const identifiers = new Set<string>();
+  const affectedRivalries = new Set<string>();
+
+  for (const [index, result] of results.entries()) {
+    if (
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        result.id,
+      ) ||
+      identifiers.has(result.id.toLowerCase())
+    ) {
+      return "Every rivalry action must have a unique valid identifier.";
+    }
+
+    identifiers.add(result.id.toLowerCase());
+
+    const error = getBookingFeudResultError(segment, result, feuds);
+
+    if (error !== null) {
+      return `Action ${index + 1}: ${error}`;
+    }
+
+    const key = getBookingFeudActionKey(result, feuds);
+
+    if (key !== null) {
+      if (affectedRivalries.has(key)) {
+        return "Choose only one action for each rivalry in this segment.";
+      }
+
+      affectedRivalries.add(key);
+    }
+  }
+
+  return null;
+}
+
 export function getBookingFeudContexts(
   segments: BookingSegmentSummary[],
   results: BookingFeudResultsDraft,
@@ -283,7 +356,6 @@ export function getBookingFeudContexts(
   tick: number,
 ): Map<string, BookingActiveFeud[]> {
   const contexts = new Map<string, BookingActiveFeud[]>();
-
   let activeFeuds = [...initialFeuds];
 
   const orderedSegments = [...segments].sort(
@@ -291,71 +363,66 @@ export function getBookingFeudContexts(
   );
 
   for (const segment of orderedSegments) {
-    // Each segment receives the state before its own action.
     contexts.set(segment.id, [...activeFeuds]);
 
-    const result = results[segment.id];
+    const actions = results[segment.id];
 
     if (
       !supportsBookingFeudResults(segment) ||
-      !result ||
-      getBookingFeudResultError(segment, result, activeFeuds) !== null
+      !actions ||
+      getBookingFeudResultsError(segment, actions, activeFeuds) !== null
     ) {
       continue;
     }
 
-    if (result.action === "create") {
-      const names = new Map(
-        segment.participants.map((participant): [string, string] => [
-          participant.wrestler_id,
-          participant.name,
-        ]),
+    const names = new Map(
+      segment.participants.map((participant): [string, string] => [
+        participant.wrestler_id,
+        participant.name,
+      ]),
+    );
+
+    if (segment.kind === "match" && segment.interference) {
+      names.set(
+        segment.interference.wrestler_id,
+        segment.interference.wrestler_name,
       );
 
-      if (segment.kind === "match" && segment.interference) {
-        names.set(
-          segment.interference.wrestler_id,
-          segment.interference.wrestler_name,
-        );
+      names.set(
+        segment.interference.target_wrestler_id,
+        segment.interference.target_wrestler_name,
+      );
+    }
 
-        names.set(
-          segment.interference.target_wrestler_id,
-          segment.interference.target_wrestler_name,
+    for (const action of actions) {
+      if (action.action === "create") {
+        const createdFeud: BookingActiveFeud = {
+          id: `draft:${segment.id}:${action.id}`,
+          name: null,
+          kind: action.kind,
+          level: 1,
+          started_tick: tick,
+          members: action.members.map((member) => ({
+            wrestler_id: member.wrestlerId,
+            name: names.get(member.wrestlerId) ?? "Unknown wrestler",
+            side: member.side,
+          })),
+        };
+
+        activeFeuds = [...activeFeuds, createdFeud];
+      }
+
+      if (action.action === "increase") {
+        activeFeuds = activeFeuds.map((feud) =>
+          feud.id === action.feudId
+            ? { ...feud, level: getNextFeudLevel(feud.level) }
+            : feud,
         );
       }
 
-      const createdFeud: BookingActiveFeud = {
-        // Temporary reference used only within this results draft.
-        id: `draft:${segment.id}`,
-        name: null,
-        kind: result.kind,
-        level: 1,
-        started_tick: tick,
-        members: result.members.map((member) => ({
-          wrestler_id: member.wrestlerId,
-          name: names.get(member.wrestlerId) ?? "Unknown wrestler",
-          side: member.side,
-        })),
-      };
-
-      activeFeuds = [...activeFeuds, createdFeud];
-    }
-
-    if (result.action === "increase") {
-      activeFeuds = activeFeuds.map((feud) => {
-        if (feud.id !== result.feudId) {
-          return feud;
-        }
-
-        return {
-          ...feud,
-          level: getNextFeudLevel(feud.level),
-        };
-      });
-    }
-
-    if (result.action === "resolve") {
-      activeFeuds = activeFeuds.filter((feud) => feud.id !== result.feudId);
+      if (action.action === "resolve") {
+        activeFeuds = activeFeuds.filter((feud) => feud.id !== action.feudId);
+      }
     }
   }
 

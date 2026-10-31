@@ -5,6 +5,7 @@ import {
   useNavigate,
   useOutletContext,
 } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import BookingResultsReview from "../components/booking/BookingResultsReview";
 import BookingResultsStepper from "../components/booking/BookingResultsStepper";
 import FeudResultsEditor from "../components/booking/FeudResultsEditor";
@@ -20,7 +21,7 @@ import { useCloseBookingShow } from "../hooks/useCloseBookingShow";
 import { useMyGmBooking } from "../hooks/useMyGmBooking";
 import {
   getBookingFeudContexts,
-  getBookingFeudResultError,
+  getBookingFeudResultsError,
 } from "../rules/bookingFeudResultsRules";
 import { getPromoAutomaticEffect } from "../rules/promoAutomaticEffectsRules";
 import {
@@ -141,7 +142,7 @@ function BookingResultsFlow({
   function isSegmentComplete(segment: BookingSegmentSummary): boolean {
     const segmentFeuds = feudContexts.get(segment.id) ?? feuds;
 
-    const feudError = getBookingFeudResultError(
+    const feudError = getBookingFeudResultsError(
       segment,
       draft.feuds[segment.id],
       segmentFeuds,
@@ -369,9 +370,12 @@ function BookingResultsFlow({
         onStepChange={handleStepChange}
       />
 
-      <p className="booking-results-screen__hint">
-        Your draft is saved on this device. Results are applied when you close
-        the show.
+      <p className="booking-results-screen__draft-notice">
+        {isLoadingDraft
+          ? "Loading your results draft…"
+          : storageError
+            ? "Results are applied when you close the show. Check the draft storage warning below."
+            : "Your draft is saved on this device. Results are applied when you close the show."}
       </p>
 
       <section
@@ -431,10 +435,20 @@ function BookingResultsFlow({
                   </p>
                 </div>
 
-                <p className="booking-results-screen__progress" role="status">
-                  {completedCount} / {orderedSegments.length} segment results
-                  complete
-                </p>
+                <div className="booking-results-screen__progress">
+                  <div role="status">
+                    <span>Segment results complete</span>
+                    <strong>
+                      {completedCount} / {orderedSegments.length}
+                    </strong>
+                  </div>
+
+                  <progress
+                    value={completedCount}
+                    max={Math.max(1, orderedSegments.length)}
+                    aria-label="Completed segment results"
+                  />
+                </div>
 
                 {currentSegment.kind === "match" ? (
                   <MatchResultsEditor
@@ -466,6 +480,18 @@ function BookingResultsFlow({
                     updateFeudResult(currentSegment.id, result)
                   }
                 />
+
+                {!isCurrentSegmentComplete ? (
+                  <p className="booking-results-screen__navigation-hint">
+                    Complete this segment’s result and rivalry settings to
+                    continue.
+                  </p>
+                ) : !nextSegment && !allSegmentsComplete ? (
+                  <p className="booking-results-screen__navigation-hint">
+                    Some earlier segments still need attention. Use the segment
+                    selector to return to them.
+                  </p>
+                ) : null}
 
                 <div className="booking-results-screen__navigation">
                   <button
@@ -563,9 +589,9 @@ function BookingResultsFlow({
               </button>
             </div>
 
-            {isShowComplete && (
-              <p className="booking-results-screen__message" role="status">
-                Show results are complete and saved in your local draft.
+            {!isShowComplete && (
+              <p className="booking-results-screen__navigation-hint">
+                Complete the required show results before reviewing.
               </p>
             )}
           </>
@@ -597,10 +623,13 @@ function BookingResultsFlow({
               </p>
             )}
 
-            <p className="booking-results-screen__hint">
-              Closing the show applies its results and advances the career by
-              one week. Completed results cannot be edited.
-            </p>
+            <div className="booking-results-screen__closing-notice">
+              <strong>Close this show and advance one week</strong>
+              <p>
+                This applies the results to your career. Completed results
+                cannot be edited.
+              </p>
+            </div>
 
             <div className="booking-results-screen__navigation">
               <button
@@ -655,10 +684,14 @@ export default function BookingResultsScreen() {
   }
 
   return (
-    <main className="booking-results-screen">
+    <section
+      className="booking-results-screen"
+      aria-label="Record show results"
+    >
       <header className="booking-results-screen__header">
         <Link className="booking-results-screen__back-link" to={bookingPath}>
-          ← Back to booking
+          <ArrowLeft size={17} aria-hidden="true" />
+          Back to booking
         </Link>
 
         {booking && (
@@ -710,6 +743,6 @@ export default function BookingResultsScreen() {
           </p>
         </section>
       )}
-    </main>
+    </section>
   );
 }

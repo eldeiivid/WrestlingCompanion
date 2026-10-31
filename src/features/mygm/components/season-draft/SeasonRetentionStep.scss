@@ -1,30 +1,44 @@
 @use "../../../../styles/tokens" as t;
 
 .season-retention-step {
+  --retention-accent: var(--career-accent, #{t.$accent});
+  --retention-ink: color-mix(in srgb, var(--retention-accent) 60%, #{t.$text});
+
   display: grid;
   gap: 20px;
   min-width: 0;
 
+  > form {
+    min-width: 0;
+  }
+
   &__header {
+    min-width: 0;
+
     h2 {
       margin: 0;
       color: t.$text;
-      font-size: 1.25rem;
+      font-size: 1.125rem;
+      font-weight: 650;
+      line-height: 1.4;
+      letter-spacing: -0.025em;
     }
 
     p {
+      max-width: 640px;
       margin: 8px 0 0;
       color: t.$text-muted;
-      font-size: 0.875rem;
-      line-height: 1.6;
+      font-size: 0.8125rem;
+      line-height: 1.65;
     }
   }
 
   &__hint {
+    max-width: 80ch;
     margin: 0;
     color: t.$text-muted;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: 0.75rem;
+    line-height: 1.65;
     overflow-wrap: anywhere;
   }
 
@@ -41,46 +55,55 @@
     position: absolute;
     width: 1px;
     height: 1px;
+    margin: -1px;
+    padding: 0;
     overflow: hidden;
+    border: 0;
     clip-path: inset(50%);
     white-space: nowrap;
   }
 
   &__filters {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
     min-width: 0;
-    padding: 16px;
-    background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 12px;
   }
 
   &__field {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 8px;
     min-width: 0;
-    color: t.$text;
-    font-size: 0.875rem;
+
+    > span {
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 1.5;
+    }
 
     input,
     select {
       box-sizing: border-box;
       width: 100%;
       min-width: 0;
-      min-height: 44px;
+      min-height: 48px;
       padding: 12px;
-      background: t.$background;
-      border: 1px solid t.$border;
-      border-radius: 8px;
+      background: t.$surface;
+      border: 1px solid rgba(t.$text, 0.12);
+      border-radius: 10px;
       color: t.$text;
       font: inherit;
+      font-size: 1rem;
+      line-height: 1.5;
       color-scheme: dark;
 
+      &:hover:not(:disabled) {
+        border-color: rgba(t.$text, 0.25);
+      }
+
       &:focus-visible {
-        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline: 2px solid var(--retention-ink);
         outline-offset: 3px;
       }
 
@@ -93,6 +116,10 @@
     input::placeholder {
       color: t.$text-muted;
     }
+
+    &--search {
+      grid-column: 1 / -1;
+    }
   }
 
   &__selection {
@@ -100,25 +127,46 @@
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px 16px;
+    min-width: 0;
+    padding-block: 12px;
+    border-top: 1px solid rgba(t.$text, 0.08);
+    border-bottom: 1px solid rgba(t.$text, 0.08);
 
     p {
       margin: 0;
       color: t.$text-muted;
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       line-height: 1.6;
     }
 
     strong {
-      color: t.$text;
-      font-size: 1.125rem;
+      margin-right: 4px;
+      color: var(--retention-ink);
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.035em;
+    }
+
+    .season-retention-step__button {
+      padding-inline: 8px;
+      background: transparent;
+      border-color: transparent;
+      color: t.$text-muted;
+
+      &:hover:not(:disabled) {
+        background: rgba(t.$text, 0.035);
+        border-color: transparent;
+        color: t.$text;
+      }
     }
   }
 
   &__results {
     margin: 0;
     color: t.$text-muted;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     line-height: 1.6;
   }
 
@@ -142,110 +190,123 @@
 
   &__empty {
     margin: 0;
-    padding: 24px;
+    padding: 28px 20px;
     background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 12px;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 20px;
     color: t.$text-muted;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    text-align: center;
+    overflow-wrap: anywhere;
   }
 
   &__error,
   &__success {
     margin: 0;
-    padding: 12px 16px;
-    border: 1px solid;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: 0.75rem;
+    line-height: 1.65;
     overflow-wrap: anywhere;
   }
 
   &__error {
-    border-color: #ef8080;
-    color: #ef8080;
+    color: t.$error;
   }
 
   &__success {
-    border-color: #52876a;
-    color: #91d5ac;
+    color: t.$success;
   }
 
   &__actions {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
     padding-top: 20px;
-    border-top: 1px solid t.$border;
+    border-top: 1px solid rgba(t.$text, 0.08);
+
+    > button {
+      flex: 1 1 140px;
+    }
   }
 
   &__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     min-width: 0;
     min-height: 44px;
-    padding: 12px 18px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
+    padding: 12px 16px;
+    background: rgba(t.$text, 0.025);
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 10px;
     color: t.$text;
     font: inherit;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 600;
     line-height: 1.5;
     text-align: center;
     cursor: pointer;
 
     &:hover:not(:disabled) {
-      border-color: var(--career-accent, #{t.$accent});
+      background: rgba(t.$text, 0.05);
+      border-color: var(--retention-ink);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline: 2px solid var(--retention-ink);
       outline-offset: 3px;
     }
 
     &:disabled {
-      opacity: 0.45;
+      opacity: 0.4;
       cursor: not-allowed;
     }
 
     &--primary {
-      background: var(--career-accent, #{t.$accent});
-      border-color: var(--career-accent, #{t.$accent});
-      color: #fff;
+      background: color-mix(
+        in srgb,
+        var(--retention-accent) 16%,
+        #{t.$surface}
+      );
+      border-color: color-mix(
+        in srgb,
+        var(--retention-accent) 45%,
+        #{t.$border}
+      );
+      color: var(--retention-ink);
 
       &:hover:not(:disabled) {
-        filter: brightness(1.1);
+        background: color-mix(
+          in srgb,
+          var(--retention-accent) 25%,
+          #{t.$surface}
+        );
       }
     }
   }
 
-  @media (min-width: t.$screen-sm-min) {
-    &__filters {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      padding: 20px;
-    }
-
-    &__field--search {
-      grid-column: 1 / -1;
-    }
-
+  @container (min-width: 560px) {
     &__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     &__actions {
-      flex-direction: row;
       justify-content: flex-end;
+
+      > button {
+        flex: 0 1 auto;
+        min-width: 140px;
+      }
     }
   }
 
-  @media (min-width: t.$screen-lg-min) {
+  @container (min-width: 800px) {
     &__filters {
-      grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+      grid-template-columns:
+        minmax(0, 2fr)
+        minmax(0, 1fr)
+        minmax(0, 1fr);
     }
 
     &__field--search {
@@ -257,9 +318,20 @@
     }
   }
 
-  @media (min-width: t.$screen-xl-min) {
+  @container (min-width: 1100px) {
     &__grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &__button,
+    &__field input,
+    &__field select {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease;
     }
   }
 }

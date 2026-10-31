@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef } from "react";
 import type { ReactNode } from "react";
 import { X } from "lucide-react";
+
 import "./BookingEditorModal.scss";
 
 interface BookingEditorModalProps {
@@ -10,56 +11,149 @@ interface BookingEditorModalProps {
   onRequestClose: () => void;
 }
 
+function isOutsideDialog(
+  dialog: HTMLDialogElement,
+  clientX: number,
+  clientY: number,
+): boolean {
+  const bounds = dialog.getBoundingClientRect();
+
+  return (
+    clientX < bounds.left ||
+    clientX > bounds.right ||
+    clientY < bounds.top ||
+    clientY > bounds.bottom
+  );
+}
+
 export default function BookingEditorModal({
   title,
   children,
   isBusy = false,
   onRequestClose,
 }: BookingEditorModalProps) {
+  const titleId = useId();
+
   const dialogRef = useRef<HTMLDialogElement>(null);
   const backdropPointerRef = useRef(false);
-  const titleId = useId();
+  const animationRef = useRef<Animation | null>(null);
+  const closingRef = useRef(false);
+  const mountedRef = useRef(false);
+  const onRequestCloseRef = useRef(onRequestClose);
+
+  useEffect(() => {
+    onRequestCloseRef.current = onRequestClose;
+  }, [onRequestClose]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
-    const previousFocus = document.activeElement;
 
-    if (!dialog) return;
+    if (!dialog) {
+      return;
+    }
+
+    mountedRef.current = true;
+    closingRef.current = false;
+    dialog.removeAttribute("data-closing");
+
+    const previousFocus =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
+    const scrollContainer = dialog.closest<HTMLElement>(
+      ".mygm-layout__content",
+    );
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousContentOverflow = scrollContainer?.style.overflowY;
+
+    document.body.style.overflow = "hidden";
+
+    if (scrollContainer) {
+      scrollContainer.style.overflowY = "hidden";
+    }
 
     if (!dialog.open) {
       dialog.showModal();
     }
 
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      animationRef.current = dialog.animate(
+        [
+          { opacity: 0, transform: "translateY(20px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        {
+          duration: 240,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        },
+      );
+    }
+
     return () => {
+      mountedRef.current = false;
+      animationRef.current?.cancel();
+      animationRef.current = null;
+
       if (dialog.open) {
         dialog.close();
       }
 
-      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) {
-        previousFocus.focus();
+      document.body.style.overflow = previousBodyOverflow;
+
+      if (scrollContainer) {
+        scrollContainer.style.overflowY = previousContentOverflow ?? "";
+      }
+
+      if (previousFocus?.isConnected) {
+        previousFocus.focus({ preventScroll: true });
       }
     };
   }, []);
 
-  function isOutsideDialog(
-    dialog: HTMLDialogElement,
-    clientX: number,
-    clientY: number,
-  ) {
-    const bounds = dialog.getBoundingClientRect();
-
-    return (
-      clientX < bounds.left ||
-      clientX > bounds.right ||
-      clientY < bounds.top ||
-      clientY > bounds.bottom
-    );
-  }
-
   function requestClose() {
-    if (!isBusy) {
-      onRequestClose();
+    const dialog = dialogRef.current;
+
+    if (!dialog || isBusy || closingRef.current) {
+      return;
     }
+
+    closingRef.current = true;
+    backdropPointerRef.current = false;
+    animationRef.current?.cancel();
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      onRequestCloseRef.current();
+      return;
+    }
+
+    dialog.setAttribute("data-closing", "true");
+
+    const animation = dialog.animate(
+      [
+        { opacity: 1, transform: "translateY(0)" },
+        { opacity: 0, transform: "translateY(12px)" },
+      ],
+      {
+        duration: 160,
+        easing: "ease-in",
+        fill: "forwards",
+      },
+    );
+
+    animationRef.current = animation;
+
+    void animation.finished.then(
+      () => {
+        if (mountedRef.current) {
+          onRequestCloseRef.current();
+        }
+      },
+      () => {
+        // Cancellation is expected when the component unmounts.
+      },
+    );
   }
 
   return (

@@ -230,6 +230,8 @@ function isShowDetailSegment(value: unknown): value is ShowDetailSegment {
     typeof value.label !== "string" ||
     !isUnsignedAmountString(value.cost) ||
     !isRivalry(value.rivalry) ||
+    !Array.isArray(value.rivalries) ||
+    !value.rivalries.every(isRivalry) ||
     !Array.isArray(value.participants)
   ) {
     return false;

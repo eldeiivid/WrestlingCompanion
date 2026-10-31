@@ -40,6 +40,8 @@
     scrollbar-width: thin;
     scroll-padding-top: 24px;
     scroll-padding-bottom: var(--career-bottom-space);
+
+    justify-items: center;
   }
 
   &__notice {
@@ -207,5 +209,39 @@
   .mygm-layout__notice button,
   .mygm-layout__status button {
     transition: border-color 160ms ease;
+  }
+}
+
+// Keep the mobile scroll viewport stable when the header collapses.
+@media (max-width: 767px) {
+  .mygm-layout {
+    position: relative;
+    grid-template-rows: 0 minmax(0, 1fr);
+
+    > .career-header {
+      position: absolute;
+      inset: 0 0 auto;
+      width: 100%;
+      min-width: 0;
+    }
+
+    &__content {
+      box-sizing: border-box;
+      height: 100%;
+      padding-top: calc(var(--career-header-expanded-height, 160px) + 24px);
+
+      // The header's reserved space scrolls with the page.
+      // Browser anchoring must not compensate for header changes.
+      overflow-anchor: none;
+
+      // Leave room for the compact header when focusing controls.
+      scroll-padding-top: 80px;
+    }
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .mygm-layout__content {
+    padding-top: calc(var(--career-header-expanded-height, 180px) + 28px);
   }
 }

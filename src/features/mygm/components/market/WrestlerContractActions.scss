@@ -1,0 +1,116 @@
+@use "../../../../styles/tokens" as t;
+
+.wrestler-contract-actions {
+  --contract-action-accent: var(--career-accent, #{t.$text-muted});
+  --contract-action-ink: color-mix(
+    in srgb,
+    var(--contract-action-accent) 60%,
+    #{t.$text}
+  );
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  min-width: 0;
+  padding: 20px;
+  background: t.$surface;
+  border: 1px solid rgba(t.$text, 0.08);
+  border-radius: 20px;
+
+  &__heading {
+    flex: 1 1 240px;
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    p {
+      max-width: 440px;
+      margin: 6px 0 0;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+      line-height: 1.6;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-width: 0;
+
+    > div {
+      min-width: 0;
+      max-width: 100%;
+    }
+  }
+
+  .wrestler-profile__button {
+    gap: 8px;
+    max-width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &__buttons &__extend {
+    background: color-mix(
+      in srgb,
+      var(--contract-action-accent) 12%,
+      #{t.$surface}
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--contract-action-accent) 30%,
+      transparent
+    );
+    color: var(--contract-action-ink);
+  }
+
+  &__buttons &__terminate {
+    background: transparent;
+    border-color: rgba(t.$error, 0.16);
+    color: t.$error;
+  }
+}
+
+@media (hover: hover) {
+  .wrestler-contract-actions {
+    &__buttons &__extend:hover {
+      background: color-mix(
+        in srgb,
+        var(--contract-action-accent) 20%,
+        #{t.$surface}
+      );
+      border-color: var(--contract-action-ink);
+    }
+
+    &__buttons &__terminate:hover {
+      background: rgba(t.$error, 0.07);
+      border-color: rgba(t.$error, 0.35);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wrestler-contract-actions__buttons .wrestler-profile__button {
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+}

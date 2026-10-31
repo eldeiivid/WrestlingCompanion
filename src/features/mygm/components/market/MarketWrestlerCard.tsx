@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { UserRound } from "lucide-react";
+import { useId, useState } from "react";
+import { ArrowUpRight, UserRound } from "lucide-react";
 
 import type {
   MarketCategory,
@@ -19,68 +19,78 @@ const categoryLabels: Record<MarketCategory, string> = {
   local: "Local",
 };
 
-function WrestlerImage({ src, name }: { src: string | null; name: string }) {
-  const [failed, setFailed] = useState(false);
-
-  return (
-    <div className="market-wrestler-card__image">
-      {src && !failed ? (
-        <img
-          src={src}
-          alt={name}
-          loading="lazy"
-          onError={() => setFailed(true)}
-        />
-      ) : (
-        <UserRound size={64} aria-hidden="true" />
-      )}
-    </div>
-  );
-}
-
 export default function MarketWrestlerCard({
   wrestler,
   onViewProfile,
 }: MarketWrestlerCardProps) {
-  const primaryClass = wrestler.primary_class?.trim();
-  const secondaryClass = wrestler.secondary_class?.trim();
+  const headingId = useId();
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+
+  const primaryClass = wrestler.primary_class?.trim() ?? "";
+  const secondaryClass = wrestler.secondary_class?.trim() ?? "";
 
   const hasSecondaryClass =
     (wrestler.in_ring_skill ?? 0) >= 15 &&
-    Boolean(secondaryClass) &&
-    secondaryClass?.toLowerCase() !== primaryClass?.toLowerCase();
+    secondaryClass !== "" &&
+    secondaryClass.toLowerCase() !== primaryClass.toLowerCase();
 
   return (
-    <article className="market-wrestler-card">
-      <WrestlerImage
-        key={wrestler.image_url ?? "no-image"}
-        src={wrestler.image_url}
-        name={wrestler.name}
-      />
+    <article className="market-wrestler-card" aria-labelledby={headingId}>
+      <div className="market-wrestler-card__image">
+        <span className="market-wrestler-card__category">
+          {wrestler.mygm_category
+            ? categoryLabels[wrestler.mygm_category]
+            : "Uncategorized"}
+        </span>
 
-      <div className="market-wrestler-card__content">
-        <div className="market-wrestler-card__badges">
-          <span>{wrestler.gender === "male" ? "Male" : "Female"}</span>
-
-          <span>{wrestler.role === "face" ? "Face" : "Heel"}</span>
-
-          {wrestler.mygm_category && (
-            <span>{categoryLabels[wrestler.mygm_category]}</span>
+        <div className="market-wrestler-card__portrait" aria-hidden="true">
+          {wrestler.image_url && wrestler.image_url !== failedUrl ? (
+            <img
+              src={wrestler.image_url}
+              alt=""
+              loading="lazy"
+              onError={() => setFailedUrl(wrestler.image_url)}
+            />
+          ) : (
+            <UserRound size={64} strokeWidth={1.25} />
           )}
         </div>
+      </div>
 
-        <h2>{wrestler.name}</h2>
+      <div className="market-wrestler-card__content">
+        <header className="market-wrestler-card__header">
+          <h2 id={headingId}>{wrestler.name}</h2>
 
-        <p className="market-wrestler-card__class">
-          {primaryClass || "Class not recorded"}
+          <p className="market-wrestler-card__meta">
+            {wrestler.gender === "male" ? "Male" : "Female"}
+            {" · "}
+            {wrestler.role === "face" ? "Face" : "Heel"}
+          </p>
+        </header>
 
-          {hasSecondaryClass && <span>Secondary: {secondaryClass}</span>}
-        </p>
+        <div className="market-wrestler-card__classes">
+          <p>
+            <span className="market-wrestler-card__sr-only">
+              Primary class:{" "}
+            </span>
+            {primaryClass || "Class not recorded"}
+          </p>
+
+          {hasSecondaryClass && (
+            <p className="market-wrestler-card__secondary">
+              Secondary: {secondaryClass}
+            </p>
+          )}
+        </div>
 
         <dl className="market-wrestler-card__stats">
           <div>
             <dt>Mic skill</dt>
-            <dd>{wrestler.mic_skill ?? "Not recorded"}</dd>
+            <dd>
+              {wrestler.mic_skill === null
+                ? "Not recorded"
+                : `${wrestler.mic_skill} / 5`}
+            </dd>
           </div>
 
           <div>
@@ -92,10 +102,11 @@ export default function MarketWrestlerCard({
         <button
           className="market-wrestler-card__button"
           type="button"
-          aria-label={`View profile for ${wrestler.name}`}
+          aria-label={`View profile: ${wrestler.name}`}
           onClick={() => onViewProfile(wrestler)}
         >
           View profile
+          <ArrowUpRight size={16} aria-hidden="true" />
         </button>
       </div>
     </article>

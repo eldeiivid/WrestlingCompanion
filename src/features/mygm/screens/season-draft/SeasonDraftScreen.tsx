@@ -6,7 +6,7 @@ import SeasonRetentionStep from "../../components/season-draft/SeasonRetentionSt
 import SeasonDraftStep from "../../components/season-draft/SeasonDraftStep";
 import SeasonBalancesStep from "../../components/season-draft/SeasonBalancesStep";
 import SeasonDraftReviewStep from "../../components/season-draft/SeasonDraftReviewStep";
-
+import { ArrowLeft } from "lucide-react";
 import { useSeasonTransition } from "../../hooks/season-draft/useSeasonTransition";
 
 import type {
@@ -102,7 +102,8 @@ function SeasonDraftScreenContent({
     <section className="season-draft-screen" aria-labelledby={headingId}>
       <header className="season-draft-screen__header">
         <Link className="season-draft-screen__back-link" to="/mygm">
-          ← Back to careers
+          <ArrowLeft size={16} aria-hidden="true" />
+          Back to careers
         </Link>
 
         <p className="season-draft-screen__eyebrow">Season transition</p>

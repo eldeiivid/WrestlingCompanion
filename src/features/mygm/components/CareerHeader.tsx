@@ -85,19 +85,38 @@ export default function CareerHeader({ career }: CareerHeaderProps) {
     : "";
 
   // Measure the content so the outer header can animate its height.
+  // Animate the header independently from the mobile scroll viewport.
   useLayoutEffect(() => {
     const header = headerRef.current;
     const container = containerRef.current;
+    const layout = header?.closest<HTMLElement>(".mygm-layout");
 
-    if (!header || !container) return;
+    if (!header || !container || !layout) {
+      return;
+    }
 
     function updateHeight() {
-      if (!header || !container) return;
+      if (!header || !container || !layout) {
+        return;
+      }
 
-      header.style.setProperty(
-        "--header-height",
-        `${container.getBoundingClientRect().height}px`,
-      );
+      const contentHeight = container.getBoundingClientRect().height;
+
+      header.style.setProperty("--header-height", `${contentHeight}px`);
+
+      // Keep the initial content offset stable while compact.
+      if (!header.classList.contains("career-header--compact")) {
+        const styles = window.getComputedStyle(header);
+
+        const borderHeight =
+          (Number.parseFloat(styles.borderTopWidth) || 0) +
+          (Number.parseFloat(styles.borderBottomWidth) || 0);
+
+        layout.style.setProperty(
+          "--career-header-expanded-height",
+          `${contentHeight + borderHeight}px`,
+        );
+      }
     }
 
     updateHeight();
@@ -107,10 +126,11 @@ export default function CareerHeader({ career }: CareerHeaderProps) {
 
     return () => {
       observer.disconnect();
+
       header.style.removeProperty("--header-height");
+      layout.style.removeProperty("--career-header-expanded-height");
     };
   }, [career.id]);
-
   useEffect(() => {
     const scrollArea = headerRef.current
       ?.closest(".mygm-layout")

@@ -1,32 +1,44 @@
 @use "../../../../styles/tokens" as t;
 
 .career-name-form {
+  --name-accent: var(--career-accent, #{t.$accent});
+  --name-ink: color-mix(in srgb, var(--name-accent) 60%, #{t.$text});
+
+  display: grid;
+  gap: 24px;
   min-width: 0;
   padding: 20px;
   background: t.$surface;
-  border: 1px solid t.$border;
-  border-radius: 12px;
+  border: 1px solid rgba(t.$text, 0.08);
+  border-radius: 20px;
+
+  > form {
+    min-width: 0;
+  }
 
   &__header {
-    margin-bottom: 20px;
+    min-width: 0;
 
     h2 {
       margin: 0;
       color: t.$text;
-      font-size: 1.25rem;
+      font-size: 1.0625rem;
+      font-weight: 650;
+      line-height: 1.4;
+      letter-spacing: -0.025em;
     }
 
     p {
       margin: 8px 0 0;
       color: t.$text-muted;
-      font-size: 0.875rem;
-      line-height: 1.6;
+      font-size: 0.8125rem;
+      line-height: 1.65;
     }
   }
 
   &__fields {
     display: grid;
-    gap: 16px;
+    gap: 12px;
     min-width: 0;
     margin: 0;
     padding: 0;
@@ -37,38 +49,51 @@
     position: absolute;
     width: 1px;
     height: 1px;
+    margin: -1px;
+    padding: 0;
     overflow: hidden;
+    border: 0;
     clip-path: inset(50%);
     white-space: nowrap;
   }
 
   &__field {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 8px;
     min-width: 0;
-    color: t.$text;
-    font-size: 0.875rem;
+
+    > span {
+      color: t.$text;
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 1.5;
+    }
 
     input {
       box-sizing: border-box;
       width: 100%;
       min-width: 0;
-      min-height: 44px;
-      padding: 12px;
+      min-height: 48px;
+      padding: 12px 14px;
       background: t.$background;
-      border: 1px solid t.$border;
-      border-radius: 8px;
+      border: 1px solid rgba(t.$text, 0.12);
+      border-radius: 10px;
       color: t.$text;
       font: inherit;
+      font-size: 1rem;
+      line-height: 1.5;
+
+      &:hover:not(:disabled) {
+        border-color: rgba(t.$text, 0.25);
+      }
 
       &:focus-visible {
-        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline: 2px solid var(--name-ink);
         outline-offset: 3px;
       }
 
       &[aria-invalid="true"] {
-        border-color: #ef8080;
+        border-color: t.$error;
       }
 
       &:disabled {
@@ -81,88 +106,107 @@
   &__hint {
     margin: 0;
     color: t.$text-muted;
-    font-size: 0.8rem;
+    font-size: 0.6875rem;
     line-height: 1.6;
+    overflow-wrap: anywhere;
   }
 
   &__error,
   &__success {
     margin: 0;
-    padding: 12px 16px;
-    border: 1px solid;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: 0.75rem;
+    line-height: 1.65;
     overflow-wrap: anywhere;
   }
 
   &__error {
-    border-color: #ef8080;
-    color: #ef8080;
+    color: t.$error;
   }
 
   &__success {
-    border-color: #52876a;
-    color: #91d5ac;
+    color: t.$success;
   }
 
   &__actions {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-top: 4px;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(t.$text, 0.08);
   }
 
   &__button {
     display: inline-flex;
+    flex: 1 1 100px;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     min-height: 44px;
-    padding: 12px 18px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
+    padding: 10px 16px;
+    background: rgba(t.$text, 0.025);
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 10px;
     color: t.$text;
     font: inherit;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
     cursor: pointer;
 
     &:hover:not(:disabled) {
-      border-color: var(--career-accent, #{t.$accent});
+      background: rgba(t.$text, 0.05);
+      border-color: var(--name-ink);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
+      outline: 2px solid var(--name-ink);
       outline-offset: 3px;
     }
 
     &:disabled {
-      opacity: 0.45;
+      opacity: 0.4;
       cursor: not-allowed;
     }
 
     &--primary {
-      background: var(--career-accent, #{t.$accent});
-      border-color: var(--career-accent, #{t.$accent});
-      color: #fff;
+      background: color-mix(in srgb, var(--name-accent) 16%, #{t.$surface});
+      border-color: color-mix(in srgb, var(--name-accent) 45%, #{t.$border});
+      color: var(--name-ink);
 
       &:hover:not(:disabled) {
-        filter: brightness(1.1);
+        background: color-mix(in srgb, var(--name-accent) 25%, #{t.$surface});
       }
     }
   }
 
-  @media (min-width: t.$screen-sm-min) {
-    padding: 24px;
-
-    &__actions {
-      flex-direction: row;
-      justify-content: flex-end;
-    }
+  @container (min-width: 560px) {
+    padding: 28px;
 
     &__button {
-      min-width: 120px;
+      flex: 0 0 auto;
+      min-width: 110px;
+    }
+  }
+
+  @container (min-width: 900px) {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 40px;
+
+    &__header {
+      padding-top: 4px;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &__button,
+    &__field input {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease;
     }
   }
 }

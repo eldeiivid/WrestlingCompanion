@@ -1,10 +1,15 @@
-import { useId } from "react";
+import { useId, useState } from "react";
+import type { CSSProperties } from "react";
+import { Star, Swords, Trophy, UserRound } from "lucide-react";
+
 import ShowDetailRivalryOutcome from "./ShowDetailRivalryOutcome";
+
 import type {
   ShowDetailMatch,
   ShowDetailMatchParticipant,
   ShowDetailTitleResult,
 } from "../../types/show-history/showDetail.types";
+
 import "./ShowDetailMatchCard.scss";
 
 interface ShowDetailMatchCardProps {
@@ -30,6 +35,34 @@ const moneyFormatter = new Intl.NumberFormat("en-US", {
   currency: "USD",
   maximumFractionDigits: 0,
 });
+
+function AssetImage({
+  src,
+  kind,
+}: {
+  src: string | null;
+  kind: "wrestler" | "title";
+}) {
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+
+  if (src && src !== failedUrl) {
+    return (
+      <img
+        src={src}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        onError={() => setFailedUrl(src)}
+      />
+    );
+  }
+
+  return kind === "title" ? (
+    <Trophy size={32} strokeWidth={1.25} />
+  ) : (
+    <UserRound size={48} strokeWidth={1.25} />
+  );
+}
 
 function getTeams(match: ShowDetailMatch): MatchTeam[] {
   const teams = new Map<number, ShowDetailMatchParticipant[]>();
@@ -57,113 +90,188 @@ export default function ShowDetailMatchCard({
   const headingId = useId();
   const teams = getTeams(match);
 
+  const mobileColumns =
+    teams.length === 4 ? 2 : Math.max(1, Math.min(teams.length, 3));
+
+  const teamStyle = {
+    "--match-mobile-columns": mobileColumns,
+    "--match-desktop-columns": Math.max(1, Math.min(teams.length, 6)),
+  } as CSSProperties;
+
+  const rivalries = match.rivalries?.length ? match.rivalries : [match.rivalry];
+
   return (
     <article className="show-match-card" aria-labelledby={headingId}>
-      <header className="show-match-card__header">
-        <div>
-          <p className="show-match-card__position">
-            Segment {match.position} · Match
-            {positionLabel ? ` · ${positionLabel}` : ""}
-          </p>
-
-          <h3 id={headingId}>{match.label}</h3>
-
-          {match.stipulation_name && (
-            <p className="show-match-card__stipulation">
-              {match.stipulation_name}
+      <div className="show-match-card__hero">
+        <header className="show-match-card__header">
+          <div className="show-match-card__identity">
+            <p className="show-match-card__position">
+              <span>{match.position}</span>
+              <Swords size={14} aria-hidden="true" />
+              Match
+              {positionLabel && (
+                <span className="show-match-card__position-label">
+                  · {positionLabel}
+                </span>
+              )}
             </p>
-          )}
-        </div>
 
-        <p className="show-match-card__rating">
-          <span aria-hidden="true">★</span>
-          {match.rating === null ? "Not rated" : `${match.rating} / 5`}
-        </p>
-      </header>
+            <h3 id={headingId}>{match.label}</h3>
 
-      <ul className="show-match-card__teams">
-        {teams.map((team) => {
-          const isWinner =
-            team.participants.length > 0 &&
-            team.participants.every(
-              (participant) => participant.result === "winner",
-            );
+            {match.stipulation_name && (
+              <p className="show-match-card__stipulation">
+                {match.stipulation_name}
+              </p>
+            )}
+          </div>
 
-          return (
-            <li
-              key={team.side}
-              className={
-                isWinner
-                  ? "show-match-card__team show-match-card__team--winner"
-                  : "show-match-card__team"
-              }
-            >
-              <div className="show-match-card__team-header">
-                <h4>Team {team.side}</h4>
+          <p className="show-match-card__rating">
+            <span className="show-match-card__sr-only">Match rating: </span>
+            <Star size={18} aria-hidden="true" />
 
-                {isWinner && (
-                  <span className="show-match-card__winner">
-                    {team.participants.length === 1 ? "Winner" : "Winners"}
-                  </span>
-                )}
-              </div>
-
-              <ul className="show-match-card__members">
-                {team.participants.map((participant) => (
-                  <li key={participant.wrestler_id}>{participant.name}</li>
-                ))}
-              </ul>
-            </li>
-          );
-        })}
-      </ul>
-
-      {match.outcome === "draw" && (
-        <p className="show-match-card__note">This match ended in a draw.</p>
-      )}
-
-      {match.outcome === "no_contest" && (
-        <p className="show-match-card__note">
-          This match ended in a no contest.
-        </p>
-      )}
-
-      {match.titles.length > 0 && (
-        <section className="show-match-card__section">
-          <h4>Championships</h4>
-
-          <ul className="show-match-card__titles">
-            {match.titles.map((title) => (
-              <li key={title.id}>
-                <strong>{title.name}</strong>
-
-                <span>{titleResultLabels[title.result]}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {match.interference && (
-        <section className="show-match-card__section">
-          <h4>Interference</h4>
-
-          <p>
-            {match.interference.wrestler_name}
-            {" → "}
-            {match.interference.target_wrestler_name}
+            {match.rating === null ? (
+              <span>Not rated</span>
+            ) : (
+              <>
+                <strong>{match.rating}</strong>
+                <span>
+                  / 5<span className="show-match-card__sr-only"> stars</span>
+                </span>
+              </>
+            )}
           </p>
-        </section>
-      )}
+        </header>
 
-      <ShowDetailRivalryOutcome rivalry={match.rivalry} />
+        {teams.length > 0 ? (
+          <div className="show-match-card__matchup">
+            <ul
+              className={`show-match-card__teams${
+                teams.length > 2 ? " show-match-card__teams--multi" : ""
+              }`}
+              style={teamStyle}
+            >
+              {teams.map((team) => {
+                const isWinner =
+                  team.participants.length > 0 &&
+                  team.participants.every(
+                    (participant) => participant.result === "winner",
+                  );
 
-      {financesRecorded && (
-        <p className="show-match-card__cost">
-          <span>Match cost</span>
-          <strong>{moneyFormatter.format(BigInt(match.cost))}</strong>
-        </p>
-      )}
+                return (
+                  <li
+                    key={team.side}
+                    className={`show-match-card__team${
+                      isWinner ? " show-match-card__team--winner" : ""
+                    }`}
+                  >
+                    <div className="show-match-card__team-header">
+                      <h4>Team {team.side}</h4>
+                    </div>
+
+                    <ul className="show-match-card__members">
+                      {team.participants.map((participant) => (
+                        <li
+                          className="show-match-card__member"
+                          key={participant.wrestler_id}
+                        >
+                          <span
+                            className="show-match-card__portrait"
+                            aria-hidden="true"
+                          >
+                            <AssetImage
+                              src={participant.image_url}
+                              kind="wrestler"
+                            />
+                          </span>
+
+                          <span className="show-match-card__member-name">
+                            {participant.name}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {isWinner && (
+                      <span className="show-match-card__winner">
+                        {team.participants.length === 1 ? "Winner" : "Winners"}
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+
+            {teams.length === 2 && (
+              <span className="show-match-card__versus" aria-hidden="true">
+                VS
+              </span>
+            )}
+          </div>
+        ) : (
+          <p className="show-match-card__missing">Participants not recorded.</p>
+        )}
+      </div>
+
+      <div className="show-match-card__content">
+        {match.outcome === "draw" && (
+          <p className="show-match-card__note">This match ended in a draw.</p>
+        )}
+
+        {match.outcome === "no_contest" && (
+          <p className="show-match-card__note">
+            This match ended in a no contest.
+          </p>
+        )}
+
+        {match.titles.length > 0 && (
+          <section className="show-match-card__section">
+            <h4>Championships</h4>
+
+            <ul className="show-match-card__titles">
+              {match.titles.map((title) => (
+                <li key={title.id}>
+                  <span
+                    className="show-match-card__title-image"
+                    aria-hidden="true"
+                  >
+                    <AssetImage src={title.image_url} kind="title" />
+                  </span>
+
+                  <div>
+                    <strong>{title.name}</strong>
+                    <span>{titleResultLabels[title.result]}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {match.interference && (
+          <section className="show-match-card__section">
+            <h4>Interference</h4>
+            <p>
+              {match.interference.wrestler_name}
+              {" → "}
+              {match.interference.target_wrestler_name}
+            </p>
+          </section>
+        )}
+
+        {rivalries.map((rivalry) => (
+          <ShowDetailRivalryOutcome
+            key={rivalry.id ?? `${match.id}:no-rivalry`}
+            rivalry={rivalry}
+          />
+        ))}
+
+        {financesRecorded && (
+          <p className="show-match-card__cost">
+            <span>Match cost</span>
+            <strong>{moneyFormatter.format(BigInt(match.cost))}</strong>
+          </p>
+        )}
+      </div>
     </article>
   );
 }

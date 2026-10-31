@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { UserPlus } from "lucide-react";
 
 import SignWrestlerModal from "./SignWrestlerModal";
 
@@ -7,6 +8,8 @@ import type {
   SignWrestlerResult,
 } from "../../types/market/marketContracts.types";
 import type { MyGmCareerDetails } from "../../types/mygm.types";
+
+import "./WrestlerSigningAction.scss";
 
 interface WrestlerSigningActionProps {
   career: MyGmCareerDetails;
@@ -29,12 +32,19 @@ export default function WrestlerSigningAction({
   }
 
   return (
-    <div>
+    <section className="wrestler-signing-action" aria-label="Sign wrestler">
+      <div className="wrestler-signing-action__heading">
+        <h2>Add to your roster</h2>
+        <p>Enter the contract details from your game to sign this wrestler.</p>
+      </div>
+
       <button
-        className="wrestler-profile__button"
+        className="wrestler-signing-action__button"
         type="button"
+        aria-haspopup="dialog"
         onClick={() => setIsOpen(true)}
       >
+        <UserPlus size={17} aria-hidden="true" />
         Sign wrestler
       </button>
 
@@ -50,6 +60,6 @@ export default function WrestlerSigningAction({
           onSigned={handleSigned}
         />
       )}
-    </div>
+    </section>
   );
 }

@@ -1,9 +1,12 @@
 @use "../../../../styles/tokens" as t;
 
 .delete-career-modal {
-  box-sizing: border-box;
+  --delete-accent: var(--career-accent, #{t.$accent});
+  --delete-ink: color-mix(in srgb, var(--delete-accent) 60%, #{t.$text});
+
   position: fixed;
   inset: auto 0 0;
+  box-sizing: border-box;
   width: 100%;
   max-width: 100%;
   max-height: 92dvh;
@@ -11,9 +14,9 @@
   padding: 0;
   overflow: hidden;
   background: t.$surface;
-  border: 1px solid t.$border;
+  border: 1px solid rgba(t.$text, 0.1);
   border-bottom: 0;
-  border-radius: 16px 16px 0 0;
+  border-radius: 28px 28px 0 0;
   color: t.$text;
   color-scheme: dark;
 
@@ -23,7 +26,8 @@
   }
 
   &::backdrop {
-    background: rgb(0 0 0 / 75%);
+    background: rgba(#080a0e, 0.78);
+    backdrop-filter: blur(5px);
   }
 
   &__header {
@@ -33,14 +37,35 @@
     justify-content: space-between;
     gap: 16px;
     padding: 20px;
-    border-bottom: 1px solid t.$border;
+    border-bottom: 1px solid rgba(t.$text, 0.08);
+  }
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
 
     h2 {
       min-width: 0;
       margin: 0;
-      font-size: 1.25rem;
+      font-size: 1.125rem;
+      font-weight: 650;
+      line-height: 1.4;
+      letter-spacing: -0.025em;
       overflow-wrap: anywhere;
     }
+  }
+
+  &__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(t.$error, 0.08);
+    border-radius: 12px;
+    color: t.$error;
   }
 
   &__close {
@@ -50,46 +75,39 @@
     width: 44px;
     height: 44px;
     padding: 0;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
+    background: rgba(t.$text, 0.025);
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 10px;
     color: t.$text;
     cursor: pointer;
 
     &:hover:not(:disabled) {
-      border-color: var(--career-accent, #{t.$accent});
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 3px;
-    }
-
-    &:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
+      background: rgba(t.$text, 0.05);
+      border-color: var(--delete-ink);
     }
   }
 
   &__form {
     display: flex;
     flex-direction: column;
+    min-height: 0;
+    margin: 0;
+  }
+
+  &__content {
+    display: grid;
     gap: 20px;
     min-height: 0;
+    padding: 24px 20px;
     overflow-y: auto;
     overscroll-behavior-y: contain;
-    padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
   }
 
   &__warning {
     margin: 0;
-    padding: 16px;
-    background: t.$background;
-    border: 1px solid #b85c5c;
-    border-radius: 10px;
-    color: #efabab;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    line-height: 1.75;
     overflow-wrap: anywhere;
   }
 
@@ -97,45 +115,52 @@
     display: grid;
     gap: 8px;
     min-width: 0;
+    padding: 16px;
+    background: t.$background;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 12px;
 
     p {
       margin: 0;
       color: t.$text-muted;
-      font-size: 0.875rem;
+      font-size: 0.6875rem;
+      line-height: 1.5;
     }
   }
 
   &__name {
     color: t.$text;
     font-size: 1rem;
+    font-weight: 650;
     line-height: 1.6;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
 
   &__field {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 8px;
     min-width: 0;
-    font-size: 0.875rem;
+
+    > span {
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 1.5;
+    }
 
     input {
       box-sizing: border-box;
       width: 100%;
       min-width: 0;
-      min-height: 44px;
-      padding: 12px;
+      min-height: 48px;
+      padding: 12px 14px;
       background: t.$background;
-      border: 1px solid t.$border;
-      border-radius: 8px;
+      border: 1px solid rgba(t.$text, 0.12);
+      border-radius: 10px;
       color: t.$text;
       font: inherit;
-
-      &:focus-visible {
-        outline: 2px solid var(--career-accent, #{t.$accent});
-        outline-offset: 3px;
-      }
+      font-size: 1rem;
+      line-height: 1.5;
 
       &:disabled {
         opacity: 0.6;
@@ -145,61 +170,63 @@
   }
 
   &__hint {
-    margin: 0;
+    margin: -10px 0 0;
     color: t.$text-muted;
-    font-size: 0.8rem;
-    line-height: 1.6;
+    font-size: 0.6875rem;
+    line-height: 1.65;
   }
 
   &__error {
     margin: 0;
-    padding: 12px 16px;
-    border: 1px solid #ef8080;
-    border-radius: 8px;
-    color: #ef8080;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    color: t.$error;
+    font-size: 0.75rem;
+    line-height: 1.65;
     overflow-wrap: anywhere;
+  }
+
+  &__status {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    line-height: 1.6;
+
+    &:empty {
+      display: none;
+    }
   }
 
   &__actions {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-top: 20px;
-    border-top: 1px solid t.$border;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid rgba(t.$text, 0.08);
   }
 
   &__button {
     display: inline-flex;
+    flex: 1 1 100%;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     min-width: 0;
     min-height: 44px;
-    padding: 12px 18px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
+    padding: 12px 16px;
+    background: rgba(t.$text, 0.025);
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 10px;
     color: t.$text;
     font: inherit;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 600;
     line-height: 1.5;
     text-align: center;
     cursor: pointer;
 
     &:hover:not(:disabled) {
-      border-color: var(--career-accent, #{t.$accent});
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 3px;
-    }
-
-    &:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
+      background: rgba(t.$text, 0.05);
+      border-color: var(--delete-ink);
     }
 
     &--danger {
@@ -213,9 +240,22 @@
       }
 
       &:focus-visible {
-        outline-color: #ef8080;
+        outline-color: t.$error;
       }
     }
+  }
+
+  button,
+  input {
+    &:focus-visible {
+      outline: 2px solid var(--delete-ink);
+      outline-offset: 3px;
+    }
+  }
+
+  button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 
   @media (min-width: t.$screen-sm-min) {
@@ -224,17 +264,62 @@
     max-width: 600px;
     max-height: 88dvh;
     margin: auto;
-    border-bottom: 1px solid t.$border;
-    border-radius: 16px;
+    border-bottom: 1px solid rgba(t.$text, 0.1);
+    border-radius: 24px;
 
-    &__header,
-    &__form {
-      padding: 24px;
+    &__header {
+      padding: 20px 28px;
+    }
+
+    &__content {
+      padding: 24px 28px;
     }
 
     &__actions {
-      flex-direction: row;
       justify-content: flex-end;
+      padding: 20px 28px;
     }
+
+    &__button {
+      flex: 0 1 auto;
+      min-width: 100px;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &::backdrop {
+      animation: delete-career-backdrop-in 240ms ease both;
+    }
+
+    &[data-closing="true"]::backdrop {
+      animation: delete-career-backdrop-out 160ms ease both;
+    }
+
+    &__button,
+    &__close {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease;
+    }
+  }
+}
+
+@keyframes delete-career-backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes delete-career-backdrop-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
   }
 }

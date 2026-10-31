@@ -8,6 +8,7 @@ import type {
   BookingPromoResultDraft,
   BookingResultsDraft,
   BookingShowResultDraft,
+  BookingFeudActionDraft,
 } from "../types/bookingResults.types";
 
 interface SegmentConfiguration {
@@ -124,12 +125,11 @@ function isFeudResult(value: unknown): value is BookingFeudResultDraft {
       );
 
     case "increase":
-      return typeof value.feudId === "string" && value.feudId.trim() !== "";
+      return typeof value.feudId === "string";
 
     case "resolve":
       return (
         typeof value.feudId === "string" &&
-        value.feudId.trim() !== "" &&
         (value.winningSide === null ||
           value.winningSide === 1 ||
           value.winningSide === 2)
@@ -138,6 +138,44 @@ function isFeudResult(value: unknown): value is BookingFeudResultDraft {
     default:
       return false;
   }
+}
+
+function isFeudActions(value: unknown): value is BookingFeudActionDraft[] {
+  if (!Array.isArray(value)) {
+    return false;
+  }
+
+  const identifiers = new Set<string>();
+
+  return value.every((item: unknown) => {
+    if (!isRecord(item)) {
+      return false;
+    }
+
+    const identifier = item.id;
+
+    if (
+      typeof identifier !== "string" ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        identifier,
+      )
+    ) {
+      return false;
+    }
+
+    if (!isFeudResult(item)) {
+      return false;
+    }
+
+    const normalizedIdentifier = identifier.toLowerCase();
+
+    if (identifiers.has(normalizedIdentifier)) {
+      return false;
+    }
+
+    identifiers.add(normalizedIdentifier);
+    return true;
+  });
 }
 
 function createEmptyDraft(eventId: string): BookingResultsDraft {
@@ -233,15 +271,18 @@ function restoreDraft(
 
     if (
       !isRecord(stored) ||
-      stored.version !== 1 ||
+      (stored.version !== 1 && stored.version !== 2) ||
       stored.eventId !== eventId ||
       !isRecord(stored.matches)
     ) {
       throw new Error("Invalid results draft.");
     }
 
+    const storedMatches = stored.matches;
     const storedPromos = isRecord(stored.promos) ? stored.promos : {};
     const storedFeuds = isRecord(stored.feuds) ? stored.feuds : {};
+
+    const legacyFeudReferences = new Map<string, string>();
 
     if (isShowResult(stored.show)) {
       draft.show = {
@@ -251,18 +292,35 @@ function restoreDraft(
     }
 
     for (const configuration of configurations) {
+      // Restore rivalry actions and migrate legacy single actions.
       const feudEntry = storedFeuds[configuration.id];
 
       if (
         isRecord(feudEntry) &&
-        feudEntry.signature === configuration.signature &&
-        isFeudResult(feudEntry.result)
+        feudEntry.signature === configuration.signature
       ) {
-        draft.feuds[configuration.id] = feudEntry.result;
+        if (stored.version === 1 && isFeudResult(feudEntry.result)) {
+          const action: BookingFeudActionDraft = {
+            ...feudEntry.result,
+            id: crypto.randomUUID(),
+          };
+
+          draft.feuds[configuration.id] = [action];
+
+          if (action.action === "create") {
+            legacyFeudReferences.set(
+              `draft:${configuration.id}`,
+              `draft:${configuration.id}:${action.id}`,
+            );
+          }
+        } else if (stored.version === 2 && isFeudActions(feudEntry.result)) {
+          draft.feuds[configuration.id] = feudEntry.result;
+        }
       }
 
+      // Restore match and promo results independently.
       const entries =
-        configuration.kind === "match" ? stored.matches : storedPromos;
+        configuration.kind === "match" ? storedMatches : storedPromos;
 
       const entry = entries[configuration.id];
 
@@ -291,6 +349,23 @@ function restoreDraft(
           },
         };
       }
+    }
+
+    // Preserve references to rivalries created in legacy drafts.
+    for (const [segmentId, actions] of Object.entries(draft.feuds)) {
+      if (!actions) continue;
+
+      draft.feuds[segmentId] = actions.map((action) => {
+        if (action.action !== "increase" && action.action !== "resolve") {
+          return action;
+        }
+
+        const migratedReference = legacyFeudReferences.get(action.feudId);
+
+        return migratedReference
+          ? { ...action, feudId: migratedReference }
+          : action;
+      });
     }
 
     return { draft, storageError: "" };
@@ -348,7 +423,7 @@ export function useBookingResultsDraft(
 
     const feuds: Record<
       string,
-      { signature: string; result: BookingFeudResultDraft }
+      { signature: string; result: BookingFeudActionDraft[] }
     > = {};
 
     for (const configuration of configurations) {
@@ -398,7 +473,7 @@ export function useBookingResultsDraft(
         localStorage.setItem(
           storageKey,
           JSON.stringify({
-            version: 1,
+            version: 2,
             eventId,
             matches,
             promos,
@@ -534,7 +609,10 @@ export function useBookingResultsDraft(
     });
   }
 
-  function updateFeudResult(segmentId: string, result: BookingFeudResultDraft) {
+  function updateFeudResult(
+    segmentId: string,
+    results: BookingFeudActionDraft[],
+  ) {
     const segment = segments.find((item) => item.id === segmentId);
 
     const supportsFeuds =
@@ -543,7 +621,7 @@ export function useBookingResultsDraft(
         (segment.promo_type_id === "call_out" ||
           segment.promo_type_id === "tag_call_out"));
 
-    if (!supportsFeuds || !isFeudResult(result)) {
+    if (!supportsFeuds || !isFeudActions(results)) {
       return;
     }
 
@@ -558,7 +636,7 @@ export function useBookingResultsDraft(
           ...current.draft,
           feuds: {
             ...current.draft.feuds,
-            [segmentId]: result,
+            [segmentId]: results,
           },
         },
       };

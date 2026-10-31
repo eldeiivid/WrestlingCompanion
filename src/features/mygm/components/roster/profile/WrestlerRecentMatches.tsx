@@ -1,9 +1,12 @@
 import { useId } from "react";
 import { Link } from "react-router-dom";
+import { ArrowUpRight, Star, Trophy } from "lucide-react";
+
 import type {
   WrestlerProfileMatch,
   WrestlerProfileMatchHistory,
 } from "../../../types/roster/wrestlerProfile.types";
+
 import "./WrestlerRecentMatches.scss";
 
 interface WrestlerRecentMatchesProps {
@@ -73,29 +76,28 @@ export default function WrestlerRecentMatches({
           aria-label="Recent matches, newest first"
         >
           {history.items.map((match) => {
-            const winners = match.participants.filter(
-              (participant) => participant.result === "winner",
-            );
+            const winnerNames = match.participants
+              .filter((participant) => participant.result === "winner")
+              .map((participant) => participant.name);
 
             return (
               <li key={match.segment_id}>
-                <article className="wrestler-recent-matches__card">
-                  <header className="wrestler-recent-matches__card-header">
-                    <div>
-                      <p className="wrestler-recent-matches__period">
-                        Season {match.season} · Week {match.week}
-                        {" · "}
-                        Segment {match.position}
-                      </p>
+                <article className="wrestler-recent-matches__match">
+                  <p className="wrestler-recent-matches__period">
+                    Season {match.season} · Week {match.week}
+                    {" · "}
+                    Segment {match.position}
+                  </p>
 
-                      <h3>
-                        {getMatchup(match) || "Participants not recorded"}
-                      </h3>
-                    </div>
+                  <header className="wrestler-recent-matches__match-header">
+                    <h3>{getMatchup(match) || "Participants not recorded"}</h3>
 
                     <span
                       className={`wrestler-recent-matches__result wrestler-recent-matches__result--${match.wrestler_result ?? "unrecorded"}`}
                     >
+                      <span className="wrestler-recent-matches__sr-only">
+                        Profile wrestler result:{" "}
+                      </span>
                       {getResultLabel(match.wrestler_result)}
                     </span>
                   </header>
@@ -105,39 +107,54 @@ export default function WrestlerRecentMatches({
                     {match.stipulation_name
                       ? ` · ${match.stipulation_name}`
                       : ""}
-                    {match.is_title_match ? " · Title match" : ""}
                   </p>
 
-                  <dl className="wrestler-recent-matches__details">
-                    <div>
-                      <dt>Match rating</dt>
-                      <dd>
-                        {match.rating === null
-                          ? "Not rated"
-                          : `${match.rating} / 5 stars`}
-                      </dd>
-                    </div>
+                  {match.is_title_match && (
+                    <p className="wrestler-recent-matches__title-match">
+                      <Trophy size={13} aria-hidden="true" />
+                      Title match
+                    </p>
+                  )}
 
-                    {winners.length > 0 && (
-                      <div>
-                        <dt>{winners.length === 1 ? "Winner" : "Winners"}</dt>
+                  {winnerNames.length > 0 && (
+                    <p className="wrestler-recent-matches__winners">
+                      <span>
+                        {winnerNames.length === 1 ? "Winner" : "Winners"}
+                        {": "}
+                      </span>
+                      {winnerNames.join(" & ")}
+                    </p>
+                  )}
 
-                        <dd>
-                          {winners
-                            .map((participant) => participant.name)
-                            .join(" & ")}
-                        </dd>
-                      </div>
-                    )}
-                  </dl>
+                  <footer className="wrestler-recent-matches__footer">
+                    <p
+                      className="wrestler-recent-matches__rating"
+                      aria-label={
+                        match.rating === null
+                          ? "Match not rated"
+                          : `Match rating: ${match.rating} out of 5 stars`
+                      }
+                    >
+                      <Star size={15} aria-hidden="true" />
+                      {match.rating === null ? (
+                        <span>Not rated</span>
+                      ) : (
+                        <>
+                          <strong>{match.rating}</strong>
+                          <span>/ 5</span>
+                        </>
+                      )}
+                    </p>
 
-                  <Link
-                    className="wrestler-recent-matches__link"
-                    to={`/mygm/${careerId}/history/${match.event_id}`}
-                    aria-label={`View show from season ${match.season}, week ${match.week}`}
-                  >
-                    View show
-                  </Link>
+                    <Link
+                      className="wrestler-recent-matches__link"
+                      to={`/mygm/${careerId}/history/${match.event_id}`}
+                      aria-label={`View ${match.event_name || "show"} from season ${match.season}, week ${match.week}`}
+                    >
+                      View show
+                      <ArrowUpRight size={16} aria-hidden="true" />
+                    </Link>
+                  </footer>
                 </article>
               </li>
             );

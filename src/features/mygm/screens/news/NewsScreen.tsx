@@ -1,8 +1,17 @@
 import { useId, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
+import {
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  Newspaper,
+  RefreshCw,
+  Search,
+} from "lucide-react";
 
 import NewsHistoryCard from "../../components/news/NewsHistoryCard";
 import RivalryDetailModal from "../../components/dashboard/rivalries/RivalryDetailModal";
+
 import { useNewsHistory } from "../../hooks/news/useNewsHistory";
 
 import type { MyGmOutletContext } from "../../types/mygm.types";
@@ -62,41 +71,49 @@ export default function NewsScreen() {
     <section className="news-screen" aria-labelledby={headingId}>
       <header className="news-screen__header">
         <div>
-          <p className="news-screen__eyebrow">Your brand stories</p>
+          <p className="news-screen__eyebrow">The stories behind your brand</p>
 
           <h1 id={headingId}>News</h1>
 
           <p className="news-screen__description">
-            Explore championship moments and rivalry developments throughout
+            Championship moments, rivalry developments and the stories shaping
             your career.
           </p>
         </div>
 
         <button
-          className="news-screen__button"
+          className="news-screen__button news-screen__refresh"
           type="button"
           disabled={isLoading}
+          aria-label="Refresh news"
           onClick={retry}
         >
-          Refresh
+          <RefreshCw size={17} aria-hidden="true" />
+          <span>Refresh</span>
         </button>
       </header>
 
-      <section className="news-screen__filters" aria-label="News filters">
-        <label className="news-screen__field news-screen__field--search">
-          <span>Search</span>
+      <fieldset className="news-screen__filters">
+        <legend className="news-screen__sr-only">Filter news</legend>
+
+        <label className="news-screen__search">
+          <span className="news-screen__sr-only">
+            Search wrestlers, championships or rivalries
+          </span>
+
+          <Search size={18} aria-hidden="true" />
 
           <input
             type="search"
             value={filters.search}
             maxLength={200}
-            placeholder="Search wrestlers, championships or rivalries"
+            placeholder="Search stories or wrestlers"
             onChange={(event) => updateFilters({ search: event.target.value })}
           />
         </label>
 
-        <label className="news-screen__field">
-          <span>News type</span>
+        <label className="news-screen__type-filter">
+          <span className="news-screen__sr-only">News type</span>
 
           <select
             value={filters.eventType}
@@ -117,30 +134,42 @@ export default function NewsScreen() {
             ))}
           </select>
         </label>
-
-        <div className="news-screen__filter-actions">
-          <button
-            className="news-screen__button"
-            type="button"
-            disabled={!hasFilters}
-            onClick={resetFilters}
-          >
-            Reset filters
-          </button>
-        </div>
-      </section>
+      </fieldset>
 
       <section
         className="news-screen__results"
         aria-label="News results"
         aria-busy={isLoading}
       >
+        <div className="news-screen__results-header">
+          <div>
+            {!isLoading && !errorMessage && data && (
+              <p className="news-screen__count" role="status">
+                <strong>{data.total_count}</strong>{" "}
+                {data.total_count === 1 ? "story" : "stories"} found
+                <span>{data.available_count} in your career</span>
+              </p>
+            )}
+          </div>
+
+          {hasFilters && (
+            <button
+              className="news-screen__reset"
+              type="button"
+              onClick={resetFilters}
+            >
+              Reset filters
+            </button>
+          )}
+        </div>
+
         {isLoading ? (
           <p className="news-screen__state" role="status">
             {isSearching ? "Searching news…" : "Loading news…"}
           </p>
         ) : errorMessage ? (
           <div className="news-screen__state">
+            <h2>News could not be loaded</h2>
             <p role="alert">{errorMessage}</p>
 
             <button
@@ -153,24 +182,23 @@ export default function NewsScreen() {
           </div>
         ) : data ? (
           <>
-            <p className="news-screen__count" role="status">
-              {data.total_count} {data.total_count === 1 ? "story" : "stories"}{" "}
-              found
-              {" · "}
-              {data.available_count} in your career
-            </p>
-
             {data.items.length === 0 ? (
-              <div className="news-screen__state">
-                <h2>{hasFilters ? "No matching news" : "No news yet"}</h2>
+              <div className="news-screen__state news-screen__empty">
+                <Newspaper size={34} strokeWidth={1.25} aria-hidden="true" />
+
+                <h2>
+                  {hasFilters
+                    ? "No matching stories"
+                    : "Your story is still being written"}
+                </h2>
 
                 <p>
                   {hasFilters
-                    ? "Try another search or adjust your filters."
-                    : "Complete shows with championship or rivalry developments to generate news."}
+                    ? "Try another search or reset your filters."
+                    : "Complete shows with championship or rivalry developments to build your news archive."}
                 </p>
 
-                {hasFilters && (
+                {hasFilters ? (
                   <button
                     className="news-screen__button"
                     type="button"
@@ -178,6 +206,14 @@ export default function NewsScreen() {
                   >
                     Reset filters
                   </button>
+                ) : (
+                  <Link
+                    className="news-screen__button news-screen__button--primary"
+                    to={`/mygm/${career.id}/booking`}
+                  >
+                    Go to booking
+                    <ArrowUpRight size={16} aria-hidden="true" />
+                  </Link>
                 )}
               </div>
             ) : (
@@ -203,9 +239,10 @@ export default function NewsScreen() {
                   className="news-screen__button"
                   type="button"
                   disabled={page <= 1}
+                  aria-label="Previous page"
                   onClick={() => goToPage(page - 1)}
                 >
-                  Previous
+                  <ChevronLeft size={18} aria-hidden="true" />
                 </button>
 
                 <span>
@@ -216,9 +253,10 @@ export default function NewsScreen() {
                   className="news-screen__button"
                   type="button"
                   disabled={page >= data.total_pages}
+                  aria-label="Next page"
                   onClick={() => goToPage(page + 1)}
                 >
-                  Next
+                  <ChevronRight size={18} aria-hidden="true" />
                 </button>
               </nav>
             )}

@@ -1,34 +1,63 @@
 @use "../../../../styles/tokens" as t;
 
 .season-draft-card {
+  --pick-accent: var(--career-accent, #{t.$accent});
+  --pick-ink: color-mix(in srgb, var(--pick-accent) 60%, #{t.$text});
+
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   min-width: 0;
   overflow: hidden;
   background: t.$surface;
-  border: 1px solid t.$border;
-  border-radius: 12px;
+  border: 1px solid rgba(t.$text, 0.08);
+  border-radius: 20px;
 
   &--selected {
-    border-color: var(--career-accent, #{t.$accent});
-    box-shadow: inset 0 0 0 1px var(--career-accent, #{t.$accent});
+    border-color: var(--pick-ink);
+    box-shadow: 0 0 0 1px var(--pick-ink);
+
+    .season-draft-card__selection {
+      background: color-mix(in srgb, var(--pick-accent) 14%, #{t.$surface});
+      border-color: color-mix(in srgb, var(--pick-accent) 45%, #{t.$border});
+      color: var(--pick-ink);
+    }
   }
 
   &__image {
+    position: relative;
     display: grid;
+    flex-shrink: 0;
     place-items: center;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    height: 240px;
     overflow: hidden;
-    background: t.$background;
+    background-color: #101216;
+    background-image:
+      linear-gradient(180deg, rgba(#101216, 0.25), rgba(#101216, 0.55)),
+      url("../../../../assets/backgrounds/news-arena.png");
+    background-position: center;
+    background-size: cover;
     color: t.$text-muted;
+
+    &::after {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 65%, #{t.$surface} 100%);
+      pointer-events: none;
+      content: "";
+    }
 
     img {
       display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: top;
+      object-position: center top;
+    }
+
+    > svg {
+      opacity: 0.6;
     }
   }
 
@@ -38,68 +67,76 @@
     flex-direction: column;
     gap: 16px;
     min-width: 0;
-    padding: 20px;
+    padding: 12px 20px 20px;
   }
 
   &__header {
     display: grid;
-    gap: 12px;
+    gap: 10px;
+    min-width: 0;
 
     h3 {
       margin: 0;
       color: t.$text;
-      font-size: 1rem;
-      line-height: 1.5;
+      font-size: 1.125rem;
+      font-weight: 650;
+      line-height: 1.35;
+      letter-spacing: -0.025em;
       overflow-wrap: anywhere;
     }
   }
 
   &__badges {
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 6px 10px;
 
     span {
-      padding: 4px 8px;
-      background: t.$background;
-      border: 1px solid t.$border;
-      border-radius: 6px;
       color: t.$text-muted;
-      font-size: 0.75rem;
+      font-size: 0.6875rem;
+      line-height: 1.5;
+    }
+
+    span + span {
+      padding-left: 10px;
+      border-left: 1px solid rgba(t.$text, 0.15);
     }
   }
 
   &__class {
     margin: 0;
     color: t.$text;
-    font-size: 0.875rem;
-    line-height: 1.5;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.6;
     overflow-wrap: anywhere;
 
     span {
       display: block;
-      margin-top: 6px;
+      margin-top: 4px;
       color: t.$text-muted;
-      font-size: 0.8rem;
+      font-size: 0.6875rem;
+      font-weight: 400;
     }
   }
 
   &__stats {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 16px;
     margin: 0;
-    padding-top: 16px;
-    border-top: 1px solid t.$border;
+    padding-top: 14px;
+    border-top: 1px solid rgba(t.$text, 0.08);
 
     > div {
       min-width: 0;
     }
 
     dt {
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       color: t.$text-muted;
-      font-size: 0.75rem;
+      font-size: 0.6875rem;
       line-height: 1.5;
     }
 
@@ -108,6 +145,8 @@
       color: t.$text;
       font-size: 0.875rem;
       font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.5;
       overflow-wrap: anywhere;
     }
   }
@@ -115,35 +154,43 @@
   &__previous {
     margin: 0;
     color: t.$text-muted;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     line-height: 1.6;
+    overflow-wrap: anywhere;
   }
 
   &__selection {
     display: flex;
     align-items: center;
-    gap: 12px;
-    min-height: 44px;
+    box-sizing: border-box;
+    gap: 10px;
+    min-height: 48px;
     margin-top: auto;
     padding: 12px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
+    background: rgba(t.$text, 0.025);
+    border: 1px solid rgba(t.$text, 0.12);
+    border-radius: 10px;
     color: t.$text;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
+    font-weight: 600;
     line-height: 1.5;
     cursor: pointer;
+
+    > span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
 
     input {
       flex-shrink: 0;
       width: 20px;
       height: 20px;
       margin: 0;
-      accent-color: var(--career-accent, #{t.$accent});
+      accent-color: var(--pick-accent);
       cursor: pointer;
 
       &:focus-visible {
-        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline: 2px solid var(--pick-ink);
         outline-offset: 3px;
       }
 
@@ -152,9 +199,13 @@
       }
     }
 
-    &:hover,
+    &:hover:not(:has(input:disabled)) {
+      border-color: var(--pick-ink);
+    }
+
     &:focus-within {
-      border-color: var(--career-accent, #{t.$accent});
+      outline: 2px solid var(--pick-ink);
+      outline-offset: 3px;
     }
 
     &:has(input:disabled) {
@@ -163,9 +214,13 @@
     }
   }
 
-  @media (min-width: t.$screen-sm-min) {
-    &__image {
-      aspect-ratio: 1;
+  @media (prefers-reduced-motion: no-preference) {
+    &,
+    &__selection {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        box-shadow 160ms ease;
     }
   }
 }

@@ -1,5 +1,8 @@
 import { useId } from "react";
+import { Star } from "lucide-react";
+
 import type { WrestlerProfileStats as WrestlerStats } from "../../../types/roster/wrestlerProfile.types";
+
 import "./WrestlerProfileStats.scss";
 
 interface WrestlerProfileStatsProps {
@@ -13,58 +16,34 @@ export default function WrestlerProfileStats({
 }: WrestlerProfileStatsProps) {
   const headingId = useId();
 
-  const metrics = [
+  const results = [
     {
       id: "matches",
       label: "Matches",
-      value: numberFormatter.format(stats.matches),
+      value: stats.matches,
     },
     {
       id: "wins",
       label: "Wins",
-      value: numberFormatter.format(stats.wins),
+      value: stats.wins,
     },
     {
       id: "losses",
       label: "Losses",
-      value: numberFormatter.format(stats.losses),
+      value: stats.losses,
     },
     ...(stats.draws > 0
-      ? [
-          {
-            id: "draws",
-            label: "Draws",
-            value: numberFormatter.format(stats.draws),
-          },
-        ]
+      ? [{ id: "draws", label: "Draws", value: stats.draws }]
       : []),
     ...(stats.no_contests > 0
       ? [
           {
             id: "no-contests",
             label: "No contests",
-            value: numberFormatter.format(stats.no_contests),
+            value: stats.no_contests,
           },
         ]
       : []),
-    {
-      id: "average-rating",
-      label: "Average match rating",
-      value:
-        stats.average_rating === null
-          ? "Not rated"
-          : `${stats.average_rating.toFixed(2)} / 5`,
-    },
-    {
-      id: "high-rated-matches",
-      label: "4.5+ star matches",
-      value: numberFormatter.format(stats.high_rated_matches),
-    },
-    {
-      id: "promos",
-      label: "Promos performed",
-      value: numberFormatter.format(stats.promos_performed),
-    },
   ];
 
   return (
@@ -74,14 +53,50 @@ export default function WrestlerProfileStats({
         <p>Results from completed shows in this career.</p>
       </header>
 
-      <dl className="wrestler-profile-stats__grid">
-        {metrics.map((metric) => (
-          <div key={metric.id}>
-            <dt>{metric.label}</dt>
-            <dd>{metric.value}</dd>
+      <div className="wrestler-profile-stats__panel">
+        <dl className="wrestler-profile-stats__results">
+          {results.map((result) => (
+            <div
+              className={`wrestler-profile-stats__result wrestler-profile-stats__result--${result.id}`}
+              key={result.id}
+            >
+              <dt>{result.label}</dt>
+              <dd>{numberFormatter.format(result.value)}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <dl className="wrestler-profile-stats__details">
+          <div>
+            <dt>
+              <Star size={15} aria-hidden="true" />
+              Average match rating
+            </dt>
+            <dd>
+              {stats.average_rating === null ? (
+                <span className="wrestler-profile-stats__unrated">
+                  Not rated
+                </span>
+              ) : (
+                <>
+                  {stats.average_rating.toFixed(2)}
+                  <span> / 5</span>
+                </>
+              )}
+            </dd>
           </div>
-        ))}
-      </dl>
+
+          <div>
+            <dt>4.5+ star matches</dt>
+            <dd>{numberFormatter.format(stats.high_rated_matches)}</dd>
+          </div>
+
+          <div>
+            <dt>Promos performed</dt>
+            <dd>{numberFormatter.format(stats.promos_performed)}</dd>
+          </div>
+        </dl>
+      </div>
     </section>
   );
 }

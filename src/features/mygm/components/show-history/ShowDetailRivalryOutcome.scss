@@ -1,25 +1,105 @@
 @use "../../../../styles/tokens" as t;
 
 .show-rivalry-outcome {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid t.$border;
+  --outcome-accent: var(--career-accent, #{t.$accent});
+  --outcome-ink: color-mix(in srgb, var(--outcome-accent) 60%, #{t.$text});
 
-  h4 {
-    margin: 0 0 10px;
-    font-size: 0.875rem;
+  min-width: 0;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(t.$text, 0.08);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    h4 {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      margin: 0;
+      color: var(--outcome-ink);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      line-height: 1.5;
+
+      svg {
+        flex-shrink: 0;
+      }
+    }
   }
 
-  p {
-    margin: 8px 0 0;
+  &__level {
+    flex-shrink: 0;
+    padding: 3px 7px;
+    background: rgba(t.$text, 0.025);
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 6px;
     color: t.$text-muted;
-    font-size: 0.875rem;
+    font-size: 0.625rem;
+    font-variant-numeric: tabular-nums;
     line-height: 1.5;
-    overflow-wrap: anywhere;
   }
 
   &__name {
-    color: t.$text !important;
+    margin: 10px 0 0;
+    color: t.$text;
+    font-size: 0.8125rem;
     font-weight: 600;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  &__participants {
+    margin: 5px 0 0;
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  &__winner {
+    display: grid;
+    gap: 5px;
+    margin: 12px 0 0;
+
+    > span {
+      color: t.$text-muted;
+      font-size: 0.625rem;
+      line-height: 1.5;
+    }
+
+    strong {
+      color: t.$text;
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__unchanged {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+    line-height: 1.7;
+
+    svg {
+      flex-shrink: 0;
+      color: var(--outcome-ink);
+    }
+
+    > span {
+      color: t.$text;
+      font-weight: 500;
+    }
   }
 }

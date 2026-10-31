@@ -18,12 +18,14 @@ export interface BookingLimits {
 export interface BookingMatchParticipantSummary {
   wrestler_id: string;
   name: string;
+  image_url: string | null;
   side: number;
 }
 
 export interface BookingPromoParticipantSummary {
   wrestler_id: string;
   name: string;
+  image_url: string | null;
   role: BookingPromoRole;
 }
 
@@ -32,6 +34,7 @@ export type BookingSegmentSummary =
       id: string;
       position: number;
       kind: "match";
+      stipulation_image_url: string | null;
       label: string;
       cost: string;
       stipulation_name: string | null;
@@ -131,6 +134,7 @@ export interface BookingPromoType {
 export interface BookingPromoWrestler {
   id: string;
   name: string;
+  image_url: string | null;
   can_initiate: boolean;
   can_swap_classes: boolean;
 }

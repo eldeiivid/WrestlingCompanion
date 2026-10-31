@@ -95,6 +95,7 @@ interface ShowDetailSegmentBase {
   label: string;
   cost: string;
   rivalry: ShowDetailRivalry;
+  rivalries: ShowDetailRivalry[];
 }
 
 export interface ShowDetailMatch extends ShowDetailSegmentBase {

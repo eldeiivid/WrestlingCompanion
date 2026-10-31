@@ -1,50 +1,62 @@
 @use "../../../../styles/tokens" as t;
 
 .career-rules-overview {
+  display: grid;
+  gap: 24px;
   min-width: 0;
   padding: 20px;
   background: t.$surface;
-  border: 1px solid t.$border;
-  border-radius: 12px;
+  border: 1px solid rgba(t.$text, 0.08);
+  border-radius: 20px;
 
   &__header {
-    margin-bottom: 24px;
+    min-width: 0;
 
     h2 {
       margin: 0;
       color: t.$text;
-      font-size: 1.25rem;
+      font-size: 1.0625rem;
+      font-weight: 650;
+      line-height: 1.4;
+      letter-spacing: -0.025em;
     }
 
     p {
+      max-width: 560px;
       margin: 8px 0 0;
       color: t.$text-muted;
-      font-size: 0.875rem;
-      line-height: 1.6;
+      font-size: 0.8125rem;
+      line-height: 1.65;
     }
   }
 
   &__details {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 16px;
+    min-width: 0;
     margin: 0;
 
     > div {
       min-width: 0;
+      padding-top: 12px;
+      border-top: 1px solid rgba(t.$text, 0.08);
     }
 
     dt {
-      margin-bottom: 8px;
+      margin-bottom: 7px;
       color: t.$text-muted;
-      font-size: 0.75rem;
+      font-size: 0.6875rem;
       line-height: 1.5;
+      overflow-wrap: anywhere;
     }
 
     dd {
       margin: 0;
       color: t.$text;
-      font-size: 0.875rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
       line-height: 1.6;
       overflow-wrap: anywhere;
     }
@@ -53,43 +65,51 @@
   &__status {
     display: inline-flex;
     align-items: center;
-    padding: 4px 8px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 6px;
+    gap: 7px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 500;
+    line-height: 1.6;
+
+    &::before {
+      flex-shrink: 0;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      content: "";
+    }
 
     &--enabled {
-      border-color: #52876a;
-      color: #91d5ac;
+      color: t.$success;
     }
 
     &--disabled {
       color: t.$text-muted;
+
+      &::before {
+        box-sizing: border-box;
+        background: transparent;
+        border: 1px solid currentColor;
+      }
     }
   }
 
   &__hint {
-    margin: 24px 0 0;
+    margin: 0;
     padding-top: 16px;
-    border-top: 1px solid t.$border;
+    border-top: 1px solid rgba(t.$text, 0.08);
     color: t.$text-muted;
-    font-size: 0.8rem;
-    line-height: 1.6;
+    font-size: 0.6875rem;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
   }
 
-  @media (min-width: t.$screen-sm-min) {
-    padding: 24px;
+  @container (min-width: 560px) {
+    padding: 28px;
 
-    &__details {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: t.$screen-xl-min) {
     &__details {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
     }
   }
 }

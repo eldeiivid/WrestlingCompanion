@@ -2,150 +2,258 @@
 
 .wrestler-records-ranking {
   &__row {
+    --wrestler-record-accent: var(--career-accent, #{t.$accent});
+    --wrestler-record-ink: color-mix(
+      in srgb,
+      var(--wrestler-record-accent) 60%,
+      #{t.$text}
+    );
+
+    position: relative;
     display: grid;
-    grid-template-columns: auto 56px minmax(0, 1fr);
+    grid-template-columns: 88px minmax(0, 1fr);
+    grid-template-areas:
+      "visual content"
+      "visual value";
     align-items: center;
-    gap: 12px;
+    gap: 0 16px;
+    min-width: 0;
     padding: 16px;
+    overflow: hidden;
     background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 12px;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 20px;
+
+    &--leader {
+      border-color: color-mix(
+        in srgb,
+        var(--wrestler-record-accent) 35%,
+        #{t.$border}
+      );
+
+      .wrestler-records-ranking__position,
+      .wrestler-records-ranking__value strong {
+        color: var(--wrestler-record-ink);
+      }
+    }
   }
 
   &__position {
-    display: grid;
-    place-items: center;
-    min-width: 36px;
-    min-height: 44px;
-    padding: 4px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
+    position: absolute;
+    z-index: 1;
+    top: 12px;
+    left: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 6px;
+    background: rgba(#101216, 0.9);
+    border-radius: 7px;
     color: t.$text;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &__visual {
+    display: grid;
+    grid-area: visual;
+    align-self: stretch;
+    align-items: end;
+    min-width: 0;
+    min-height: 128px;
+    overflow: hidden;
+    background-color: #101216;
+    background-image:
+      linear-gradient(180deg, rgba(#101216, 0.3), rgba(#101216, 0.75)),
+      url("../../../../../assets/backgrounds/news-arena.png");
+    background-position: center;
+    background-size: cover;
+    border-radius: 12px;
   }
 
   &__portrait {
     display: grid;
-    flex-shrink: 0;
     place-items: center;
-    width: 56px;
-    height: 56px;
+    width: 100%;
+    height: 128px;
     overflow: hidden;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 50%;
     color: t.$text-muted;
+    -webkit-mask-image: linear-gradient(#000 0%, #000 78%, transparent 100%);
+    mask-image: linear-gradient(#000 0%, #000 78%, transparent 100%);
 
     img {
       display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: top;
+      object-position: center top;
     }
   }
 
   &__content {
+    grid-area: content;
+    align-self: end;
     min-width: 0;
+    padding-block: 4px 12px;
 
     h3 {
       margin: 0;
       color: t.$text;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
+      font-size: 1rem;
+      font-weight: 650;
+      line-height: 1.4;
+      letter-spacing: -0.025em;
     }
 
     a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 44px;
+      max-width: 100%;
       color: inherit;
       text-decoration: none;
+      overflow-wrap: anywhere;
+
+      svg {
+        flex-shrink: 0;
+        color: t.$text-muted;
+      }
 
       &:hover {
-        text-decoration: underline;
-        text-underline-offset: 4px;
+        color: var(--wrestler-record-ink);
       }
 
       &:focus-visible {
-        outline: 2px solid var(--career-accent, #{t.$accent});
+        outline: 2px solid var(--wrestler-record-ink);
         outline-offset: 3px;
-        border-radius: 4px;
+        border-radius: 6px;
       }
     }
 
     p {
-      margin: 6px 0 0;
+      margin: 2px 0 0;
       color: t.$text-muted;
-      font-size: 0.75rem;
+      font-size: 0.6875rem;
       line-height: 1.5;
     }
   }
 
   &__value {
     display: flex;
-    grid-column: 1 / -1;
+    grid-area: value;
+    align-self: start;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     min-width: 0;
     margin: 0;
-    padding-top: 16px;
-    border-top: 1px solid t.$border;
+    padding-top: 10px;
+    border-top: 1px solid rgba(t.$text, 0.08);
 
     strong {
+      min-width: 0;
       color: t.$text;
       font-size: 1.75rem;
-      line-height: 1.2;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+      letter-spacing: -0.045em;
       overflow-wrap: anywhere;
     }
 
-    span {
+    > span {
+      min-width: 0;
       color: t.$text-muted;
-      font-size: 0.875rem;
+      font-size: 0.75rem;
+      line-height: 1.5;
       overflow-wrap: anywhere;
     }
   }
 
-  @media (min-width: t.$screen-sm-min) {
+  @container (min-width: 640px) {
     &__row {
-      grid-template-columns: auto 64px minmax(0, 1fr) minmax(90px, auto);
-      gap: 16px;
+      grid-template-columns:
+        44px
+        100px
+        minmax(0, 1fr)
+        minmax(100px, 150px);
+      grid-template-areas: "position visual content value";
+      gap: 20px;
       padding: 20px;
     }
 
     &__position {
-      min-width: 44px;
+      position: static;
+      grid-area: position;
+      justify-content: center;
+      padding: 0;
+      background: transparent;
+      border-radius: 0;
+      color: t.$text-muted;
       font-size: 0.875rem;
     }
 
+    &__visual {
+      min-height: 116px;
+    }
+
     &__portrait {
-      width: 64px;
-      height: 64px;
+      height: 116px;
     }
 
     &__content {
+      align-self: center;
+      padding: 0;
+
       h3 {
-        font-size: 1rem;
+        font-size: 1.0625rem;
       }
     }
 
     &__value {
-      grid-column: auto;
+      align-self: center;
       flex-direction: column;
       align-items: flex-end;
       gap: 6px;
-      padding-top: 0;
-      padding-left: 16px;
+      padding: 8px 0 8px 20px;
       border-top: 0;
-      border-left: 1px solid t.$border;
+      border-left: 1px solid rgba(t.$text, 0.08);
       text-align: right;
+
+      strong {
+        font-size: 2.25rem;
+      }
     }
   }
 
-  @media (min-width: t.$screen-xl-min) {
+  @container (min-width: 960px) {
     &__row {
+      grid-template-columns:
+        44px
+        120px
+        minmax(0, 1fr)
+        minmax(120px, 180px);
+      gap: 24px;
       padding: 24px;
+    }
+
+    &__visual {
+      min-height: 132px;
+    }
+
+    &__portrait {
+      height: 132px;
+    }
+
+    &__value strong {
+      font-size: 2.5rem;
     }
   }
 }

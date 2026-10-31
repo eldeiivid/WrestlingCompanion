@@ -1,26 +1,33 @@
 @use "../../../../styles/tokens" as t;
 
 .career-danger-zone {
+  display: grid;
+  gap: 20px;
   min-width: 0;
   padding: 20px;
   background: t.$surface;
-  border: 1px solid #b85c5c;
-  border-radius: 12px;
+  border: 1px solid rgba(t.$error, 0.18);
+  border-radius: 20px;
 
   &__header {
-    margin-bottom: 20px;
+    min-width: 0;
 
     h2 {
       margin: 0;
-      color: #efabab;
-      font-size: 1.25rem;
+      color: t.$text;
+      font-size: 1.0625rem;
+      font-weight: 650;
+      line-height: 1.4;
+      letter-spacing: -0.025em;
     }
 
     p {
+      max-width: 580px;
       margin: 8px 0 0;
       color: t.$text-muted;
-      font-size: 0.875rem;
-      line-height: 1.6;
+      font-size: 0.8125rem;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
     }
   }
 
@@ -28,34 +35,52 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     width: 100%;
     min-height: 44px;
-    padding: 12px 18px;
-    background: #b42318;
-    border: 1px solid #b42318;
-    border-radius: 8px;
-    color: #fff;
+    padding: 10px 16px;
+    background: rgba(t.$error, 0.06);
+    border: 1px solid rgba(t.$error, 0.3);
+    border-radius: 10px;
+    color: t.$error;
     font: inherit;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
     cursor: pointer;
 
     &:hover {
-      background: #912018;
-      border-color: #912018;
+      background: rgba(t.$error, 0.12);
+      border-color: rgba(t.$error, 0.6);
     }
 
     &:focus-visible {
-      outline: 2px solid #ef8080;
+      outline: 2px solid t.$error;
       outline-offset: 3px;
     }
   }
 
-  @media (min-width: t.$screen-sm-min) {
-    padding: 24px;
+  @container (min-width: 560px) {
+    padding: 28px;
 
     &__button {
+      justify-self: start;
       width: auto;
+    }
+  }
+
+  @container (min-width: 800px) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 32px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &__button {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease;
     }
   }
 }

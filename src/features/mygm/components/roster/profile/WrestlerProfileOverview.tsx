@@ -1,10 +1,12 @@
 import { useId, useState } from "react";
-import { UserRound } from "lucide-react";
+import { Clock3, Mic2, Swords, UserRound } from "lucide-react";
+
 import type {
   CareerRosterAcquisition,
   CareerRosterCategory,
 } from "../../../types/roster/careerRoster.types";
 import type { WrestlerProfileWrestler } from "../../../types/roster/wrestlerProfile.types";
+
 import "./WrestlerProfileOverview.scss";
 
 interface WrestlerProfileOverviewProps {
@@ -39,9 +41,6 @@ export default function WrestlerProfileOverview({
   const headingId = useId();
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
 
-  const showImage =
-    wrestler.image_url !== null && wrestler.image_url !== failedUrl;
-
   const primaryClass = wrestler.primary_class?.trim() ?? "";
   const secondaryClass = wrestler.secondary_class?.trim() ?? "";
 
@@ -53,26 +52,49 @@ export default function WrestlerProfileOverview({
     secondaryClass !== "" &&
     secondaryClass.toLowerCase() !== primaryClass.toLowerCase();
 
-  const weeksOnRoster = wrestler.membership
-    ? Math.max(0, currentTick - wrestler.membership.joined_tick)
+  const membership = wrestler.membership;
+
+  const weeksOnRoster = membership
+    ? Math.max(0, currentTick - membership.joined_tick)
     : null;
+
+  const remainingWeeks =
+    membership?.contract_end_tick == null
+      ? null
+      : Math.max(0, membership.contract_end_tick - currentTick + 1);
+
+  const contractLabel =
+    remainingWeeks === null
+      ? "No expiration"
+      : remainingWeeks === 0
+        ? "Expired"
+        : remainingWeeks === 1
+          ? "Expires this week"
+          : `${remainingWeeks} weeks remaining`;
+
+  const contractClass =
+    remainingWeeks === 0
+      ? " wrestler-overview__contract--expired"
+      : remainingWeeks !== null && remainingWeeks <= 3
+        ? " wrestler-overview__contract--expiring"
+        : "";
 
   return (
     <section className="wrestler-overview" aria-labelledby={headingId}>
-      <div className="wrestler-overview__portrait" aria-hidden="true">
-        {showImage && wrestler.image_url ? (
-          <img
-            src={wrestler.image_url}
-            alt=""
-            onError={() => setFailedUrl(wrestler.image_url)}
-          />
-        ) : (
-          <UserRound size={80} />
-        )}
-      </div>
+      <div className="wrestler-overview__hero">
+        <div className="wrestler-overview__portrait" aria-hidden="true">
+          {wrestler.image_url && wrestler.image_url !== failedUrl ? (
+            <img
+              src={wrestler.image_url}
+              alt=""
+              onError={() => setFailedUrl(wrestler.image_url)}
+            />
+          ) : (
+            <UserRound size={100} strokeWidth={1} />
+          )}
+        </div>
 
-      <div className="wrestler-overview__content">
-        <header className="wrestler-overview__header">
+        <div className="wrestler-overview__identity">
           <p className="wrestler-overview__category">
             {wrestler.mygm_category
               ? categoryLabels[wrestler.mygm_category]
@@ -81,17 +103,65 @@ export default function WrestlerProfileOverview({
 
           <h2 id={headingId}>{wrestler.name}</h2>
 
-          <div className="wrestler-overview__badges">
+          <p className="wrestler-overview__meta">
             <span>{wrestler.gender === "male" ? "Male" : "Female"}</span>
-
+            <span aria-hidden="true">·</span>
             <span>{wrestler.role === "face" ? "Face" : "Heel"}</span>
+          </p>
 
-            <span>{wrestler.is_on_roster ? "On roster" : "Not on roster"}</span>
-          </div>
-        </header>
+          <p
+            className={`wrestler-overview__status${
+              wrestler.is_on_roster
+                ? " wrestler-overview__status--on-roster"
+                : ""
+            }`}
+          >
+            <span aria-hidden="true" />
+            {wrestler.is_on_roster ? "On your roster" : "Not on your roster"}
+          </p>
 
-        <section className="wrestler-overview__section">
-          <h3>Classes</h3>
+          <dl className="wrestler-overview__skills">
+            <div>
+              <dt>
+                <Mic2 size={15} aria-hidden="true" />
+                Mic skill
+              </dt>
+              <dd>
+                {wrestler.mic_skill === null ? (
+                  <span className="wrestler-overview__unknown">
+                    Not recorded
+                  </span>
+                ) : (
+                  <>
+                    {wrestler.mic_skill}
+                    <span> / 5</span>
+                  </>
+                )}
+              </dd>
+            </div>
+
+            <div>
+              <dt>
+                <Swords size={15} aria-hidden="true" />
+                In-ring level
+              </dt>
+              <dd>
+                {wrestler.in_ring_skill === null ? (
+                  <span className="wrestler-overview__unknown">
+                    Not recorded
+                  </span>
+                ) : (
+                  wrestler.in_ring_skill
+                )}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div className="wrestler-overview__information">
+        <section className="wrestler-overview__section" aria-label="Classes">
+          <h3>Wrestling style</h3>
 
           <dl className="wrestler-overview__details">
             <div>
@@ -109,43 +179,22 @@ export default function WrestlerProfileOverview({
 
           {wrestler.in_ring_skill !== null && wrestler.in_ring_skill < 15 && (
             <p className="wrestler-overview__hint">
-              A second class becomes available at in-ring level 15.
+              A second class unlocks at in-ring level 15.
             </p>
           )}
         </section>
 
-        <section className="wrestler-overview__section">
-          <h3>Skills</h3>
-
-          <dl className="wrestler-overview__details">
-            <div>
-              <dt>Mic skill</dt>
-              <dd>
-                {wrestler.mic_skill === null
-                  ? "Not recorded"
-                  : `${wrestler.mic_skill} / 5`}
-              </dd>
-            </div>
-
-            <div>
-              <dt>In-ring level</dt>
-              <dd>
-                {wrestler.in_ring_skill === null
-                  ? "Not recorded"
-                  : wrestler.in_ring_skill}
-              </dd>
-            </div>
-          </dl>
-        </section>
-
-        {wrestler.membership && (
-          <section className="wrestler-overview__section">
+        {membership && (
+          <section
+            className="wrestler-overview__section"
+            aria-label="Roster membership"
+          >
             <h3>Roster membership</h3>
 
             <dl className="wrestler-overview__details">
               <div>
                 <dt>Joined</dt>
-                <dd>{formatTick(wrestler.membership.joined_tick)}</dd>
+                <dd>{formatTick(membership.joined_tick)}</dd>
               </div>
 
               <div>
@@ -157,20 +206,23 @@ export default function WrestlerProfileOverview({
 
               <div>
                 <dt>Acquisition</dt>
-                <dd>
-                  {acquisitionLabels[wrestler.membership.acquisition_type]}
-                </dd>
+                <dd>{acquisitionLabels[membership.acquisition_type]}</dd>
               </div>
 
               <div>
                 <dt>Contract ends</dt>
                 <dd>
-                  {wrestler.membership.contract_end_tick === null
-                    ? "Not recorded"
-                    : formatTick(wrestler.membership.contract_end_tick)}
+                  {membership.contract_end_tick === null
+                    ? "No expiration"
+                    : formatTick(membership.contract_end_tick)}
                 </dd>
               </div>
             </dl>
+
+            <p className={`wrestler-overview__contract${contractClass}`}>
+              <Clock3 size={15} aria-hidden="true" />
+              {contractLabel}
+            </p>
           </section>
         )}
       </div>

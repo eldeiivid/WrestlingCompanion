@@ -220,7 +220,7 @@ export async function closeShow(input: CloseBookingShowInput): Promise<string> {
   );
 
   const payload = {
-    version: 1,
+    version: 2,
     eventId: input.eventId,
     matches: input.draft.matches,
     promos: input.draft.promos,

@@ -1,0 +1,489 @@
+@use "../../../../styles/tokens" as t;
+
+.booking-segment-card {
+  --segment-accent: var(--career-accent, #{t.$accent});
+  --segment-ink: color-mix(in srgb, var(--segment-accent) 60%, #{t.$text});
+
+  container-type: inline-size;
+  min-width: 0;
+  overflow: hidden;
+  background: t.$surface;
+  border: 1px solid rgba(t.$text, 0.1);
+  border-radius: 20px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  &__position {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(t.$text, 0.04);
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 7px;
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__kind {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--segment-ink);
+    font-size: 0.6875rem;
+    font-weight: 500;
+  }
+
+  &__position-label {
+    color: t.$text-muted;
+    font-size: 0.625rem;
+  }
+
+  &__cost {
+    margin-left: auto;
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+
+  &__format {
+    flex-basis: 100%;
+    min-width: 0;
+    margin: 0;
+    color: t.$text;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  &__visual {
+    position: relative;
+    isolation: isolate;
+    min-width: 0;
+    background-color: t.$background;
+    background-image: url("../../../../assets/backgrounds/news-arena.png");
+    background-position: center;
+    background-size: cover;
+
+    &::after {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(t.$background, 0.3),
+        rgba(t.$background, 0.55) 55%,
+        t.$surface
+      );
+      content: "";
+      pointer-events: none;
+    }
+  }
+
+  &__backdrop {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      opacity: 0.65;
+    }
+  }
+
+  &__teams {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    min-width: 0;
+    padding: 20px 12px 16px;
+
+    &--single {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 360px;
+      margin-inline: auto;
+    }
+
+    &--multi {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px 8px;
+    }
+  }
+
+  &__team {
+    position: relative;
+    min-width: 0;
+  }
+
+  &__members {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 4px;
+    min-width: 0;
+
+    > :only-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__participant {
+    min-width: 0;
+    margin: 0;
+    text-align: center;
+
+    figcaption {
+      position: relative;
+      margin-top: -6px;
+      color: t.$text;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+      text-shadow: 0 2px 10px rgba(#000, 0.6);
+    }
+  }
+
+  &__portrait {
+    display: grid;
+    place-items: center;
+    height: 150px;
+    min-width: 0;
+    color: t.$text-muted;
+
+    img {
+      display: block;
+      width: 100%;
+      max-width: 230px;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      -webkit-mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
+      mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
+    }
+  }
+
+  &__teams--multi &__portrait {
+    height: 108px;
+  }
+
+  &__versus {
+    position: absolute;
+    top: 65px;
+    right: -25px;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    color: var(--segment-ink);
+    font-size: 0.75rem;
+    font-weight: 750;
+    font-style: italic;
+    line-height: 1;
+    text-shadow: 0 2px 12px #000;
+  }
+
+  &__missing {
+    margin: 0;
+    padding: 40px 16px;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    text-align: center;
+  }
+
+  &__championship {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    padding: 12px 16px 16px;
+
+    > div:last-child {
+      min-width: 0;
+    }
+
+    p {
+      margin: 0 0 4px;
+      color: var(--segment-ink);
+      font-size: 0.625rem;
+      line-height: 1.5;
+    }
+
+    strong {
+      display: block;
+      color: t.$text;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__belt {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 88px;
+    height: 60px;
+    color: var(--segment-ink);
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 5px 8px rgba(#000, 0.25));
+    }
+  }
+
+  &__interference {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    min-width: 0;
+    margin: 0;
+    padding: 12px 16px 16px;
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+    line-height: 1.7;
+
+    strong {
+      min-width: 0;
+      color: t.$text;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 16px;
+    padding: 12px 0;
+    border-top: 1px solid rgba(t.$text, 0.08);
+  }
+
+  &__reorder,
+  &__edit-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__icon-button,
+  &__edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    gap: 8px;
+    min-height: 44px;
+    padding: 10px 14px;
+    background: transparent;
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 10px;
+    color: var(--segment-ink);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--segment-accent);
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &__icon-button {
+    width: 44px;
+    padding: 0;
+    border-color: transparent;
+    color: t.$text-muted;
+
+    &--danger {
+      color: t.$error;
+
+      &:focus-visible {
+        outline-color: t.$error;
+      }
+    }
+  }
+
+  &__sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@container (min-width: 600px) {
+  .booking-segment-card {
+    &__header {
+      padding: 18px 24px;
+    }
+
+    &__format {
+      font-size: 1rem;
+    }
+
+    &__teams {
+      gap: 40px;
+      padding: 16px 32px 20px;
+    }
+
+    &__portrait {
+      height: 200px;
+    }
+
+    &__participant figcaption {
+      font-size: 0.8125rem;
+    }
+
+    &__versus {
+      top: 90px;
+      right: -34px;
+      width: 28px;
+      height: 28px;
+      font-size: 0.9375rem;
+    }
+
+    &__teams--multi {
+      gap: 20px;
+    }
+
+    &__teams--multi &__portrait {
+      height: 150px;
+    }
+
+    &__championship {
+      gap: 20px;
+      padding: 12px 24px 20px;
+    }
+
+    &__belt {
+      width: 112px;
+      height: 70px;
+    }
+
+    &__interference {
+      padding-inline: 24px;
+    }
+
+    &__actions {
+      margin-inline: 24px;
+    }
+  }
+}
+
+@container (min-width: 900px) {
+  .booking-segment-card {
+    &__teams:not(&__teams--multi):not(&__teams--single) {
+      max-width: 800px;
+      margin-inline: auto;
+    }
+
+    &__teams--multi {
+      grid-template-columns: repeat(var(--booking-side-count), minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    &__teams--multi &__portrait {
+      height: 180px;
+    }
+  }
+}
+
+@media (hover: hover) {
+  .booking-segment-card {
+    &__edit:hover:not(:disabled),
+    &__icon-button:hover:not(:disabled) {
+      background: rgba(t.$text, 0.05);
+      border-color: rgba(t.$text, 0.16);
+    }
+
+    &__icon-button--danger:hover:not(:disabled) {
+      background: rgba(t.$error, 0.06);
+      border-color: rgba(t.$error, 0.2);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .booking-segment-card {
+    &__edit,
+    &__icon-button {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease;
+    }
+
+    &__spinner {
+      animation: booking-segment-spin 900ms linear infinite;
+    }
+  }
+}
+
+@keyframes booking-segment-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.booking-segment-card {
+  &__team--winner &__participant figcaption {
+    color: var(--segment-ink);
+  }
+
+  &__winner-label {
+    display: table;
+    margin: 8px auto 0;
+    padding: 4px 9px;
+    background: rgba(t.$background, 0.8);
+    border: 1px solid color-mix(in srgb, var(--segment-accent) 35%, transparent);
+    border-radius: 6px;
+    color: var(--segment-ink);
+    font-size: 0.625rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+}

@@ -1,22 +1,30 @@
 @use "../../../../../styles/tokens" as t;
 
 .wrestler-active-rivalries {
+  --rivalry-accent: var(--career-accent, #{t.$text-muted});
+  --rivalry-ink: color-mix(in srgb, var(--rivalry-accent) 60%, #{t.$text});
+
+  container-type: inline-size;
   min-width: 0;
-  padding: 20px;
-  background: t.$surface;
-  border: 1px solid t.$border;
-  border-radius: 12px;
 
   > h2 {
-    margin: 0 0 20px;
-    font-size: 1.25rem;
+    margin: 0 0 16px;
+    color: t.$text;
+    font-size: 1.125rem;
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.3;
   }
 
   &__empty {
     margin: 0;
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 20px;
     color: t.$text-muted;
-    font-size: 0.875rem;
-    line-height: 1.5;
+    font-size: 0.8125rem;
+    line-height: 1.6;
   }
 
   &__list {
@@ -39,50 +47,109 @@
     gap: 20px;
     height: 100%;
     min-width: 0;
-    padding: 16px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 10px;
+    padding: 20px;
+    overflow: hidden;
+    background-color: t.$surface;
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(t.$surface, 0.78),
+        rgba(t.$surface, 0.92) 55%,
+        t.$surface
+      ),
+      url("../../../../../assets/backgrounds/news-arena.png");
+    background-position: center top;
+    background-size: cover;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 20px;
 
     > h3 {
       margin: 0;
-      font-size: 0.9375rem;
-      line-height: 1.5;
+      color: t.$text;
+      font-size: 1rem;
+      font-weight: 650;
+      letter-spacing: -0.025em;
+      line-height: 1.4;
       overflow-wrap: anywhere;
+    }
+
+    > * {
+      min-width: 0;
     }
   }
 
   &__started {
     margin: 0;
     color: t.$text-muted;
-    font-size: 0.8125rem;
-    line-height: 1.5;
+    font-size: 0.6875rem;
+    line-height: 1.6;
   }
 
   &__button {
-    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 48px;
     margin-top: auto;
-    padding: 10px 14px;
-    background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 8px;
+    padding: 14px 0 0;
+    background: transparent;
+    border: 0;
+    border-top: 1px solid rgba(t.$text, 0.08);
+    border-radius: 0;
     color: t.$text;
     font: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: left;
     cursor: pointer;
 
+    &::after {
+      content: "↗";
+      flex-shrink: 0;
+      color: var(--rivalry-ink);
+      font-size: 1.125rem;
+      line-height: 1;
+    }
+
     &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 2px;
+      outline: 2px solid var(--rivalry-accent);
+      outline-offset: 4px;
+      border-radius: 4px;
     }
   }
+}
 
-  @media (min-width: t.$screen-md-min) {
+@container (min-width: 640px) {
+  .wrestler-active-rivalries {
     &__list {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-  }
 
-  @media (min-width: t.$screen-lg-min) {
-    padding: 24px;
+    &__card {
+      padding: 24px;
+    }
+  }
+}
+
+@media (hover: hover) {
+  .wrestler-active-rivalries__button:hover {
+    color: var(--rivalry-ink);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wrestler-active-rivalries__button {
+    transition: color 160ms ease;
+
+    &::after {
+      transition: transform 160ms ease;
+    }
+
+    &:hover::after {
+      transform: translate(2px, -2px);
+    }
   }
 }

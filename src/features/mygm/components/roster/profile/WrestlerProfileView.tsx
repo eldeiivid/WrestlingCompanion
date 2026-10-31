@@ -1,15 +1,16 @@
 import { useId } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { ArrowLeft, LoaderCircle, RefreshCw } from "lucide-react";
 
 import WrestlerProfileOverview from "./WrestlerProfileOverview";
 import WrestlerProfileStats from "./WrestlerProfileStats";
 import WrestlerRecentMatches from "./WrestlerRecentMatches";
 import WrestlerChampionships from "./WrestlerChampionships";
 import WrestlerActiveRivalries from "./WrestlerActiveRivalries";
-import type { ReactNode } from "react";
+import WrestlerContractHistory from "./WrestlerContractHistory";
 
 import type { WrestlerProfileData } from "../../../types/roster/wrestlerProfile.types";
-import WrestlerContractHistory from "./WrestlerContractHistory";
 
 interface WrestlerProfileViewProps {
   careerId: string;
@@ -41,43 +42,50 @@ export default function WrestlerProfileView({
   return (
     <section className="wrestler-profile" aria-labelledby={headingId}>
       <header className="wrestler-profile__header">
-        <Link className="wrestler-profile__back-link" to={backPath}>
-          ← {backLabel}
-        </Link>
-
-        <div className="wrestler-profile__heading">
-          <div>
-            <p className="wrestler-profile__eyebrow">Career profile</p>
-
-            <h1 id={headingId}>Wrestler profile</h1>
-
-            <p className="wrestler-profile__description">
-              Current details, career statistics and recent matches.
-            </p>
-          </div>
+        <div className="wrestler-profile__toolbar">
+          <Link className="wrestler-profile__back-link" to={backPath}>
+            <ArrowLeft size={17} aria-hidden="true" />
+            <span>{backLabel}</span>
+          </Link>
 
           <button
-            className="wrestler-profile__button"
+            className="wrestler-profile__button wrestler-profile__refresh"
             type="button"
             disabled={isLoading || !canRefresh}
             onClick={onRetry}
+            aria-label="Refresh wrestler profile"
           >
-            Refresh
+            <RefreshCw size={16} aria-hidden="true" />
+            <span>Refresh</span>
           </button>
+        </div>
+
+        <div className="wrestler-profile__heading">
+          <p className="wrestler-profile__eyebrow">Career profile</p>
+          <h1 id={headingId}>Wrestler profile</h1>
+          <p className="wrestler-profile__description">
+            Skills, achievements and your wrestler’s career so far.
+          </p>
         </div>
       </header>
 
       <div className="wrestler-profile__body" aria-busy={isLoading}>
         {isLoading && (
           <div className="wrestler-profile__state">
-            <p role="status">Loading wrestler profile…</p>
+            <p className="wrestler-profile__loading" role="status">
+              <LoaderCircle
+                className="wrestler-profile__spinner"
+                size={20}
+                aria-hidden="true"
+              />
+              Loading wrestler profile…
+            </p>
           </div>
         )}
 
         {!isLoading && errorMessage && (
           <div className="wrestler-profile__state">
             <h2>The wrestler profile could not be loaded</h2>
-
             <p role="alert">{errorMessage}</p>
 
             {canRefresh && (

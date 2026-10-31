@@ -5,7 +5,7 @@ import CareerDangerZone from "../../components/settings/CareerDangerZone";
 import CareerNameForm from "../../components/settings/CareerNameForm";
 import CareerRulesOverview from "../../components/settings/CareerRulesOverview";
 import { useCareerSettings } from "../../hooks/settings/useCareerSettings";
-
+import { RefreshCw } from "lucide-react";
 import type { MyGmOutletContext } from "../../types/mygm.types";
 import type {
   CareerSettingsData,
@@ -104,12 +104,14 @@ export default function CareerSettingsScreen() {
         </div>
 
         <button
-          className="career-settings-screen__button"
+          className="career-settings-screen__button career-settings-screen__refresh"
           type="button"
+          aria-label="Refresh career settings"
           disabled={isLoading}
           onClick={retry}
         >
-          Refresh
+          <RefreshCw size={17} aria-hidden="true" />
+          <span>Refresh</span>
         </button>
       </header>
 
