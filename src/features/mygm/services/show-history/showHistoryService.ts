@@ -61,6 +61,7 @@ function hasShowEventFields(value: Record<string, unknown>): boolean {
     value.show_type === "special";
 
   return (
+    (value.logo_url === undefined || isNullableString(value.logo_url)) &&
     typeof value.id === "string" &&
     typeof value.name === "string" &&
     validKind &&

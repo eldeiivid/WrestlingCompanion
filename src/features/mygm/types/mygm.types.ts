@@ -5,6 +5,15 @@ export interface MyGmCareer {
   created_at: string;
 }
 
+export interface MyGmCareerSummary extends MyGmCareer {
+  brand_name: string | null;
+  brand_logo_url: string | null;
+  brand_background_url: string | null;
+  brand_primary_color: string | null;
+  manager_name: string | null;
+  manager_image_url: string | null;
+}
+
 export interface MyGmCareerDetails extends MyGmCareer {
   brand_name: string;
   brand_logo_url: string | null;

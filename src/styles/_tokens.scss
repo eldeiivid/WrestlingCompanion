@@ -1,15 +1,31 @@
-$background: #101113;
-$surface: #191b1f;
-$border: #30333a;
+$background: #101216;
+$surface: #181b22;
+$surface-raised: #222630;
 
-$text: #f4f4f5;
-$text-muted: #a5a9b2;
+$border: #303540;
+$border-hover: #505566;
 
-$accent: #e2231a;
-$accent-hover: #c91d15;
+$text: #f5f4fa;
+$text-muted: #adb2c2;
 
-$radius: 12px;
-$font-family: "Segoe UI", Arial, sans-serif;
+$brand: #b095ff;
+$brand-ink: #171022;
+
+$accent: #7650ce;
+$accent-hover: #6541b8;
+
+$success: #a0e0c0;
+$error: #ffb4ab;
+
+$radius: 16px;
+$radius-lg: 24px;
+
+$font-family:
+  system-ui,
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  sans-serif;
 
 $screen-xs-min: 320px;
 $screen-sm-min: 576px;

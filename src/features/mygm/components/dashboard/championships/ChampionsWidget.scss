@@ -1,28 +1,41 @@
 @use "../../../../../styles/tokens" as t;
 
 .champions-widget {
+  --championship-accent: var(--career-accent, #{t.$text-muted});
+
+  --championship-ink: color-mix(
+    in srgb,
+    var(--championship-accent) 60%,
+    #{t.$text}
+  );
+
   min-width: 0;
+  container-type: inline-size;
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px 16px;
     margin-bottom: 16px;
 
     h2 {
       margin: 0;
-      font-size: 1.25rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
     }
 
-    a {
+    > a {
       display: inline-flex;
       align-items: center;
+      gap: 7px;
       min-height: 44px;
+      border-radius: 8px;
       color: t.$text-muted;
-      font-size: 0.875rem;
-      text-underline-offset: 4px;
+      font-size: 0.75rem;
+      text-decoration: none;
 
       &:hover {
         color: t.$text;
@@ -30,132 +43,422 @@
     }
   }
 
-  &__empty {
-    margin: 0;
-    padding: 24px;
-    background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 12px;
-    color: t.$text-muted;
-  }
-
   &__list {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(220px, 85%);
-    gap: 16px;
-    overflow-x: auto;
-    margin: 0;
-    padding: 4px 4px 16px;
-    list-style: none;
-    scroll-snap-type: x proximity;
-  }
-
-  &__card {
     display: flex;
-    flex-direction: column;
-    min-width: 0;
-    padding: 20px;
-    background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 12px;
-    scroll-snap-align: start;
+    align-items: stretch;
+    gap: 16px;
 
-    h3 {
-      margin: 0 0 16px;
-      font-size: 1rem;
-      overflow-wrap: anywhere;
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+
+    margin: 0;
+    padding: 4px 4px 12px;
+    list-style: none;
+
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 4px;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &:focus-visible {
+      outline-offset: -2px;
+      border-radius: 24px;
+    }
+
+    &--single > .champions-widget__card {
+      flex-basis: 100%;
+      width: 100%;
+      min-width: 0;
+      max-width: 320px;
     }
   }
 
-  &__thumbnail {
+  &__card {
+    flex: 0 0 280px;
+    width: 280px;
+    min-width: 240px;
+    max-width: calc(100% - 16px);
+    scroll-snap-align: start;
+  }
+
+  &__card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 0;
+    overflow: hidden;
+
+    background-color: t.$surface;
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(#101216, 0.12),
+        rgba(t.$surface, 0.72) 38%,
+        rgba(t.$surface, 0.97) 65%
+      ),
+      url("../../../../../assets/backgrounds/news-arena.png");
+    background-size: cover;
+    background-position: 72% top;
+
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 23px;
+    color: t.$text;
+    text-decoration: none;
+  }
+
+  &__visual {
+    position: relative;
+    isolation: isolate;
+    height: 160px;
+    min-width: 0;
+    overflow: hidden;
+    background: radial-gradient(
+      ellipse at 70% 50%,
+      color-mix(in srgb, var(--championship-accent) 12%, transparent),
+      transparent 75%
+    );
+  }
+
+  &__category {
+    position: absolute;
+    z-index: 4;
+    top: 14px;
+    left: 16px;
+    max-width: calc(100% - 32px);
+    padding: 5px 8px;
+    background: rgba(t.$background, 0.82);
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 7px;
+    color: var(--championship-ink);
+    font-size: 0.625rem;
+    font-weight: 500;
+  }
+
+  &__belt {
+    position: absolute;
+    z-index: 3;
+    bottom: 20px;
+    height: 78px;
+    padding: 8px;
     display: grid;
     place-items: center;
-    flex-shrink: 0;
-    color: t.$text-muted;
+    width: 44%;
+    max-width: 150px;
+    height: 90px;
+    background: rgba(t.$background, 0.76);
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 15px;
+    color: var(--championship-ink);
+    box-shadow: 0 6px 18px rgba(#000, 0.2);
 
     img {
       width: 100%;
       height: 100%;
+      object-fit: contain;
     }
+  }
 
-    &--title {
+  &__people {
+    position: absolute;
+    z-index: 1;
+    top: 20px;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    width: 54%;
+    min-width: 0;
+  }
+
+  &__person {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    color: t.$text-muted;
+
+    img {
+      position: absolute;
+      inset: 0;
       width: 100%;
-      height: 100px;
-      margin-bottom: 16px;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
 
-      img {
-        object-fit: contain;
-      }
+      -webkit-mask-image: linear-gradient(#000 0%, #000 78%, transparent 100%);
+
+      mask-image: linear-gradient(#000 0%, #000 78%, transparent 100%);
     }
+  }
 
-    &--holder {
-      width: 36px;
-      height: 36px;
-      overflow: hidden;
-      background: t.$background;
-      border-radius: 50%;
+  &__people--pair {
+    .champions-widget__person {
+      flex: 0 0 72%;
 
-      img {
-        object-fit: cover;
+      + .champions-widget__person {
+        z-index: 1;
+        margin-left: -38%;
       }
     }
   }
 
-  &__category {
-    margin: 0 0 8px;
+  &__vacant-art {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    color: rgba(t.$text, 0.15);
+  }
+
+  &__extra {
+    position: absolute;
+    z-index: 4;
+    right: 10px;
+    bottom: 14px;
+    padding: 4px 6px;
+    background: t.$surface-raised;
+    border-radius: 7px;
+    color: t.$text;
+    font-size: 0.625rem;
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    padding: 16px;
+
+    h3 {
+      margin: 0 0 12px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__holder-info {
+    min-width: 0;
+    margin-bottom: 14px;
+  }
+
+  &__holder-label {
+    margin: 0 0 6px;
     color: t.$text-muted;
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 0.625rem;
   }
 
   &__holders {
     display: grid;
-    gap: 10px;
-    margin: 0 0 16px;
+    gap: 4px;
+    margin: 0;
     padding: 0;
     list-style: none;
 
     li {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    li > span:last-child {
-      min-width: 0;
+      color: t.$text;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      line-height: 1.5;
       overflow-wrap: anywhere;
-      font-size: 0.875rem;
     }
   }
 
   &__status {
-    margin: 0 0 16px;
-    color: t.$text-muted;
-    font-size: 0.875rem;
-  }
-
-  &__stats {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px 16px;
-    margin-top: auto;
-    padding-top: 16px;
-    border-top: 1px solid t.$border;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
     color: t.$text-muted;
-    font-size: 0.8rem;
-  }
+    font-size: 0.8125rem;
 
-  @media (min-width: t.$screen-sm-min) {
-    &__list {
-      grid-auto-columns: 260px;
+    svg {
+      flex-shrink: 0;
+      color: var(--championship-ink);
     }
   }
 
-  @media (min-width: t.$screen-lg-min) {
-    &__list {
-      grid-auto-columns: 280px;
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+
+    dt {
+      margin-bottom: 6px;
+      color: t.$text-muted;
+      font-size: 0.625rem;
+    }
+
+    dd {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin: 0;
+      color: t.$text;
+      font-size: 1.125rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+
+      span {
+        color: t.$text-muted;
+        font-size: 0.6875rem;
+        font-weight: 400;
+      }
+    }
+  }
+
+  &__card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 44px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid rgba(t.$text, 0.07);
+    color: t.$text;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    svg {
+      flex-shrink: 0;
+      color: var(--championship-ink);
+    }
+  }
+
+  &__controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 6px;
+    padding-right: 4px;
+
+    button {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      background: t.$surface;
+      border: 1px solid t.$border;
+      border-radius: 12px;
+      color: t.$text;
+
+      &:hover:not(:disabled) {
+        border-color: var(--championship-accent);
+      }
+
+      &:disabled {
+        opacity: 0.35;
+      }
+    }
+  }
+
+  &__empty {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 24px;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 24px;
+
+    > div {
+      min-width: 0;
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 1.125rem;
+      letter-spacing: -0.025em;
+    }
+
+    p {
+      margin: 0;
+      color: t.$text-muted;
+      font-size: 0.8125rem;
+      line-height: 1.7;
+    }
+  }
+
+  &__empty-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: t.$surface-raised;
+    border-radius: 15px;
+    color: var(--championship-ink);
+  }
+}
+
+@container (min-width: #{t.$screen-lg-min}) {
+  .champions-widget__card {
+    flex-basis: 300px;
+    width: 300px;
+  }
+}
+
+@media (hover: hover) {
+  .champions-widget__card-link:hover {
+    border-color: color-mix(
+      in srgb,
+      var(--championship-accent) 55%,
+      transparent
+    );
+
+    .champions-widget__card-footer {
+      color: var(--championship-ink);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .champions-widget {
+    &__card-link,
+    &__controls button {
+      transition: border-color 160ms ease;
+    }
+
+    &__card-footer {
+      transition: color 160ms ease;
+    }
+
+    &__card-footer svg {
+      transition: transform 160ms ease;
+    }
+
+    &__card-link:active &__card-footer svg {
+      transform: translate(2px, -2px);
+    }
+  }
+}
+
+@container (min-width: #{t.$screen-sm-min}) {
+  .champions-widget {
+    &__visual {
+      height: 180px;
+    }
+
+    &__body {
+      padding: 20px;
+    }
+
+    &__belt {
+      height: 90px;
     }
   }
 }

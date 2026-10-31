@@ -3,7 +3,9 @@ import type { ShowHistoryItem } from "./showHistory.types";
 export type ShowDetailEvent = Omit<
   ShowHistoryItem,
   "match_count" | "promo_count"
->;
+> & {
+  logo_url?: string | null;
+};
 
 export interface ShowDetailSummary {
   match_count: number;

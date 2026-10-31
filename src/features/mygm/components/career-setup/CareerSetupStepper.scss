@@ -1,0 +1,84 @@
+@use "../../../../styles/tokens" as t;
+
+.career-setup-stepper {
+  margin-bottom: 28px;
+
+  > ol {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    padding: 12px 2px;
+    color: t.$text-muted;
+    text-align: center;
+
+    &.is-current {
+      color: t.$text;
+    }
+  }
+
+  &__number {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    background: t.$surface;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  &__step.is-current &__number {
+    background: t.$brand;
+    border-color: t.$brand;
+    color: t.$brand-ink;
+  }
+
+  &__step.is-complete &__number {
+    background: rgba(t.$brand, 0.1);
+    border-color: rgba(t.$brand, 0.3);
+    color: t.$brand;
+  }
+
+  &__label {
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  &__sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: t.$screen-sm-min) {
+  .career-setup-stepper {
+    &__step {
+      flex-direction: row;
+      justify-content: center;
+      padding: 14px 8px;
+      text-align: left;
+    }
+
+    &__label {
+      font-size: 0.8125rem;
+    }
+  }
+}

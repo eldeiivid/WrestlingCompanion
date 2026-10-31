@@ -1,42 +1,46 @@
-@use "./LoginScreen";
 @use "../../../styles/tokens" as t;
 
-.register {
-  &__footer {
-    margin: 24px 0 0;
-    text-align: center;
-    color: t.$text-muted;
-    font-size: 0.875rem;
+.register-confirmation {
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(t.$brand, 0.08), transparent 70%),
+    t.$surface;
+  border: 1px solid rgba(t.$brand, 0.14);
+  border-radius: t.$radius-lg;
 
-    a {
-      color: t.$text;
-      font-weight: 600;
-      text-underline-offset: 4px;
-    }
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 24px;
+    background: rgba(t.$brand, 0.1);
+    border: 1px solid rgba(t.$brand, 0.12);
+    border-radius: 20px;
+    color: t.$brand;
   }
 
-  &__confirmation {
-    padding: 24px;
-    background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: t.$radius;
+  > p {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+  }
 
-    > svg {
-      color: t.$accent;
-    }
+  strong {
+    color: t.$text;
+    font-weight: 600;
+  }
 
-    h3 {
-      margin: 16px 0 8px;
-    }
+  &__hint {
+    margin-top: 16px;
+    font-size: 0.8125rem;
+  }
+}
 
-    p {
-      margin: 0;
-      color: t.$text-muted;
-      overflow-wrap: anywhere;
-    }
-
-    a {
-      text-decoration: none;
-    }
+@media (prefers-reduced-motion: no-preference) {
+  .register-confirmation {
+    animation: auth-form-enter 250ms ease-out both;
   }
 }

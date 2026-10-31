@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 import { useCareerSetupCatalogs } from "../hooks/useCareerSetupCatalogs";
 import type { CareerConfigurationDraft } from "../types/careerDraft.types";
@@ -15,6 +15,9 @@ import type { ChampionshipsDraft } from "../types/championships.types";
 import SummaryStep from "../components/SummaryStep";
 
 import { useCreateMyGmCareer } from "../hooks/useCreateMyGmCareer";
+
+import CareerConfigurationStep from "../components/career-setup/CareerConfigurationStep";
+import CareerSetupStepper from "../components/career-setup/CareerSetupStepper";
 
 import "./NewCareerScreen.scss";
 
@@ -164,28 +167,12 @@ export default function NewCareerScreen() {
       </Link>
 
       <header className="new-career__header">
-        <h1>New career</h1>
-        <p>Match your setup to your WWE 2K26 save.</p>
+        <p className="new-career__eyebrow">MyGM · New career</p>
+        <h1>Create your next chapter.</h1>
+        <p>Build a starting setup that matches your game.</p>
       </header>
 
-      <ol className="new-career__steps" aria-label="Career creation progress">
-        {steps.map((step, index) => {
-          const number = index + 1;
-
-          return (
-            <li
-              key={step}
-              className={
-                number === currentStep ? "new-career__step--active" : ""
-              }
-              aria-current={number === currentStep ? "step" : undefined}
-            >
-              <span>{number}</span>
-              {step}
-            </li>
-          );
-        })}
-      </ol>
+      <CareerSetupStepper steps={steps} currentStep={currentStep} />
 
       {isLoading ? (
         <p role="status">Loading setup options…</p>
@@ -198,181 +185,13 @@ export default function NewCareerScreen() {
         </section>
       ) : catalogs ? (
         currentStep === 1 ? (
-          <form className="new-career__panel" onSubmit={handleNext}>
-            <h2>Configuration</h2>
-
-            <div className="new-career__grid">
-              <div className="new-career__field new-career__field--wide">
-                <label htmlFor="career-name">Career name</label>
-                <input
-                  id="career-name"
-                  type="text"
-                  placeholder="RAW: A new era"
-                  value={configuration.name}
-                  onChange={(event) => updateField("name", event.target.value)}
-                  maxLength={80}
-                  required
-                />
-              </div>
-
-              <div className="new-career__field">
-                <label htmlFor="career-brand">Brand</label>
-                <select
-                  id="career-brand"
-                  value={configuration.brandId}
-                  onChange={(event) =>
-                    updateField("brandId", event.target.value)
-                  }
-                  required
-                >
-                  <option value="">Select a brand</option>
-                  {catalogs.brands.map((brand) => (
-                    <option key={brand.id} value={brand.id}>
-                      {brand.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="new-career__field">
-                <label htmlFor="career-manager">General Manager</label>
-                <select
-                  id="career-manager"
-                  value={configuration.managerId}
-                  onChange={(event) =>
-                    updateField("managerId", event.target.value)
-                  }
-                  required
-                >
-                  <option value="">Select a manager</option>
-                  {catalogs.managers.map((manager) => (
-                    <option key={manager.id} value={manager.id}>
-                      {manager.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="new-career__field">
-                <label htmlFor="career-difficulty">Difficulty</label>
-                <select
-                  id="career-difficulty"
-                  value={configuration.difficultyId}
-                  onChange={(event) =>
-                    updateField("difficultyId", event.target.value)
-                  }
-                  required
-                >
-                  <option value="">Select a difficulty</option>
-                  {catalogs.difficulties.map((difficulty) => (
-                    <option key={difficulty.id} value={difficulty.id}>
-                      {difficulty.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="new-career__field">
-                <label htmlFor="career-week">Starting week</label>
-                <input
-                  id="career-week"
-                  type="number"
-                  min={1}
-                  max={50}
-                  step={1}
-                  value={configuration.startWeek}
-                  onChange={(event) =>
-                    updateField("startWeek", event.target.value)
-                  }
-                  required
-                />
-              </div>
-
-              <div className="new-career__tracking">
-                <label className="new-career__toggle">
-                  <input
-                    type="checkbox"
-                    checked={configuration.financesEnabled}
-                    onChange={(event) =>
-                      updateField("financesEnabled", event.target.checked)
-                    }
-                  />
-                  Track finances
-                </label>
-
-                <p>Record income, expenses, and your available budget.</p>
-
-                {configuration.financesEnabled && (
-                  <div className="new-career__field">
-                    <label htmlFor="career-money">Initial money</label>
-                    <input
-                      id="career-money"
-                      type="number"
-                      min={0}
-                      step={1}
-                      value={configuration.initialMoney}
-                      onChange={(event) =>
-                        updateField("initialMoney", event.target.value)
-                      }
-                      required
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="new-career__tracking">
-                <label className="new-career__toggle">
-                  <input
-                    type="checkbox"
-                    checked={configuration.fansEnabled}
-                    onChange={(event) =>
-                      updateField("fansEnabled", event.target.checked)
-                    }
-                  />
-                  Track fans
-                </label>
-
-                <p>Record your audience gains and losses each week.</p>
-
-                {configuration.fansEnabled && (
-                  <div className="new-career__field">
-                    <label htmlFor="career-fans">Initial fans</label>
-                    <input
-                      id="career-fans"
-                      type="number"
-                      min={0}
-                      step={1}
-                      value={configuration.initialFans}
-                      onChange={(event) =>
-                        updateField("initialFans", event.target.value)
-                      }
-                      required
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {validationError && (
-              <p className="new-career__error" role="alert">
-                {validationError}
-              </p>
-            )}
-
-            <footer className="new-career__actions">
-              <Link className="new-career__button" to="/mygm">
-                Cancel
-              </Link>
-
-              <button
-                className="new-career__button new-career__button--primary"
-                type="submit"
-              >
-                Next
-                <ArrowRight size={18} aria-hidden="true" />
-              </button>
-            </footer>
-          </form>
+          <CareerConfigurationStep
+            catalogs={catalogs}
+            configuration={configuration}
+            validationError={validationError}
+            onFieldChange={updateField}
+            onSubmit={handleNext}
+          />
         ) : currentStep === 2 ? (
           <RosterStep
             selectedWrestlers={selectedWrestlers}

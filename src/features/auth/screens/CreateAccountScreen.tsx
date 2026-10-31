@@ -1,9 +1,19 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { Eye, EyeOff, LockKeyhole, Mail, UserRound } from "lucide-react";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  LoaderCircle,
+  LockKeyhole,
+  Mail,
+  UserRound,
+} from "lucide-react";
 
+import AuthLayout from "../components/AuthLayout";
 import { useAuth } from "../hooks/useAuth";
+
 import "./CreateAccountScreen.scss";
 
 function getRegistrationError(error: unknown): string {
@@ -40,7 +50,15 @@ export default function CreateAccountScreen() {
   const [errorMessage, setErrorMessage] = useState("");
   const [confirmationSent, setConfirmationSent] = useState(false);
 
+  const confirmationHeadingRef = useRef<HTMLHeadingElement>(null);
+
   const isSubmitting = pending !== null;
+
+  useEffect(() => {
+    if (confirmationSent) {
+      confirmationHeadingRef.current?.focus();
+    }
+  }, [confirmationSent]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -63,18 +81,18 @@ export default function CreateAccountScreen() {
 
     try {
       const { session } = await signUp({
-        username,
-        email,
+        username: username.trim(),
+        email: email.trim(),
         password,
       });
 
-      // With email confirmation disabled, App redirects using the new session.
+      // App handles navigation when a session is returned.
       if (!session) {
         setConfirmationSent(true);
         setPassword("");
         setConfirmPassword("");
       }
-    } catch (error) {
+    } catch (error: unknown) {
       setErrorMessage(getRegistrationError(error));
     } finally {
       setPending(null);
@@ -82,64 +100,69 @@ export default function CreateAccountScreen() {
   }
 
   return (
-    <main className="login login--register">
-      <section className="login__intro">
-        <p className="login__brand">
-          Wrestling<span>Companion</span>
-        </p>
+    <AuthLayout>
+      <div className="auth-form">
+        {confirmationSent ? (
+          <>
+            <header className="auth-form__heading">
+              <p className="auth-form__eyebrow">One more step</p>
 
-        <div className="login__intro-content">
-          <p className="login__eyebrow">WWE 2K26 Companion</p>
-
-          <h1>
-            Start your career.
-            <br />
-            Build your story.
-          </h1>
-
-          <p>
-            Create your account and keep your wrestling careers in one place.
-          </p>
-        </div>
-      </section>
-
-      <section className="login__panel" aria-labelledby="register-title">
-        <div className="login__form-container">
-          <header className="login__heading">
-            <h2 id="register-title">Create account</h2>
-            <p>Your next chapter starts here.</p>
-          </header>
-
-          {confirmationSent ? (
-            <div className="register__confirmation" role="status">
-              <Mail size={28} aria-hidden="true" />
-
-              <h3>Check your email</h3>
-
-              <p>
-                If registration can proceed, you will receive a confirmation
-                link at <strong>{email.trim()}</strong>. Check your inbox and
-                spam folder.
-              </p>
-
-              <Link
-                className="login__button login__button--primary"
-                to="/login"
+              <h1
+                ref={confirmationHeadingRef}
+                id="registration-confirmation-title"
+                tabIndex={-1}
               >
-                Back to sign in
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div className="login__divider">
-                <span>or with your email</span>
+                Check your inbox.
+              </h1>
+
+              <p>Your next chapter is almost ready.</p>
+            </header>
+
+            <section
+              className="register-confirmation"
+              aria-labelledby="registration-confirmation-title"
+            >
+              <div className="register-confirmation__icon" aria-hidden="true">
+                <Mail size={30} strokeWidth={1.5} />
               </div>
 
-              <form onSubmit={handleSubmit} aria-busy={pending === "email"}>
-                <div className="login__field">
+              <p role="status">
+                If registration can proceed, you will receive a confirmation
+                link at <strong>{email.trim()}</strong>.
+              </p>
+
+              <p className="register-confirmation__hint">
+                Open the link to confirm your email, then return to sign in.
+                Check your spam folder if you cannot find it.
+              </p>
+
+              <Link className="auth-form__submit" to="/login">
+                Back to sign in
+                <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+            </section>
+          </>
+        ) : (
+          <>
+            <header className="auth-form__heading">
+              <p className="auth-form__eyebrow">Start your story</p>
+
+              <h1 id="register-title">Make it your own.</h1>
+
+              <p>Create your account and give your wrestling careers a home.</p>
+            </header>
+
+            <form
+              onSubmit={handleSubmit}
+              aria-labelledby="register-title"
+              aria-describedby={errorMessage ? "register-error" : undefined}
+              aria-busy={isSubmitting}
+            >
+              <div className="auth-form__fields">
+                <div className="auth-form__field">
                   <label htmlFor="register-username">Username</label>
 
-                  <div className="login__input-wrapper">
+                  <div className="auth-form__input-wrapper">
                     <UserRound size={18} aria-hidden="true" />
 
                     <input
@@ -147,7 +170,9 @@ export default function CreateAccountScreen() {
                       name="username"
                       type="text"
                       autoComplete="username"
-                      placeholder="Your username"
+                      autoCapitalize="none"
+                      spellCheck={false}
+                      placeholder="Choose your username"
                       value={username}
                       onChange={(event) => setUsername(event.target.value)}
                       minLength={3}
@@ -158,10 +183,10 @@ export default function CreateAccountScreen() {
                   </div>
                 </div>
 
-                <div className="login__field">
+                <div className="auth-form__field">
                   <label htmlFor="register-email">Email address</label>
 
-                  <div className="login__input-wrapper">
+                  <div className="auth-form__input-wrapper">
                     <Mail size={18} aria-hidden="true" />
 
                     <input
@@ -169,6 +194,8 @@ export default function CreateAccountScreen() {
                       name="email"
                       type="email"
                       autoComplete="email"
+                      autoCapitalize="none"
+                      spellCheck={false}
                       placeholder="you@example.com"
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
@@ -178,10 +205,10 @@ export default function CreateAccountScreen() {
                   </div>
                 </div>
 
-                <div className="login__field">
+                <div className="auth-form__field">
                   <label htmlFor="register-password">Password</label>
 
-                  <div className="login__input-wrapper">
+                  <div className="auth-form__input-wrapper">
                     <LockKeyhole size={18} aria-hidden="true" />
 
                     <input
@@ -198,9 +225,10 @@ export default function CreateAccountScreen() {
                     />
 
                     <button
-                      className="login__password-toggle"
+                      className="auth-form__password-toggle"
                       type="button"
                       onClick={() => setShowPassword((value) => !value)}
+                      disabled={isSubmitting}
                       aria-label={
                         showPassword ? "Hide passwords" : "Show passwords"
                       }
@@ -216,12 +244,12 @@ export default function CreateAccountScreen() {
                   </div>
                 </div>
 
-                <div className="login__field">
+                <div className="auth-form__field">
                   <label htmlFor="register-confirm-password">
                     Confirm password
                   </label>
 
-                  <div className="login__input-wrapper">
+                  <div className="auth-form__input-wrapper">
                     <LockKeyhole size={18} aria-hidden="true" />
 
                     <input
@@ -240,29 +268,47 @@ export default function CreateAccountScreen() {
                     />
                   </div>
                 </div>
+              </div>
 
-                {errorMessage && (
-                  <p className="login__error" role="alert">
-                    {errorMessage}
-                  </p>
-                )}
-
-                <button
-                  className="login__button login__button--primary"
-                  type="submit"
-                  disabled={isSubmitting}
+              {errorMessage && (
+                <p
+                  className="auth-form__error"
+                  id="register-error"
+                  role="alert"
                 >
-                  {pending === "email" ? "Creating account…" : "Create account"}
-                </button>
-              </form>
+                  {errorMessage}
+                </p>
+              )}
 
-              <p className="register__footer">
-                Already have an account? <Link to="/login">Sign in</Link>
-              </p>
-            </>
-          )}
-        </div>
-      </section>
-    </main>
+              <button
+                className="auth-form__submit"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <LoaderCircle
+                      className="auth-form__spinner"
+                      size={18}
+                      aria-hidden="true"
+                    />
+                    Creating account…
+                  </>
+                ) : (
+                  <>
+                    Create account
+                    <ArrowRight size={18} aria-hidden="true" />
+                  </>
+                )}
+              </button>
+            </form>
+
+            <p className="auth-form__footer">
+              Already have an account? <Link to="/login">Sign in</Link>
+            </p>
+          </>
+        )}
+      </div>
+    </AuthLayout>
   );
 }

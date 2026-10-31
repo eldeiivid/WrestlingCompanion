@@ -8,6 +8,7 @@
 
 html {
   color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -17,6 +18,7 @@ body {
   color: t.$text;
   font-family: t.$font-family;
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 button,
@@ -52,6 +54,11 @@ img {
 }
 
 :focus-visible {
-  outline: 2px solid t.$accent;
+  outline: 0px solid t.$brand;
   outline-offset: 4px;
+}
+
+::selection {
+  background: t.$brand;
+  color: t.$brand-ink;
 }

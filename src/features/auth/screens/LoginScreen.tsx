@@ -1,10 +1,17 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
-
-import { useAuth } from "../hooks/useAuth";
 import { Link } from "react-router-dom";
-import "./LoginScreen.scss";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  LoaderCircle,
+  LockKeyhole,
+  Mail,
+} from "lucide-react";
+
+import AuthLayout from "../components/AuthLayout";
+import { useAuth } from "../hooks/useAuth";
 
 function getLoginError(error: unknown): string {
   if (typeof error === "object" && error !== null && "code" in error) {
@@ -44,8 +51,7 @@ export default function LoginScreen() {
 
     try {
       await signIn({ email, password });
-      // App changes screens when AuthProvider receives the session.
-    } catch (error) {
+    } catch (error: unknown) {
       setErrorMessage(getLoginError(error));
     } finally {
       setPending(null);
@@ -53,39 +59,26 @@ export default function LoginScreen() {
   }
 
   return (
-    <main className="login">
-      <section className="login__intro">
-        <p className="login__brand">
-          Wrestling<span>Companion</span>
-        </p>
+    <AuthLayout>
+      <div className="auth-form">
+        <header className="auth-form__heading">
+          <p className="auth-form__eyebrow">Your next chapter</p>
 
-        <div className="login__intro-content">
-          <p className="login__eyebrow">WWE 2K26 Companion</p>
+          <h1 id="login-title">Welcome back.</h1>
 
-          <h1>
-            Your brand.
-            <br />
-            Your story.
-          </h1>
+          <p>Sign in to pick up where your story left off.</p>
+        </header>
 
-          <p>
-            Manage your roster, plan your shows, and track your career history.
-          </p>
-        </div>
-      </section>
-
-      <section className="login__panel" aria-labelledby="login-title">
-        <div className="login__form-container">
-          <header className="login__heading">
-            <h2 id="login-title">Sign in</h2>
-            <p>Continue your career in WrestlingCompanion.</p>
-          </header>
-
-          <form onSubmit={handleSubmit} aria-busy={pending === "email"}>
-            <div className="login__field">
+        <form
+          onSubmit={handleSubmit}
+          aria-labelledby="login-title"
+          aria-busy={isSubmitting}
+        >
+          <div className="auth-form__fields">
+            <div className="auth-form__field">
               <label htmlFor="login-email">Email address</label>
 
-              <div className="login__input-wrapper">
+              <div className="auth-form__input-wrapper">
                 <Mail size={18} aria-hidden="true" />
 
                 <input
@@ -93,6 +86,8 @@ export default function LoginScreen() {
                   name="email"
                   type="email"
                   autoComplete="username"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   placeholder="you@example.com"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
@@ -102,10 +97,10 @@ export default function LoginScreen() {
               </div>
             </div>
 
-            <div className="login__field">
+            <div className="auth-form__field">
               <label htmlFor="login-password">Password</label>
 
-              <div className="login__input-wrapper">
+              <div className="auth-form__input-wrapper">
                 <LockKeyhole size={18} aria-hidden="true" />
 
                 <input
@@ -113,7 +108,7 @@ export default function LoginScreen() {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
-                  placeholder="Your password"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   disabled={isSubmitting}
@@ -121,9 +116,10 @@ export default function LoginScreen() {
                 />
 
                 <button
-                  className="login__password-toggle"
+                  className="auth-form__password-toggle"
                   type="button"
                   onClick={() => setShowPassword((value) => !value)}
+                  disabled={isSubmitting}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   aria-controls="login-password"
                   aria-pressed={showPassword}
@@ -136,26 +132,41 @@ export default function LoginScreen() {
                 </button>
               </div>
             </div>
+          </div>
 
-            {errorMessage && (
-              <p className="login__error" role="alert">
-                {errorMessage}
-              </p>
+          {errorMessage && (
+            <p className="auth-form__error" role="alert">
+              {errorMessage}
+            </p>
+          )}
+
+          <button
+            className="auth-form__submit"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <LoaderCircle
+                  className="auth-form__spinner"
+                  size={18}
+                  aria-hidden="true"
+                />
+                Signing in…
+              </>
+            ) : (
+              <>
+                Sign in
+                <ArrowRight size={18} aria-hidden="true" />
+              </>
             )}
+          </button>
+        </form>
 
-            <button
-              className="login__button login__button--primary"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {pending === "email" ? "Signing in…" : "Sign in"}
-            </button>
-          </form>
-          <p className="login__account-link">
-            Don't have an account? <Link to="/register">Create account</Link>
-          </p>
-        </div>
-      </section>
-    </main>
+        <p className="auth-form__footer">
+          New to WrestlingBook? <Link to="/register">Create an account</Link>
+        </p>
+      </div>
+    </AuthLayout>
   );
 }

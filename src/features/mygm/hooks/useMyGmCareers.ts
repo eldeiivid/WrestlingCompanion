@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 
 import { mygmService } from "../services/mygmService";
-import type { MyGmCareer } from "../types/mygm.types";
+
+import type { MyGmCareerSummary } from "../types/mygm.types";
 
 export function useMyGmCareers(ownerId: string | undefined) {
-  const [careers, setCareers] = useState<MyGmCareer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [attempt, setAttempt] = useState(0);
+  const [careers, setCareers] = useState<MyGmCareerSummary[]>([]);
 
   useEffect(() => {
     const controller = new AbortController();

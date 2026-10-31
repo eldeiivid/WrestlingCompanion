@@ -1,21 +1,25 @@
 @use "../../../../../styles/tokens" as t;
 
 .rivalry-modal {
+  --modal-accent: var(--career-accent, #{t.$text-muted});
+  --modal-ink: color-mix(in srgb, var(--modal-accent) 60%, #{t.$text});
+
   position: fixed;
   inset: auto 0 0;
-  box-sizing: border-box;
   width: 100%;
   max-width: none;
-  max-height: 92vh;
+  height: 92vh;
+  height: 92dvh;
   max-height: 92dvh;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: t.$surface;
-  border: 1px solid t.$border;
+  background: t.$background;
+  border: 1px solid rgba(t.$text, 0.1);
   border-bottom: 0;
-  border-radius: 16px 16px 0 0;
+  border-radius: 28px 28px 0 0;
   color: t.$text;
+  box-shadow: 0 24px 80px rgba(#000, 0.4);
 
   &[open] {
     display: grid;
@@ -23,67 +27,115 @@
   }
 
   &::backdrop {
-    background: rgb(0 0 0 / 70%);
+    background: rgba(#080a10, 0.72);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
   }
 
   &__header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 16px;
     min-width: 0;
-    padding: 20px;
-    border-bottom: 1px solid t.$border;
+    padding: 16px 20px;
+    background: t.$surface;
+    border-bottom: 1px solid rgba(t.$text, 0.06);
+  }
+
+  &__header-copy {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
 
     > div {
       min-width: 0;
     }
 
+    p {
+      margin: 0 0 4px;
+      color: t.$text-muted;
+      font-size: 0.625rem;
+    }
+
     h2 {
       margin: 0;
-      font-size: 1.125rem;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
       line-height: 1.4;
-      overflow-wrap: anywhere;
     }
   }
 
-  &__eyebrow {
-    margin: 0 0 8px;
-    color: t.$text-muted;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+  &__header-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: color-mix(in srgb, var(--modal-accent) 12%, transparent);
+    border-radius: 13px;
+    color: var(--modal-ink);
   }
 
   &__close {
     display: grid;
-    flex-shrink: 0;
     place-items: center;
+    flex-shrink: 0;
     width: 44px;
     height: 44px;
     padding: 0;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
-    color: t.$text;
-    font-size: 1.5rem;
-    cursor: pointer;
+    background: t.$surface-raised;
+    border: 0;
+    border-radius: 14px;
+    color: t.$text-muted;
 
-    &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 2px;
+    &:hover {
+      color: t.$text;
     }
   }
 
   &__content {
     display: grid;
     align-content: start;
-    gap: 24px;
+    gap: 20px;
     min-width: 0;
     min-height: 0;
-    padding: 20px 20px calc(24px + env(safe-area-inset-bottom, 0px));
     overflow-y: auto;
+    padding: 16px 16px calc(24px + env(safe-area-inset-bottom, 0px));
     overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+  }
+
+  &__hero {
+    min-width: 0;
+    //overflow: hidden;
+    padding: 20px 16px;
+    background-color: t.$surface;
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(#101216, 0.3),
+        rgba(#101216, 0.5) 45%,
+        rgba(#101216, 0.94)
+      ),
+      url("../../../../../assets/backgrounds/news-arena.png");
+    background-size: cover;
+    background-position: 72% center;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 22px;
+
+    > h3 {
+      margin: 16px 0 24px;
+      color: t.$text;
+      font-size: clamp(1.125rem, 3vw, 1.5rem);
+      font-weight: 650;
+      letter-spacing: -0.025em;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
   }
 
   &__badges {
@@ -92,22 +144,54 @@
     gap: 8px;
 
     > span {
-      padding: 6px 10px;
-      background: t.$background;
-      border: 1px solid t.$border;
-      border-radius: 6px;
-      font-size: 0.75rem;
+      padding: 5px 9px;
+      background: rgba(t.$background, 0.78);
+      border: 1px solid rgba(t.$text, 0.1);
+      border-radius: 8px;
+      color: t.$text-muted;
+      font-size: 0.625rem;
+      font-weight: 500;
+
+      &.is-active {
+        background: color-mix(
+          in srgb,
+          var(--modal-accent) 15%,
+          #{t.$background}
+        );
+        border-color: color-mix(in srgb, var(--modal-accent) 30%, transparent);
+        color: var(--modal-ink);
+      }
+    }
+  }
+
+  &__level {
+    min-width: 0;
+    padding: 18px;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.06);
+    border-radius: 17px;
+  }
+
+  &__overview {
+    min-width: 0;
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.06);
+    border-radius: 20px;
+
+    > h3 {
+      margin: 0 0 20px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
     }
   }
 
   &__facts {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 16px;
     margin: 0;
-    padding: 20px 0;
-    border-top: 1px solid t.$border;
-    border-bottom: 1px solid t.$border;
 
     > div {
       min-width: 0;
@@ -116,60 +200,297 @@
     dt {
       margin-bottom: 6px;
       color: t.$text-muted;
-      font-size: 0.8125rem;
+      font-size: 0.6875rem;
     }
 
     dd {
       margin: 0;
-      font-size: 0.875rem;
+      color: t.$text;
+      font-size: 0.8125rem;
       font-weight: 600;
-      line-height: 1.5;
+      line-height: 1.6;
       overflow-wrap: anywhere;
     }
   }
 
-  &__message,
-  &__state p {
-    margin: 0;
+  &__history {
+    min-width: 0;
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.06);
+    border-radius: 20px;
+  }
+
+  &__state {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 18px;
+    min-height: 240px;
+    padding: 24px;
     color: t.$text-muted;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
+    text-align: center;
+
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__error {
+    color: t.$error;
   }
 
   &__button {
     min-height: 44px;
-    margin-top: 16px;
     padding: 10px 16px;
-    background: t.$background;
+    background: t.$surface;
     border: 1px solid t.$border;
-    border-radius: 8px;
+    border-radius: 12px;
     color: t.$text;
-    font: inherit;
-    cursor: pointer;
+    font-size: 0.8125rem;
+    font-weight: 600;
 
-    &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 2px;
+    &:hover {
+      border-color: var(--modal-accent);
     }
   }
 
-  @media (min-width: t.$screen-sm-min) {
+  :focus-visible {
+    outline-color: var(--modal-accent);
+  }
+}
+
+// Full participant view: no member limit inside the modal.
+.rivalry-modal .rivalry-modal__hero {
+  .rivalry-participants {
+    grid-template-columns:
+      minmax(0, 1fr)
+      30px
+      minmax(0, 1fr);
+    align-items: start;
+    gap: 8px;
+  }
+
+  .rivalry-participants__side {
+    position: relative;
+    min-width: 0;
+  }
+
+  .rivalry-participants__side-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    margin: 0;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .rivalry-participants__members {
+    align-items: start;
+    flex-wrap: wrap;
+    gap: 14px 8px;
+
+    > li {
+      flex: 1 1 56px;
+      max-width: 130px;
+      min-width: 0;
+    }
+  }
+
+  .rivalry-participants__portrait {
+    height: 140px;
+    aspect-ratio: auto;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+
+    img {
+      background: transparent;
+      object-fit: cover;
+      object-position: center top;
+
+      -webkit-mask-image: linear-gradient(#000 0%, #000 80%, transparent 100%);
+
+      mask-image: linear-gradient(#000 0%, #000 80%, transparent 100%);
+    }
+  }
+
+  .rivalry-participants__member figcaption {
+    margin-top: 8px;
+    color: t.$text;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1.5;
+    text-shadow: 0 2px 8px rgba(#000, 0.6);
+  }
+
+  .rivalry-participants__versus {
+    display: grid;
+    place-items: center;
+    align-self: center;
+    width: 30px;
+    height: 32px;
+    background: rgba(t.$background, 0.8);
+    border-radius: 10px;
+    color: var(--modal-ink);
+    font-size: 0.6875rem;
+    font-style: italic;
+  }
+
+  .rivalry-participants__empty {
+    padding-top: 32px;
+    font-size: 0.6875rem;
+  }
+}
+
+.rivalry-modal .rivalry-modal__level {
+  .rivalry-level {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .rivalry-level__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: t.$text;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .rivalry-level__maximum {
+    padding: 4px 7px;
+    background: color-mix(in srgb, var(--modal-accent) 12%, transparent);
+    border-radius: 7px;
+    color: var(--modal-ink);
+    font-size: 0.625rem;
+  }
+
+  .rivalry-level__bar {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .rivalry-level__step {
+    display: block;
+    min-width: 0;
+    height: 5px;
+    background: t.$surface-raised;
+    border-radius: 999px;
+  }
+
+  .rivalry-level__step--active {
+    background: var(--modal-accent);
+  }
+}
+
+@media (min-width: t.$screen-sm-min) {
+  .rivalry-modal {
     inset: 0;
     width: calc(100% - 48px);
-    max-width: 760px;
-    max-height: 88vh;
+    max-width: 880px;
+    height: min(860px, 88dvh);
     max-height: 88dvh;
     margin: auto;
-    border-bottom: 1px solid t.$border;
-    border-radius: 16px;
+    border-bottom: 1px solid rgba(t.$text, 0.1);
+    border-radius: 28px;
 
-    &__header,
+    &__header {
+      padding: 18px 24px;
+    }
+
     &__content {
+      gap: 24px;
+      padding: 24px;
+    }
+
+    &__hero {
       padding: 24px;
     }
 
     &__facts {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+  }
+
+  .rivalry-modal .rivalry-modal__hero {
+    .rivalry-participants {
+      gap: 20px;
+    }
+
+    .rivalry-participants__members {
+      gap: 16px;
+
+      > li {
+        flex-basis: 88px;
+        max-width: 160px;
+      }
+    }
+
+    .rivalry-participants__portrait {
+      height: 190px;
+    }
+
+    .rivalry-participants__member figcaption {
+      font-size: 0.8125rem;
+    }
+  }
+}
+
+@keyframes rivalry-modal-backdrop-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rivalry-modal-backdrop-exit {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes rivalry-modal-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rivalry-modal {
+    &::backdrop {
+      animation: rivalry-modal-backdrop-enter 220ms ease-out both;
+    }
+
+    &.is-closing::backdrop {
+      animation: rivalry-modal-backdrop-exit 180ms ease-in both;
+    }
+
+    &__close,
+    &__button {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease;
+    }
+
+    &__spinner {
+      animation: rivalry-modal-spin 900ms linear infinite;
     }
   }
 }

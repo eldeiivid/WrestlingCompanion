@@ -1,7 +1,8 @@
 import { useId } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, CalendarDays, History, Users } from "lucide-react";
+import { ArrowUpRight, CalendarDays, History, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+
 import "./CareerShortcuts.scss";
 
 interface CareerShortcutsProps {
@@ -20,21 +21,21 @@ const shortcuts: CareerShortcut[] = [
   {
     id: "booking",
     label: "Booking",
-    description: "Prepare your card and record show results.",
+    description: "Prepare your next show.",
     path: "booking",
     icon: CalendarDays,
   },
   {
     id: "roster",
     label: "Roster",
-    description: "Review the wrestlers in your brand.",
+    description: "Manage your wrestlers.",
     path: "roster",
     icon: Users,
   },
   {
     id: "history",
     label: "Show history",
-    description: "Revisit completed shows and their results.",
+    description: "Revisit your results.",
     path: "history",
     icon: History,
   },
@@ -57,8 +58,8 @@ export default function CareerShortcuts({ careerId }: CareerShortcutsProps) {
                 className="career-shortcuts__link"
                 to={`/mygm/${careerId}/${shortcut.path}`}
               >
-                <span className="career-shortcuts__icon">
-                  <Icon size={22} aria-hidden="true" />
+                <span className="career-shortcuts__icon" aria-hidden="true">
+                  <Icon size={21} />
                 </span>
 
                 <div className="career-shortcuts__content">
@@ -66,7 +67,7 @@ export default function CareerShortcuts({ careerId }: CareerShortcutsProps) {
                   <p>{shortcut.description}</p>
                 </div>
 
-                <ArrowRight
+                <ArrowUpRight
                   className="career-shortcuts__arrow"
                   size={18}
                   aria-hidden="true"

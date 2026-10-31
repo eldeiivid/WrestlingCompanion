@@ -1,5 +1,7 @@
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
-import { UserRound, UsersRound, Wallet } from "lucide-react";
+import { Gamepad2, UserRound, UsersRound, Wallet } from "lucide-react";
 
 import type { MyGmCareerDetails } from "../types/mygm.types";
 
@@ -9,99 +11,290 @@ interface CareerHeaderProps {
   career: MyGmCareerDetails;
 }
 
+type CareerHeaderTheme = CSSProperties & {
+  "--header-glow": string;
+};
+
 const moneyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   maximumFractionDigits: 0,
 });
 
+const compactMoneyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  notation: "compact",
+  maximumFractionDigits: 1,
+});
+
 const fansFormatter = new Intl.NumberFormat("en-US");
 
+const compactFansFormatter = new Intl.NumberFormat("en-US", {
+  notation: "compact",
+  maximumFractionDigits: 1,
+});
+
 export default function CareerHeader({ career }: CareerHeaderProps) {
+  const headerRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const [isCompact, setIsCompact] = useState(false);
+
+  const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null);
+
+  const [failedManagerUrl, setFailedManagerUrl] = useState<string | null>(null);
+
+  const [failedBackgroundUrl, setFailedBackgroundUrl] = useState<string | null>(
+    null,
+  );
+
   const season = Math.floor((career.current_tick - 1) / 50) + 1;
   const week = ((career.current_tick - 1) % 50) + 1;
 
-  const showMetrics = career.finances_enabled || career.fans_enabled;
+  const metricCount =
+    Number(career.finances_enabled) + Number(career.fans_enabled);
+
+  const brandColor =
+    career.brand_primary_color &&
+    /^#[0-9a-f]{6}$/i.test(career.brand_primary_color)
+      ? career.brand_primary_color
+      : "#8F98AB";
+
+  const theme: CareerHeaderTheme = {
+    "--header-glow": `${brandColor}1A`,
+  };
+
+  const showLogo =
+    career.brand_logo_url !== null && career.brand_logo_url !== failedLogoUrl;
+
+  const showManager =
+    career.manager_image_url !== null &&
+    career.manager_image_url !== failedManagerUrl;
+
+  const showBackground =
+    career.brand_background_url !== null &&
+    career.brand_background_url !== failedBackgroundUrl;
+
+  const fullBudget = career.finances_enabled
+    ? moneyFormatter.format(BigInt(career.budget_total))
+    : "";
+
+  const fullFans = career.fans_enabled
+    ? fansFormatter.format(BigInt(career.fans_total))
+    : "";
+
+  // Measure the content so the outer header can animate its height.
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    const container = containerRef.current;
+
+    if (!header || !container) return;
+
+    function updateHeight() {
+      if (!header || !container) return;
+
+      header.style.setProperty(
+        "--header-height",
+        `${container.getBoundingClientRect().height}px`,
+      );
+    }
+
+    updateHeight();
+
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(container);
+
+    return () => {
+      observer.disconnect();
+      header.style.removeProperty("--header-height");
+    };
+  }, [career.id]);
+
+  useEffect(() => {
+    const scrollArea = headerRef.current
+      ?.closest(".mygm-layout")
+      ?.querySelector<HTMLElement>(".mygm-layout__content");
+
+    if (!scrollArea) return;
+
+    const desktopQuery = window.matchMedia("(min-width: 768px)");
+
+    let compact = false;
+    let animationFrame: number | null = null;
+
+    function updateCompactState() {
+      animationFrame = null;
+
+      if (!scrollArea) return;
+
+      const scrollTop = scrollArea.scrollTop;
+
+      // Different thresholds prevent flickering near the boundary.
+      const nextCompact =
+        !desktopQuery.matches && (compact ? scrollTop > 16 : scrollTop > 140);
+
+      if (nextCompact !== compact) {
+        compact = nextCompact;
+        setIsCompact(nextCompact);
+      }
+    }
+
+    function scheduleUpdate() {
+      if (animationFrame !== null) return;
+
+      animationFrame = window.requestAnimationFrame(updateCompactState);
+    }
+
+    setIsCompact(false);
+    updateCompactState();
+
+    scrollArea.addEventListener("scroll", scheduleUpdate, {
+      passive: true,
+    });
+
+    desktopQuery.addEventListener("change", scheduleUpdate);
+
+    return () => {
+      scrollArea.removeEventListener("scroll", scheduleUpdate);
+      desktopQuery.removeEventListener("change", scheduleUpdate);
+
+      if (animationFrame !== null) {
+        window.cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [career.id]);
 
   return (
     <header
-      className={`career-header ${
-        showMetrics ? "career-header--with-metrics" : ""
-      }`}
+      ref={headerRef}
+      className={[
+        "career-header",
+        metricCount > 0 ? "career-header--with-metrics" : "",
+        metricCount === 2 ? "career-header--two-metrics" : "",
+        isCompact ? "career-header--compact" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      style={theme}
       aria-label="Career overview"
     >
-      {career.brand_background_url && (
+      {showBackground && career.brand_background_url && (
         <img
           className="career-header__background"
           src={career.brand_background_url}
           alt=""
           aria-hidden="true"
+          onError={() => setFailedBackgroundUrl(career.brand_background_url)}
         />
       )}
 
-      <div className="career-header__container">
+      <div ref={containerRef} className="career-header__container">
         <div className="career-header__identity">
           <Link
             className="career-header__brand"
             to={`/mygm/${career.id}`}
             aria-label={`${career.brand_name} career dashboard`}
           >
-            {career.brand_logo_url ? (
+            {showLogo && career.brand_logo_url ? (
               <img
                 src={career.brand_logo_url}
-                alt={`${career.brand_name} logo`}
+                alt=""
+                onError={() => setFailedLogoUrl(career.brand_logo_url)}
               />
             ) : (
-              <span>{career.brand_name}</span>
+              <>
+                <Gamepad2 size={24} aria-hidden="true" />
+                <span>{career.brand_name}</span>
+              </>
             )}
           </Link>
 
-          <div
-            className="career-header__manager"
-            role="group"
-            aria-label={`General Manager: ${career.manager_name}`}
-          >
-            <div className="career-header__avatar">
-              {career.manager_image_url ? (
-                <img src={career.manager_image_url} alt="" />
-              ) : (
-                <UserRound size={20} aria-hidden="true" />
-              )}
-            </div>
+          <div className="career-header__copy">
+            <p className="career-header__career-name" title={career.name}>
+              {career.name}
+            </p>
 
-            <div className="career-header__manager-copy">
-              <span>General Manager</span>
-              <strong title={career.manager_name}>{career.manager_name}</strong>
+            <div
+              className="career-header__manager"
+              role="group"
+              aria-label={`General Manager: ${career.manager_name}`}
+            >
+              <span className="career-header__avatar" aria-hidden="true">
+                {showManager && career.manager_image_url ? (
+                  <img
+                    src={career.manager_image_url}
+                    alt=""
+                    onError={() =>
+                      setFailedManagerUrl(career.manager_image_url)
+                    }
+                  />
+                ) : (
+                  <UserRound size={15} />
+                )}
+              </span>
+
+              <span className="career-header__manager-label">GM</span>
+
+              <span
+                className="career-header__manager-name"
+                title={career.manager_name}
+              >
+                {career.manager_name}
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="career-header__time">
-          <span>Season {season}</span>
+        <div
+          className="career-header__time"
+          role="group"
+          aria-label={`Season ${season}, week ${week} of 50`}
+        >
+          <span className="career-header__season">Season {season}</span>
+
           <strong>
-            Week {week} <span>/ 50</span>
+            Week {week}
+            {!isCompact && <span> / 50</span>}
           </strong>
         </div>
 
-        {showMetrics && (
-          <dl className="career-header__metrics">
+        {metricCount > 0 && (
+          <dl
+            className={[
+              "career-header__metrics",
+              metricCount === 1 ? "career-header__metrics--single" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
             {career.finances_enabled && (
               <div className="career-header__metric">
                 <dt>
-                  <Wallet size={16} aria-hidden="true" />
+                  <Wallet size={15} aria-hidden="true" />
                   Budget
                 </dt>
-                <dd>{moneyFormatter.format(BigInt(career.budget_total))}</dd>
+
+                <dd title={fullBudget} aria-label={fullBudget}>
+                  {isCompact
+                    ? compactMoneyFormatter.format(BigInt(career.budget_total))
+                    : fullBudget}
+                </dd>
               </div>
             )}
 
             {career.fans_enabled && (
               <div className="career-header__metric">
                 <dt>
-                  <UsersRound size={16} aria-hidden="true" />
+                  <UsersRound size={15} aria-hidden="true" />
                   Fans
                 </dt>
-                <dd>{fansFormatter.format(BigInt(career.fans_total))}</dd>
+
+                <dd title={fullFans} aria-label={fullFans}>
+                  {isCompact
+                    ? compactFansFormatter.format(BigInt(career.fans_total))
+                    : fullFans}
+                </dd>
               </div>
             )}
           </dl>

@@ -1,0 +1,306 @@
+@use "../../../../styles/tokens" as t;
+
+.mygm-career-card {
+  min-width: 0;
+
+  &__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: t.$radius-lg;
+    color: t.$text;
+    text-decoration: none;
+  }
+
+  &__visual {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    height: 220px;
+    overflow: hidden;
+    padding: 24px;
+    background:
+      radial-gradient(ellipse at 80% 30%, var(--card-tint), transparent 75%),
+      #171a22;
+
+    &::after {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(#101216, 0.5),
+        rgba(#101216, 0.12) 70%
+      );
+      content: "";
+      pointer-events: none;
+    }
+  }
+
+  &__background {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__mode {
+    position: absolute;
+    z-index: 2;
+    top: 20px;
+    left: 24px;
+    padding: 5px 10px;
+    background: rgba(#101216, 0.8);
+    border: 1px solid rgba(t.$text, 0.12);
+    border-radius: 999px;
+    color: t.$text;
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  &__brand {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: start;
+    align-content: end;
+    gap: 10px;
+    width: 46%;
+    min-width: 0;
+    min-height: 70px;
+    margin-bottom: 8px;
+    color: t.$text;
+
+    > span {
+      font-size: 0.875rem;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__logo {
+    width: 100%;
+    max-width: 150px;
+    height: 76px;
+    object-fit: contain;
+    object-position: left center;
+    filter: drop-shadow(0 4px 10px rgba(#000, 0.3));
+  }
+
+  &__portrait {
+    position: absolute;
+    z-index: 0;
+    right: 4px;
+    bottom: 0;
+    width: 51%;
+    height: calc(100% - 12px);
+    pointer-events: none;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center bottom;
+      filter: drop-shadow(-8px 4px 14px rgba(#000, 0.25));
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 24px;
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 1.25rem;
+      font-weight: 650;
+      letter-spacing: -0.025em;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__manager {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin: 0 0 24px;
+    font-size: 0.75rem;
+    line-height: 1.6;
+
+    > span {
+      color: t.$text-muted;
+    }
+
+    > strong {
+      color: t.$text;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__period {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 12px;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+
+    strong {
+      color: t.$text;
+      font-weight: 600;
+    }
+  }
+
+  &__week-limit {
+    color: t.$text-muted;
+  }
+
+  &__progress {
+    display: block;
+    width: 100%;
+    height: 5px;
+    overflow: hidden;
+    margin: 12px 0 0;
+    appearance: none;
+    background: t.$surface-raised;
+    border: 0;
+    border-radius: 999px;
+
+    &::-webkit-progress-bar {
+      background: t.$surface-raised;
+      border-radius: 999px;
+    }
+
+    &::-webkit-progress-value {
+      background: var(--card-brand);
+      border-radius: 999px;
+    }
+
+    &::-moz-progress-bar {
+      background: var(--card-brand);
+      border-radius: 999px;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(t.$text, 0.07);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  &__arrow {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: t.$surface-raised;
+    border-radius: 12px;
+    color: t.$brand;
+  }
+}
+
+@media (hover: hover) {
+  .mygm-career-card__link:hover {
+    border-color: rgba(t.$brand, 0.4);
+
+    .mygm-career-card__arrow {
+      background: t.$brand;
+      color: t.$brand-ink;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mygm-career-card {
+    &__link {
+      transition:
+        border-color 180ms ease,
+        transform 180ms ease;
+    }
+
+    &__arrow {
+      transition:
+        background-color 180ms ease,
+        color 180ms ease;
+    }
+  }
+
+  @media (hover: hover) {
+    .mygm-career-card__link:hover {
+      transform: translateY(-3px);
+    }
+  }
+}
+
+@keyframes mygm-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Keyboard navigation receives the same visual emphasis.
+.mygm-career-card__link:focus-visible {
+  .mygm-career-card__arrow {
+    background: t.$brand;
+    color: t.$brand-ink;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mygm-career-card {
+    animation: mygm-card-enter 300ms ease-out both;
+    animation-delay: var(--card-enter-delay, 0ms);
+
+    &__portrait img {
+      transform-origin: center bottom;
+      transition: transform 260ms ease-out;
+    }
+
+    &__arrow svg {
+      transition: transform 180ms ease;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mygm-career-card__link:hover {
+      .mygm-career-card__portrait img {
+        transform: scale(1.035);
+      }
+
+      .mygm-career-card__arrow svg {
+        transform: translate(2px, -2px);
+      }
+    }
+  }
+
+  .mygm-career-card__link:active {
+    transform: scale(0.985);
+  }
+}

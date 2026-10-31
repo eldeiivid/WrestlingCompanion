@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Trophy } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Briefcase,
+  ChevronDown,
+  SlidersHorizontal,
+  Trophy,
+  UserRound,
+} from "lucide-react";
 
 import { useChampionshipCatalog } from "../hooks/useChampionshipCatalog";
 import type {
@@ -82,6 +90,28 @@ function matchesSlot(
   );
 }
 
+function Artwork({
+  src,
+  kind,
+}: {
+  src: string | null;
+  kind: "title" | "person";
+}) {
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+
+  if (src && src !== failedUrl) {
+    return (
+      <img src={src} alt="" loading="lazy" onError={() => setFailedUrl(src)} />
+    );
+  }
+
+  return kind === "title" ? (
+    <Trophy size={30} aria-hidden="true" />
+  ) : (
+    <UserRound size={22} aria-hidden="true" />
+  );
+}
+
 interface ChampionshipsStepProps {
   draft: ChampionshipsDraft;
   selectedWrestlers: RosterWrestler[];
@@ -99,18 +129,18 @@ export default function ChampionshipsStep({
 }: ChampionshipsStepProps) {
   const { titles, isLoading, errorMessage, retry } = useChampionshipCatalog();
 
-  const [search] = useState("");
   const [gender, setGender] = useState("");
   const [division, setDivision] = useState("");
   const [category, setCategory] = useState("");
+  const [openSlot, setOpenSlot] = useState<ChampionshipSlot | null>(null);
   const [validationError, setValidationError] = useState("");
 
-  const hasBothMitb = ["male", "female"].every((gender) =>
+  const hasBothMitb = ["male", "female"].every((value) =>
     titles.some(
       (title) =>
         title.category === "mitb" &&
         title.division === "singles" &&
-        title.gender === gender,
+        title.gender === value,
     ),
   );
 
@@ -124,6 +154,8 @@ export default function ChampionshipsStep({
   const selectedCount = Object.values(draft.selections).filter(
     (selection) => selection.titleId,
   ).length;
+
+  const activeFilterCount = [gender, division, category].filter(Boolean).length;
 
   function selectTitle(slot: ChampionshipSlot, titleId: string) {
     onChange({
@@ -176,6 +208,14 @@ export default function ChampionshipsStep({
     setValidationError("");
   }
 
+  function showSlotError(slot: ChampionshipSlot, message: string) {
+    setGender("");
+    setDivision("");
+    setCategory("");
+    setOpenSlot(slot);
+    setValidationError(message);
+  }
+
   function handleNext() {
     if (isLoading || errorMessage) return;
 
@@ -186,7 +226,8 @@ export default function ChampionshipsStep({
 
       if (!selection.titleId) {
         if (selection.championIds.length > 0) {
-          setValidationError(
+          showSlotError(
+            slot.key,
             "Please select a title before assigning champions.",
           );
           return;
@@ -195,15 +236,15 @@ export default function ChampionshipsStep({
         continue;
       }
 
-      const title = titles.find((title) => title.id === selection.titleId);
+      const title = titles.find((item) => item.id === selection.titleId);
 
       if (!title || !matchesSlot(title, slot)) {
-        setValidationError(`Please review ${slot.label}.`);
+        showSlotError(slot.key, `Please review ${slot.label}.`);
         return;
       }
 
       if (selectedTitles.has(selection.titleId)) {
-        setValidationError("A championship can only be selected once.");
+        showSlotError(slot.key, "A championship can only be selected once.");
         return;
       }
 
@@ -212,8 +253,11 @@ export default function ChampionshipsStep({
       const holders = selection.championIds;
 
       if (holders.length !== 0 && holders.length !== slot.holders) {
-        setValidationError(
-          `Assign ${slot.holders} champion${slot.holders === 2 ? "s" : ""} to ${slot.label}, or leave it vacant.`,
+        showSlotError(
+          slot.key,
+          `Assign ${slot.holders} champion${
+            slot.holders === 2 ? "s" : ""
+          } to ${slot.label}, or leave it vacant.`,
         );
         return;
       }
@@ -225,7 +269,8 @@ export default function ChampionshipsStep({
       );
 
       if (!validHolders || new Set(holders).size !== holders.length) {
-        setValidationError(
+        showSlotError(
+          slot.key,
           `Please select eligible, distinct roster members for ${slot.label}.`,
         );
         return;
@@ -259,7 +304,7 @@ export default function ChampionshipsStep({
     const inputId = `${slot.key}-champion-${index}`;
 
     return (
-      <div className="new-career__field" key={inputId}>
+      <div className="championships-step__field" key={inputId}>
         <label htmlFor={inputId}>
           {slot.holders === 1 ? "Initial champion" : `Champion ${index + 1}`}
         </label>
@@ -295,153 +340,285 @@ export default function ChampionshipsStep({
   }
 
   return (
-    <section className="new-career__panel championships-step">
-      <h2>Choose your championships</h2>
-      <p className="championships-step__description">
-        Select up to six titles. Assign champions from your roster or leave
-        titles vacant.
-      </p>
+    <section
+      className="championships-step"
+      aria-labelledby="championships-step-title"
+    >
+      <header className="championships-step__heading">
+        <h2 id="championships-step-title">Put the gold in place.</h2>
+
+        <p>
+          Choose up to six championships. Assign your initial champions or leave
+          the titles vacant.
+        </p>
+      </header>
 
       {isLoading ? (
-        <p role="status">Loading championships…</p>
+        <p className="championships-step__message" role="status">
+          Loading championships…
+        </p>
       ) : errorMessage ? (
-        <div>
+        <div className="championships-step__state">
           <p role="alert">{errorMessage}</p>
-          <button className="new-career__button" type="button" onClick={retry}>
+
+          <button
+            className="championships-step__button"
+            type="button"
+            onClick={retry}
+          >
             Try again
           </button>
         </div>
       ) : (
         <>
-          <div className="championships-step__filters">
-            <div className="new-career__field">
-              <label htmlFor="title-gender">Gender</label>
-              <select
-                id="title-gender"
-                value={gender}
-                onChange={(event) => setGender(event.target.value)}
-              >
-                <option value="">All genders</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-            </div>
+          <details className="championships-step__filters">
+            <summary>
+              <SlidersHorizontal size={17} aria-hidden="true" />
+              Filter slots
+              {activeFilterCount > 0 && <span>({activeFilterCount})</span>}
+            </summary>
 
-            <div className="new-career__field">
-              <label htmlFor="title-division">Division</label>
-              <select
-                id="title-division"
-                value={division}
-                onChange={(event) => setDivision(event.target.value)}
-              >
-                <option value="">All divisions</option>
-                <option value="singles">Singles</option>
-                <option value="tag_team">Tag Team</option>
-              </select>
-            </div>
+            <div className="championships-step__filter-grid">
+              <div className="championships-step__field">
+                <label htmlFor="title-gender">Gender</label>
 
-            <div className="new-career__field">
-              <label htmlFor="title-category">Category</label>
-              <select
-                id="title-category"
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-              >
-                <option value="">All categories</option>
-                <option value="world">World</option>
-                <option value="midcard">Midcard</option>
-                <option value="tag_team">Tag Team</option>
-              </select>
-            </div>
-          </div>
+                <select
+                  id="title-gender"
+                  value={gender}
+                  onChange={(event) => setGender(event.target.value)}
+                >
+                  <option value="">All genders</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
 
-          <p className="championships-step__count" role="status">
-            {selectedCount} of 6 titles selected
-          </p>
+              <div className="championships-step__field">
+                <label htmlFor="title-division">Division</label>
+
+                <select
+                  id="title-division"
+                  value={division}
+                  onChange={(event) => setDivision(event.target.value)}
+                >
+                  <option value="">All divisions</option>
+                  <option value="singles">Singles</option>
+                  <option value="tag_team">Tag Team</option>
+                </select>
+              </div>
+
+              <div className="championships-step__field">
+                <label htmlFor="title-category">Category</label>
+
+                <select
+                  id="title-category"
+                  value={category}
+                  onChange={(event) => setCategory(event.target.value)}
+                >
+                  <option value="">All categories</option>
+                  <option value="world">World</option>
+                  <option value="midcard">Midcard</option>
+                  <option value="tag_team">Tag Team</option>
+                </select>
+              </div>
+            </div>
+          </details>
 
           <div className="championships-step__grid">
             {visibleSlots.map((slot) => {
               const selection = draft.selections[slot.key];
+
               const selectedTitle = titles.find(
                 (title) => title.id === selection.titleId,
               );
 
-              const availableTitles = titles.filter(
-                (title) =>
-                  matchesSlot(title, slot) &&
-                  (title.id === selection.titleId ||
-                    title.name
-                      .toLowerCase()
-                      .includes(search.trim().toLowerCase())),
+              const availableTitles = titles.filter((title) =>
+                matchesSlot(title, slot),
               );
 
+              const holders = selection.championIds
+                .map((id) =>
+                  selectedWrestlers.find((wrestler) => wrestler.id === id),
+                )
+                .filter(
+                  (wrestler): wrestler is RosterWrestler =>
+                    wrestler !== undefined,
+                );
+
+              const validChampions =
+                selection.championIds.length === slot.holders &&
+                new Set(selection.championIds).size === slot.holders &&
+                holders.length === slot.holders &&
+                holders.every((wrestler) => wrestler.gender === slot.gender);
+
+              const validTitle =
+                selectedTitle !== undefined && matchesSlot(selectedTitle, slot);
+
+              const status = !selection.titleId
+                ? "Not selected"
+                : !validTitle
+                  ? "Review title"
+                  : selection.championIds.length === 0
+                    ? "Vacant"
+                    : validChampions
+                      ? "Champions assigned"
+                      : "Review champions";
+
               return (
-                <article className="championship-slot" key={slot.key}>
-                  <header className="championship-slot__header">
-                    {selectedTitle?.image_url ? (
-                      <img src={selectedTitle.image_url} alt="" />
-                    ) : (
-                      <Trophy size={28} aria-hidden="true" />
-                    )}
-                    <h3>{slot.label}</h3>
-                  </header>
+                <details
+                  className={[
+                    "championship-choice",
+                    selection.titleId ? "has-title" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  key={slot.key}
+                  open={openSlot === slot.key}
+                >
+                  <summary
+                    onClick={(event) => {
+                      event.preventDefault();
 
-                  <div className="new-career__field">
-                    <label htmlFor={`${slot.key}-title`}>Championship</label>
-
-                    <select
-                      id={`${slot.key}-title`}
-                      value={selection.titleId}
-                      onChange={(event) =>
-                        selectTitle(slot.key, event.target.value)
-                      }
+                      setOpenSlot((previous) =>
+                        previous === slot.key ? null : slot.key,
+                      );
+                    }}
+                  >
+                    <span
+                      className="championship-choice__art"
+                      aria-hidden="true"
                     >
-                      <option value="">No title selected</option>
+                      <Artwork
+                        src={selectedTitle?.image_url ?? null}
+                        kind="title"
+                      />
+                    </span>
 
-                      {selection.titleId &&
-                        !availableTitles.some(
-                          (title) => title.id === selection.titleId,
-                        ) && (
-                          <option value={selection.titleId} disabled>
-                            Unavailable championship
+                    <span className="championship-choice__summary">
+                      <strong>{slot.label}</strong>
+
+                      <span className="championship-choice__title-name">
+                        {selectedTitle?.name || "Choose a championship"}
+                      </span>
+
+                      <span className="championship-choice__status">
+                        {status}
+                      </span>
+                    </span>
+
+                    <ChevronDown
+                      className="championship-choice__chevron"
+                      size={18}
+                      aria-hidden="true"
+                    />
+                  </summary>
+
+                  <div className="championship-choice__content">
+                    <div className="championships-step__field">
+                      <label htmlFor={`${slot.key}-title`}>Championship</label>
+
+                      <select
+                        id={`${slot.key}-title`}
+                        value={selection.titleId}
+                        onChange={(event) =>
+                          selectTitle(slot.key, event.target.value)
+                        }
+                      >
+                        <option value="">No title selected</option>
+
+                        {selection.titleId &&
+                          !availableTitles.some(
+                            (title) => title.id === selection.titleId,
+                          ) && (
+                            <option value={selection.titleId} disabled>
+                              Unavailable championship
+                            </option>
+                          )}
+
+                        {availableTitles.map((title) => (
+                          <option key={title.id} value={title.id}>
+                            {title.name}
                           </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {selection.titleId && (
+                      <>
+                        <div className="championship-choice__champion-fields">
+                          {renderChampionSelect(slot, 0)}
+
+                          {slot.holders === 2 && renderChampionSelect(slot, 1)}
+                        </div>
+
+                        {holders.length > 0 && (
+                          <ul
+                            className="championship-choice__holders"
+                            aria-label="Selected champions"
+                          >
+                            {holders.map((holder) => (
+                              <li key={holder.id}>
+                                <span
+                                  className="championship-choice__holder-image"
+                                  aria-hidden="true"
+                                >
+                                  <Artwork
+                                    src={holder.image_url}
+                                    kind="person"
+                                  />
+                                </span>
+
+                                <span>{holder.name}</span>
+                              </li>
+                            ))}
+                          </ul>
                         )}
 
-                      {availableTitles.map((title) => (
-                        <option key={title.id} value={title.id}>
-                          {title.name}
-                        </option>
-                      ))}
-                    </select>
+                        {selection.championIds.length === 0 && (
+                          <p className="championship-choice__hint">
+                            This title will start vacant.
+                          </p>
+                        )}
+                      </>
+                    )}
                   </div>
-
-                  {renderChampionSelect(slot, 0)}
-                  {slot.holders === 2 && renderChampionSelect(slot, 1)}
-                </article>
+                </details>
               );
             })}
           </div>
 
           {visibleSlots.length === 0 && (
-            <p>No championship slots match your filters.</p>
+            <p className="championships-step__message">
+              No championship slots match your filters.
+            </p>
           )}
 
           <section className="championships-step__mitb">
-            <label className="new-career__toggle">
+            <div className="championships-step__mitb-heading">
+              <Briefcase size={22} aria-hidden="true" />
+
+              <label htmlFor="setup-mitb">Money in the Bank</label>
+
               <input
+                id="setup-mitb"
                 type="checkbox"
                 checked={draft.mitbEnabled}
                 disabled={!hasBothMitb && !draft.mitbEnabled}
+                aria-describedby="setup-mitb-description"
                 onChange={(event) => {
-                  onChange({ ...draft, mitbEnabled: event.target.checked });
+                  onChange({
+                    ...draft,
+                    mitbEnabled: event.target.checked,
+                  });
+
                   setValidationError("");
                 }}
               />
-              Enable Money in the Bank
-            </label>
+            </div>
 
-            <p>
-              Activates both men's and women's briefcases. No initial holders.
+            <p id="setup-mitb-description">
+              Enable both men's and women's briefcases. They will start without
+              holders.
             </p>
 
             {!hasBothMitb && <p>Money in the Bank is currently unavailable.</p>}
@@ -450,24 +627,37 @@ export default function ChampionshipsStep({
       )}
 
       {validationError && (
-        <p className="new-career__error" role="alert">
+        <p className="championships-step__error" role="alert">
           {validationError}
         </p>
       )}
 
-      <footer className="new-career__actions">
-        <button className="new-career__button" type="button" onClick={onBack}>
-          Back
-        </button>
+      <footer className="championships-step__actions">
+        <p role="status">
+          <Trophy size={17} aria-hidden="true" />
+          {selectedCount} of 6 titles selected
+        </p>
 
-        <button
-          className="new-career__button new-career__button--primary"
-          type="button"
-          disabled={isLoading || Boolean(errorMessage)}
-          onClick={handleNext}
-        >
-          Next
-        </button>
+        <div>
+          <button
+            className="championships-step__button"
+            type="button"
+            onClick={onBack}
+          >
+            <ArrowLeft size={17} aria-hidden="true" />
+            Back
+          </button>
+
+          <button
+            className="championships-step__button championships-step__button--primary"
+            type="button"
+            disabled={isLoading || Boolean(errorMessage)}
+            onClick={handleNext}
+          >
+            Review
+            <ArrowRight size={17} aria-hidden="true" />
+          </button>
+        </div>
       </footer>
     </section>
   );

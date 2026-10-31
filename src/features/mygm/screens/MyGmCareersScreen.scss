@@ -1,17 +1,49 @@
 @use "../../../styles/tokens" as t;
 
 .mygm-careers {
-  width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 32px 24px 64px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(t.$brand, 0.07), transparent 45%),
+    t.$background;
+
+  &__topbar {
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(t.$text, 0.06);
+  }
+
+  &__topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &__brand {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    min-height: 44px;
+    border-radius: 8px;
+
+    img {
+      width: 176px;
+      height: auto;
+    }
+  }
 
   &__back {
     display: inline-flex;
     align-items: center;
+    flex-shrink: 0;
     gap: 8px;
+    min-height: 44px;
+    padding: 0 8px;
+    border-radius: 8px;
     color: t.$text-muted;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     text-decoration: none;
 
     &:hover {
@@ -19,165 +51,262 @@
     }
   }
 
+  &__content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px 56px;
+  }
+
   &__header {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 24px;
-    margin: 32px 0;
+    margin-bottom: 36px;
 
     h1 {
-      margin: 8px 0;
-      font-size: clamp(1.75rem, 4vw, 2.5rem);
-      line-height: 1.2;
-      letter-spacing: -0.03em;
+      margin: 12px 0 14px;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      letter-spacing: -0.05em;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
     }
 
-    p:last-child {
-      margin: 0;
-      color: t.$text-muted;
+    > a {
+      width: 100%;
     }
   }
 
   &__eyebrow {
     margin: 0;
+    color: t.$brand;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  &__description {
+    max-width: 52ch;
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+  }
+
+  &__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+  }
+
+  &__count {
     color: t.$text-muted;
     font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   &__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     gap: 10px;
-    min-height: 44px;
+    min-height: 48px;
     padding: 12px 18px;
-    border: 1px solid t.$border;
-    border-radius: 10px;
-    font-weight: 600;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    font-size: 0.875rem;
+    font-weight: 700;
     text-decoration: none;
 
     &--primary {
-      background: t.$accent;
-      border-color: t.$accent;
-      color: #fff;
+      background: t.$brand;
+      color: t.$brand-ink;
 
       &:hover {
-        background: t.$accent-hover;
-        border-color: t.$accent-hover;
+        background: #c1adff;
       }
     }
 
     &--secondary {
-      background: t.$surface;
+      background: t.$surface-raised;
+      border-color: t.$border;
       color: t.$text;
 
       &:hover {
-        border-color: t.$text-muted;
+        border-color: t.$border-hover;
       }
     }
   }
 
   &__status {
+    margin: 0 0 20px;
     color: t.$text-muted;
+    font-size: 0.875rem;
   }
 
   &__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 48px 24px;
-    background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: t.$radius;
+    padding: 40px 24px;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(t.$brand, 0.08), transparent 70%),
+      t.$surface;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: t.$radius-lg;
     text-align: center;
 
-    > svg {
-      color: t.$text-muted;
+    h3 {
+      margin: 24px 0 12px;
+      font-size: 1.375rem;
+      letter-spacing: -0.025em;
     }
 
-    h2 {
-      margin: 20px 0 8px;
-      font-size: 1.25rem;
-    }
-
-    p {
-      max-width: 440px;
-      margin: 0 0 24px;
+    > p {
+      max-width: 44ch;
+      margin: 0 0 28px;
       color: t.$text-muted;
+      font-size: 0.9375rem;
+      line-height: 1.75;
     }
   }
 
-  &__list {
-    display: grid;
-    gap: 16px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-}
-
-.career-card {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 24px;
-  background: t.$surface;
-  border: 1px solid t.$border;
-  border-radius: t.$radius;
-
-  &__icon {
+  &__empty-icon {
     display: grid;
     place-items: center;
-    flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    background: t.$background;
-    border-radius: 10px;
-    color: t.$accent;
+    width: 72px;
+    height: 72px;
+    background: rgba(t.$brand, 0.1);
+    border-radius: 24px;
+    color: t.$brand;
   }
 
-  &__details {
-    flex: 1;
-    min-width: 0;
+  &__skeleton {
+    overflow: hidden;
+    padding-bottom: 24px;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.06);
+    border-radius: t.$radius-lg;
 
-    h2 {
-      margin: 0 0 6px;
-      font-size: 1.125rem;
-      overflow-wrap: anywhere;
+    > div {
+      height: 190px;
+      margin-bottom: 24px;
+      background: t.$surface-raised;
     }
 
-    p {
-      margin: 0;
-      color: t.$text-muted;
-      font-size: 0.875rem;
-    }
-  }
-}
+    > span {
+      display: block;
+      width: 55%;
+      height: 16px;
+      margin: 16px 24px;
+      background: t.$surface-raised;
+      border-radius: 6px;
 
-@media (max-width: 767px) {
-  .mygm-careers {
-    padding: 24px 20px 48px;
-
-    &__header {
-      align-items: flex-start;
-      flex-direction: column;
-
-      > a {
-        width: 100%;
+      &:last-child {
+        width: 35%;
       }
     }
   }
+}
 
-  .career-card {
-    flex-wrap: wrap;
-    gap: 16px;
-    padding: 20px;
+@media (min-width: t.$screen-sm-min) {
+  .mygm-careers {
+    &__topbar {
+      padding: 18px 32px;
+    }
 
-    > a {
-      width: 100%;
+    &__brand img {
+      width: 220px;
+    }
+
+    &__content {
+      padding: 48px 32px 64px;
+    }
+
+    &__header > a {
+      width: auto;
+    }
+
+    &__empty {
+      padding: 64px 32px;
+    }
+  }
+}
+
+@media (min-width: t.$screen-md-min) {
+  .mygm-careers__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: t.$screen-lg-min) {
+  .mygm-careers__header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 44px;
+  }
+}
+
+@media (min-width: t.$screen-xl-min) {
+  .mygm-careers__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@keyframes career-library-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes career-skeleton-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mygm-careers {
+    &__library {
+      animation: career-library-enter 250ms ease-out both;
+    }
+
+    &__button {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease;
+    }
+
+    &__skeleton > div,
+    &__skeleton > span {
+      animation: career-skeleton-pulse 1.5s ease-in-out infinite;
     }
   }
 }

@@ -1,105 +1,511 @@
 @use "../../../styles/tokens" as t;
 
 .championships-step {
-  &__description {
-    margin: -12px 0 24px;
-    color: t.$text-muted;
+  min-width: 0;
+  padding: 24px 16px 16px;
+  background: t.$surface;
+  border: 1px solid rgba(t.$text, 0.08);
+  border-radius: t.$radius-lg;
+
+  &__heading {
+    margin-bottom: 24px;
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.375rem;
+      letter-spacing: -0.03em;
+    }
+
+    p {
+      max-width: 60ch;
+      margin: 0;
+      color: t.$text-muted;
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
   }
 
   &__filters {
+    margin-bottom: 20px;
+
+    > summary {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: fit-content;
+      min-height: 44px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      color: t.$text-muted;
+      font-size: 0.8125rem;
+      cursor: pointer;
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &::after {
+        margin-left: 4px;
+        content: "+";
+      }
+    }
+
+    &[open] > summary {
+      color: t.$brand;
+
+      &::after {
+        content: "−";
+      }
+    }
+  }
+
+  &__filter-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  &__search {
-    grid-column: 1 / -1;
-  }
-
-  &__count {
-    font-weight: 600;
+    margin-top: 12px;
+    padding: 16px;
+    background: t.$background;
+    border-radius: 16px;
   }
 
   &__grid {
     display: grid;
+    align-items: start;
     grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
+    gap: 14px;
+  }
+
+  &__field {
+    min-width: 0;
+
+    > label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+    }
+
+    select {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px;
+      background: t.$surface;
+      border: 1px solid t.$border;
+      border-radius: 12px;
+      color: t.$text;
+      font-size: 1rem;
+
+      &:disabled {
+        opacity: 0.45;
+      }
+    }
   }
 
   &__mitb {
     margin-top: 24px;
     padding: 20px;
-    background: t.$background;
+    background:
+      radial-gradient(
+        ellipse at 100% 0%,
+        rgba(t.$brand, 0.08),
+        transparent 70%
+      ),
+      t.$background;
     border: 1px solid t.$border;
-    border-radius: 10px;
+    border-radius: 18px;
 
-    p {
+    > p {
       margin: 12px 0 0;
       color: t.$text-muted;
+      font-size: 0.8125rem;
+      line-height: 1.7;
+    }
+  }
+
+  &__mitb-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    > svg {
+      flex-shrink: 0;
+      color: t.$brand;
+    }
+
+    > label {
+      flex: 1;
       font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    > input {
+      position: relative;
+      flex-shrink: 0;
+      width: 42px;
+      height: 26px;
+      margin: 0;
+      appearance: none;
+      background: t.$surface-raised;
+      border: 1px solid t.$border-hover;
+      border-radius: 999px;
+      cursor: pointer;
+
+      &::before {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 18px;
+        height: 18px;
+        background: t.$text-muted;
+        border-radius: 50%;
+        content: "";
+      }
+
+      &:checked {
+        background: t.$brand;
+        border-color: t.$brand;
+
+        &::before {
+          background: t.$brand-ink;
+          transform: translateX(16px);
+        }
+      }
+
+      &:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
     }
   }
 
-  .new-career__button:disabled {
-    opacity: 0.45;
+  &__message {
+    margin: 20px 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
   }
 
-  @media (min-width: t.$screen-sm-min) {
-    &__filters {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+  &__state {
+    display: grid;
+    justify-items: start;
+    gap: 16px;
+    padding: 20px;
+    background: t.$background;
+    border-radius: 16px;
+
+    p {
+      margin: 0;
+      color: t.$error;
     }
   }
 
-  @media (min-width: t.$screen-md-min) {
-    &__filters {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+  &__error {
+    margin: 20px 0 0;
+    padding: 14px;
+    background: rgba(t.$error, 0.07);
+    border-radius: 12px;
+    color: t.$error;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  &__actions {
+    position: sticky;
+    z-index: 5;
+    bottom: 12px;
+    margin-top: 28px;
+    padding: 14px;
+    background: rgba(t.$background, 0.96);
+    border: 1px solid t.$border;
+    border-radius: 18px;
+
+    > p {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 0 0 12px;
+      color: t.$text-muted;
+      font-size: 0.75rem;
+
+      svg {
+        color: t.$brand;
+      }
     }
 
-    &__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    > div {
+      display: flex;
+      gap: 10px;
+
+      > button {
+        flex: 1;
+      }
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+    color: t.$text;
+    font-size: 0.8125rem;
+    font-weight: 600;
+
+    &:hover:not(:disabled) {
+      border-color: t.$brand;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+    }
+
+    &--primary {
+      background: t.$brand;
+      border-color: t.$brand;
+      color: t.$brand-ink;
+
+      &:hover:not(:disabled) {
+        background: #c1adff;
+        border-color: #c1adff;
+      }
     }
   }
 }
 
-.championship-slot {
+.championship-choice {
   min-width: 0;
-  padding: 20px;
+  overflow: hidden;
   background: t.$background;
   border: 1px solid t.$border;
-  border-radius: 10px;
+  border-radius: 18px;
 
-  &__header {
-    display: flex;
+  &.has-title {
+    border-color: rgba(t.$brand, 0.35);
+  }
+
+  > summary {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) 18px;
     align-items: center;
     gap: 12px;
-    min-height: 64px;
-    margin-bottom: 20px;
+    min-height: 120px;
+    padding: 16px 12px;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &:focus-visible {
+      outline-offset: -4px;
+    }
+  }
+
+  &__art {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    color: t.$text-muted;
 
     img {
-      width: 80px;
-      height: 56px;
-      flex-shrink: 0;
+      width: 64px;
+      height: 64px;
       object-fit: contain;
     }
+  }
 
-    > svg {
-      flex-shrink: 0;
-      color: t.$text-muted;
-    }
+  &__summary {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
 
-    h3 {
-      margin: 0;
-      font-size: 0.95rem;
+    > strong {
+      color: t.$text;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      line-height: 1.5;
       overflow-wrap: anywhere;
     }
   }
 
-  .new-career__field + .new-career__field {
-    margin-top: 16px;
+  &__title-name {
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
   }
 
-  select:disabled {
-    opacity: 0.45;
+  &__status {
+    color: t.$text-muted;
+    font-size: 0.625rem;
+    font-weight: 500;
+  }
+
+  &.has-title &__status {
+    color: t.$brand;
+  }
+
+  &__chevron {
+    color: t.$text-muted;
+  }
+
+  &[open] &__chevron {
+    transform: rotate(180deg);
+  }
+
+  &__content {
+    display: grid;
+    gap: 18px;
+    margin: 0 16px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(t.$text, 0.08);
+  }
+
+  &__champion-fields {
+    display: grid;
+    gap: 16px;
+  }
+
+  &__holders {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      padding: 10px;
+      background: t.$surface;
+      border-radius: 12px;
+
+      > span:last-child {
+        font-size: 0.8125rem;
+        font-weight: 500;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
+  &__holder-image {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 48px;
+    overflow: hidden;
+    border-radius: 8px;
+    color: t.$text-muted;
+
+    img {
+      width: 42px;
+      height: 48px;
+      object-fit: contain;
+      object-position: center bottom;
+    }
+  }
+
+  &__hint {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+}
+
+@media (min-width: t.$screen-sm-min) {
+  .championships-step {
+    padding: 32px;
+
+    &__filter-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    &__actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+
+      > p {
+        margin: 0;
+      }
+
+      > div {
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .championship-choice {
+    > summary {
+      grid-template-columns: 88px minmax(0, 1fr) 18px;
+      padding: 18px;
+    }
+
+    &__art,
+    &__art img {
+      width: 88px;
+      height: 70px;
+    }
+  }
+}
+
+@media (min-width: t.$screen-md-min) {
+  .championships-step__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .championship-choice {
+    &__chevron {
+      transition: transform 180ms ease;
+    }
+
+    &[open] &__content {
+      animation: championship-content-enter 180ms ease-out both;
+    }
+  }
+
+  .championships-step {
+    &__button {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease;
+    }
+
+    &__mitb-heading > input {
+      transition: background-color 160ms ease;
+
+      &::before {
+        transition: transform 160ms ease;
+      }
+    }
+  }
+}
+
+@keyframes championship-content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

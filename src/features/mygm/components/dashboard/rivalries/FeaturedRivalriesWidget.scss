@@ -1,74 +1,137 @@
 @use "../../../../../styles/tokens" as t;
 
 .featured-rivalries {
+  --rivalry-accent: var(--career-accent, #{t.$text-muted});
+  --rivalry-ink: color-mix(in srgb, var(--rivalry-accent) 60%, #{t.$text});
+
   min-width: 0;
+  container-type: inline-size;
 
   &__header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: 8px 16px;
+    margin-bottom: 16px;
+  }
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
 
     h2 {
-      margin: 0 0 8px;
-      font-size: 1.25rem;
-    }
-
-    p {
       margin: 0;
-      color: t.$text-muted;
-      font-size: 0.875rem;
-      line-height: 1.5;
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
     }
   }
 
   &__count {
-    padding: 6px 10px;
+    padding: 4px 8px;
     background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 6px;
+    border-radius: 7px;
+    color: t.$text-muted;
+    font-size: 0.625rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 44px;
+    border-radius: 8px;
     color: t.$text-muted;
     font-size: 0.75rem;
+    text-decoration: none;
+
+    &:hover {
+      color: t.$text;
+    }
   }
 
   &__list {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(1, 1fr);
+    align-items: stretch;
     gap: 16px;
+    min-width: 0;
+    overflow-x: auto;
     margin: 0;
-    padding: 0;
+    padding: 4px 4px 12px;
     list-style: none;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 4px;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
 
     > li {
       min-width: 0;
+      scroll-snap-align: start;
+    }
+
+    &:focus-visible {
+      outline-offset: -2px;
+      border-radius: 24px;
+    }
+
+    &--single {
+      grid-auto-columns: 100%;
     }
   }
 
   &__card {
+    position: relative;
+    isolation: isolate;
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
-    gap: 20px;
     height: 100%;
     min-width: 0;
+    overflow: hidden;
+
+    background-color: t.$surface;
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(#101216, 0.15) 0%,
+        rgba(t.$surface, 0.65) 35%,
+        rgba(t.$surface, 0.94) 65%,
+        rgba(t.$surface, 0.98) 100%
+      ),
+      url("../../../../../assets/backgrounds/news-arena.png");
+    background-size: cover;
+    background-position: 72% top;
+
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 23px;
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
     padding: 20px;
-    background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 12px;
   }
 
   &__card-header {
     p {
       margin: 0 0 8px;
-      color: t.$text-muted;
-      font-size: 0.75rem;
+      color: var(--rivalry-ink);
+      font-size: 0.625rem;
+      font-weight: 500;
     }
 
     h3 {
       margin: 0;
-      font-size: 1rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
       line-height: 1.5;
       overflow-wrap: anywhere;
     }
@@ -76,108 +139,364 @@
 
   &__facts {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-    margin: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin: auto 0 0;
 
     dt {
       margin-bottom: 5px;
       color: t.$text-muted;
-      font-size: 0.75rem;
+      font-size: 0.625rem;
     }
 
     dd {
       margin: 0;
-      font-size: 0.8125rem;
-      line-height: 1.5;
+      color: t.$text;
+      font-size: 0.75rem;
+      line-height: 1.6;
+      font-variant-numeric: tabular-nums;
       overflow-wrap: anywhere;
     }
   }
 
-  &__card-footer {
-    margin-top: auto;
-
-    .featured-rivalries__button {
-      width: 100%;
-    }
-  }
-
-  &__button {
-    display: inline-flex;
+  &__open {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    min-height: 44px;
-    padding: 10px 16px;
-    background: t.$background;
-    border: 1px solid t.$border;
-    border-radius: 8px;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 48px;
+    padding: 14px 0 0;
+    background: transparent;
+    border: 0;
+    border-top: 1px solid rgba(t.$text, 0.07);
+    border-radius: 0;
     color: t.$text;
-    font: inherit;
-    cursor: pointer;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-align: left;
+
+    svg {
+      flex-shrink: 0;
+      color: var(--rivalry-ink);
+    }
+
+    &:hover {
+      color: var(--rivalry-ink);
+    }
 
     &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 2px;
+      outline-offset: 3px;
+      border-radius: 6px;
     }
   }
 
   &__state {
-    padding: 24px 20px;
+    display: grid;
+    justify-items: start;
+    gap: 16px;
+    padding: 24px;
     background: t.$surface;
-    border: 1px solid t.$border;
-    border-radius: 12px;
-
-    h3 {
-      margin: 0 0 10px;
-      font-size: 1rem;
-    }
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 24px;
+    color: t.$text-muted;
 
     p {
       margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+  }
+
+  &__error {
+    color: t.$error;
+  }
+
+  &__retry {
+    min-height: 44px;
+    padding: 10px 14px;
+    background: t.$background;
+    border: 1px solid t.$border;
+    border-radius: 12px;
+    color: t.$text;
+    font-size: 0.8125rem;
+    font-weight: 600;
+
+    &:hover {
+      border-color: var(--rivalry-accent);
+    }
+  }
+
+  &__empty {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 24px;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 24px;
+
+    > div {
+      min-width: 0;
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 1.125rem;
+      letter-spacing: -0.025em;
+      line-height: 1.4;
+    }
+
+    p {
+      max-width: 52ch;
+      margin: 0;
       color: t.$text-muted;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
-
-    .featured-rivalries__button {
-      margin-top: 20px;
+      font-size: 0.8125rem;
+      line-height: 1.75;
     }
   }
 
-  @media (min-width: t.$screen-md-min) {
-    &__list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: t.$screen-xl-min) {
-    &__list {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+  &__empty-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: t.$surface-raised;
+    border-radius: 15px;
+    color: var(--rivalry-ink);
   }
 }
 
+// Showcase styles apply only to the Dashboard.
 .featured-rivalries {
-  &__header-actions {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
+  .rivalry-participants--showcase {
+    grid-template-columns:
+      minmax(0, 1fr)
+      28px
+      minmax(0, 1fr);
+    align-items: stretch;
+    gap: 6px;
+    height: 180px;
+
+    .rivalry-participants__side {
+      position: relative;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .rivalry-participants__side-label,
+    .rivalry-participants__member figcaption,
+    .rivalry-participants__extra-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      margin: 0;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .rivalry-participants__members {
+      align-items: stretch;
+      flex-wrap: nowrap;
+      gap: 0;
+      height: 100%;
+
+      > li {
+        position: relative;
+        flex: 1;
+        max-width: none;
+        min-width: 0;
+        height: 100%;
+      }
+    }
+
+    .rivalry-participants__side--pair {
+      .rivalry-participants__members > li {
+        flex: 0 0 70%;
+
+        + li {
+          z-index: 1;
+          margin-left: -35%;
+        }
+      }
+    }
+
+    .rivalry-participants__member {
+      height: 100%;
+    }
+
+    .rivalry-participants__portrait {
+      height: 100%;
+      aspect-ratio: auto;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+
+      > span {
+        color: t.$text-muted;
+        font-size: 1rem;
+      }
+
+      img {
+        background: transparent;
+        object-fit: cover;
+        object-position: center top;
+        filter: drop-shadow(0 4px 8px rgba(#000, 0.2));
+
+        -webkit-mask-image: linear-gradient(
+          180deg,
+          #000 0%,
+          #000 80%,
+          transparent 100%
+        );
+
+        mask-image: linear-gradient(
+          180deg,
+          #000 0%,
+          #000 80%,
+          transparent 100%
+        );
+      }
+    }
+
+    .rivalry-participants__versus {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      align-self: center;
+      width: 28px;
+      height: 30px;
+      background: rgba(t.$background, 0.85);
+      border-radius: 9px;
+      color: var(--rivalry-ink);
+      font-size: 0.625rem;
+      font-style: italic;
+    }
+
+    .rivalry-participants__extra {
+      position: absolute;
+      z-index: 3;
+      top: 6px;
+      right: 0;
+      margin: 0;
+      padding: 4px 6px;
+      background: t.$surface-raised;
+      border-radius: 7px;
+      color: t.$text;
+      font-size: 0.625rem;
+    }
+
+    .rivalry-participants__empty {
+      padding-top: 40px;
+      font-size: 0.6875rem;
+    }
   }
 
-  &__view-all {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    color: t.$text;
-    font-size: 0.8125rem;
-    text-underline-offset: 4px;
+  // Override the shared meter only inside featured cards.
+  .rivalry-level {
+    display: grid;
+    gap: 9px;
+    min-width: 0;
+  }
 
-    &:focus-visible {
-      outline: 2px solid var(--career-accent, #{t.$accent});
-      outline-offset: 2px;
-      border-radius: 4px;
+  .rivalry-level__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+    font-weight: 500;
+  }
+
+  .rivalry-level__maximum {
+    padding: 3px 6px;
+    background: color-mix(in srgb, var(--rivalry-accent) 12%, transparent);
+    border-radius: 6px;
+    color: var(--rivalry-ink);
+    font-size: 0.5625rem;
+  }
+
+  .rivalry-level__bar {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .rivalry-level__step {
+    display: block;
+    min-width: 0;
+    height: 4px;
+    background: t.$surface-raised;
+    border-radius: 999px;
+  }
+
+  .rivalry-level__step--active {
+    background: var(--rivalry-accent);
+  }
+}
+
+@container (min-width: #{t.$screen-md-min}) {
+  .featured-rivalries__list {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+  }
+}
+
+@container (min-width: #{t.$screen-xl-min}) {
+  .featured-rivalries__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@keyframes featured-rivalries-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes featured-rivalries-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .featured-rivalries {
+    &__list {
+      animation: featured-rivalries-enter 220ms ease-out both;
+    }
+
+    &__card,
+    &__open,
+    &__retry {
+      transition:
+        border-color 160ms ease,
+        color 160ms ease;
+    }
+
+    &__open svg {
+      transition: transform 160ms ease;
+    }
+
+    &__open:active svg {
+      transform: translate(2px, -2px);
+    }
+
+    &__spinner {
+      animation: featured-rivalries-spin 900ms linear infinite;
     }
   }
 }

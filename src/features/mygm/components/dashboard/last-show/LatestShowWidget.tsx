@@ -1,9 +1,27 @@
-import { useId } from "react";
+import { Fragment, useId, useState } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import CareerWelcome from "../welcome/CareerWelcome";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  CalendarDays,
+  CalendarPlus,
+  Check,
+  LoaderCircle,
+  Star,
+  Trophy,
+  UserRound,
+} from "lucide-react";
+
 import { useLatestShow } from "../../../hooks/dashboard/useLatestShow";
-import type { ShowDetailMatch } from "../../../types/show-history/showDetail.types";
+
+import type {
+  ShowDetailMatch,
+  ShowDetailMatchParticipant,
+} from "../../../types/show-history/showDetail.types";
+
 import type { ShowHistoryType } from "../../../types/show-history/showHistory.types";
+
 import "./LatestShowWidget.scss";
 
 interface LatestShowWidgetProps {
@@ -22,23 +40,47 @@ const showTypeLabels: Record<ShowHistoryType, string> = {
   special: "Special show",
 };
 
-function getParticipantNames(match: ShowDetailMatch): string {
-  const teams = new Map<number, string[]>();
+function WidgetImage({
+  src,
+  fallback,
+}: {
+  src: string | null;
+  fallback: ReactNode;
+}) {
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+
+  return src && src !== failedUrl ? (
+    <img src={src} alt="" loading="lazy" onError={() => setFailedUrl(src)} />
+  ) : (
+    fallback
+  );
+}
+
+function getTeams(match: ShowDetailMatch) {
+  const teams = new Map<number, ShowDetailMatchParticipant[]>();
 
   for (const participant of match.participants) {
-    const names = teams.get(participant.side) ?? [];
+    const members = teams.get(participant.side) ?? [];
 
-    names.push(participant.name);
-    teams.set(participant.side, names);
+    members.push(participant);
+    teams.set(participant.side, members);
   }
 
-  return [...teams.entries()]
-    .sort(([firstSide], [secondSide]) => firstSide - secondSide)
-    .map(([, names]) => names.join(" & "))
-    .join(" vs ");
+  return [...teams.entries()].sort(
+    ([firstSide], [secondSide]) => firstSide - secondSide,
+  );
 }
 
 function MatchHighlight({ title, match }: MatchHighlightProps) {
+  const headingId = useId();
+  const teams = getTeams(match);
+
+  const participantNames = teams
+    .map(([, members]) =>
+      members.map((participant) => participant.name).join(" & "),
+    )
+    .join(" vs ");
+
   const winners = match.participants.filter(
     (participant) => participant.result === "winner",
   );
@@ -54,20 +96,69 @@ function MatchHighlight({ title, match }: MatchHighlightProps) {
         ? "No contest"
         : winnerNames || "Winner not recorded";
 
+  const resultHeading =
+    match.outcome === "draw" || match.outcome === "no_contest"
+      ? "Result"
+      : winners.length > 1
+        ? "Winners"
+        : "Winner";
+
   return (
-    <article className="latest-show__highlight">
+    <article className="latest-show__highlight" aria-labelledby={headingId}>
       <header className="latest-show__highlight-header">
-        <h3>{title}</h3>
+        <h3 id={headingId}>{title}</h3>
 
         <span className="latest-show__match-rating">
-          <span aria-hidden="true">★ </span>
+          <Star size={14} aria-hidden="true" />
+
           {match.rating === null ? "Not rated" : `${match.rating} / 5`}
         </span>
       </header>
 
-      <p className="latest-show__participants">
-        {getParticipantNames(match) || "Participants not recorded"}
-      </p>
+      {teams.length > 0 && (
+        <div className="latest-show__teams" aria-hidden="true">
+          {teams.map(([side, members], index) => (
+            <Fragment key={side}>
+              {index > 0 && <span className="latest-show__versus">vs</span>}
+
+              <div className="latest-show__team">
+                {members.slice(0, 2).map((participant) => (
+                  <span
+                    className={[
+                      "latest-show__portrait",
+                      participant.result === "winner" ? "is-winner" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    key={participant.wrestler_id}
+                  >
+                    <WidgetImage
+                      src={participant.image_url}
+                      fallback={<UserRound size={26} />}
+                    />
+
+                    {participant.result === "winner" && (
+                      <span className="latest-show__winner-mark">
+                        <Check size={11} />
+                      </span>
+                    )}
+                  </span>
+                ))}
+
+                {members.length > 2 && (
+                  <span className="latest-show__extra">
+                    +{members.length - 2}
+                  </span>
+                )}
+              </div>
+            </Fragment>
+          ))}
+        </div>
+      )}
+
+      <h4 className="latest-show__participants">
+        {participantNames || "Participants not recorded"}
+      </h4>
 
       <p className="latest-show__match-type">
         {match.label}
@@ -75,21 +166,18 @@ function MatchHighlight({ title, match }: MatchHighlightProps) {
       </p>
 
       <dl className="latest-show__result">
-        <dt>
-          {match.outcome === "draw" || match.outcome === "no_contest"
-            ? "Result"
-            : winners.length > 1
-              ? "Winners"
-              : "Winner"}
-        </dt>
-
+        <dt>{resultHeading}</dt>
         <dd>{resultLabel}</dd>
       </dl>
 
       {match.titles.length > 0 && (
         <p className="latest-show__title-match">
-          Title match ·{" "}
-          {match.titles.map((championship) => championship.name).join(", ")}
+          <Trophy size={15} aria-hidden="true" />
+
+          <span>
+            Title match ·{" "}
+            {match.titles.map((championship) => championship.name).join(", ")}
+          </span>
         </p>
       )}
     </article>
@@ -101,49 +189,13 @@ export default function LatestShowWidget({ careerId }: LatestShowWidgetProps) {
 
   const { data, isLoading, errorMessage, retry } = useLatestShow(careerId);
 
-  if (isLoading) {
-    return (
-      <section
-        className="latest-show"
-        aria-labelledby={headingId}
-        aria-busy="true"
-      >
-        <h2 id={headingId}>Latest show</h2>
-
-        <p className="latest-show__message" role="status">
-          Loading the latest show…
-        </p>
-      </section>
-    );
-  }
-
-  if (errorMessage) {
-    return (
-      <section className="latest-show" aria-labelledby={headingId}>
-        <h2 id={headingId}>Latest show</h2>
-
-        <p className="latest-show__message" role="alert">
-          {errorMessage}
-        </p>
-
-        <button className="latest-show__button" type="button" onClick={retry}>
-          Try again
-        </button>
-      </section>
-    );
-  }
-
-  if (!data) {
-    return (
-      <div className="latest-show latest-show--empty">
-        <CareerWelcome careerId={careerId} hasCompletedShows={false} />
-      </div>
-    );
-  }
-
-  const matches = data.segments
-    .filter((segment) => segment.kind === "match")
-    .sort((first, second) => first.position - second.position);
+  const matches = data
+    ? data.segments
+        .filter(
+          (segment): segment is ShowDetailMatch => segment.kind === "match",
+        )
+        .sort((first, second) => first.position - second.position)
+    : [];
 
   const opener = matches[0];
 
@@ -153,65 +205,141 @@ export default function LatestShowWidget({ careerId }: LatestShowWidgetProps) {
   return (
     <section className="latest-show" aria-labelledby={headingId}>
       <header className="latest-show__header">
-        <div>
-          <h2 id={headingId}>Latest show</h2>
+        <h2 id={headingId}>Latest show</h2>
 
-          <p className="latest-show__period">
-            Season {data.event.season} · Week {data.event.week}
-          </p>
-
-          <p className="latest-show__name">{data.event.name}</p>
-        </div>
-
-        <div className="latest-show__overall-rating">
-          <span>Show rating</span>
-
-          <strong>
-            <span aria-hidden="true">★ </span>
-            {data.event.rating === null
-              ? "Not recorded"
-              : `${data.event.rating.toFixed(2)} / 5`}
-          </strong>
-        </div>
+        <Link to={`/mygm/${careerId}/history`}>
+          View history
+          <ArrowUpRight size={16} aria-hidden="true" />
+        </Link>
       </header>
 
-      <div className="latest-show__metadata">
-        <span className="latest-show__badge">
-          {showTypeLabels[data.event.show_type]}
-        </span>
-
-        <span>
-          {data.summary.match_count}{" "}
-          {data.summary.match_count === 1 ? "match" : "matches"}
-          {" · "}
-          {data.summary.promo_count}{" "}
-          {data.summary.promo_count === 1 ? "promo" : "promos"}
-        </span>
-      </div>
-
-      {opener ? (
-        <div className="latest-show__highlights">
-          <MatchHighlight
-            title={matches.length === 1 ? "Opener & Main event" : "Opener"}
-            match={opener}
+      {isLoading ? (
+        <div className="latest-show__state" aria-busy="true">
+          <LoaderCircle
+            className="latest-show__spinner"
+            size={24}
+            aria-hidden="true"
           />
 
-          {mainEvent && <MatchHighlight title="Main event" match={mainEvent} />}
+          <p role="status">Loading the latest show…</p>
+        </div>
+      ) : errorMessage ? (
+        <div className="latest-show__state">
+          <p className="latest-show__error" role="alert">
+            {errorMessage}
+          </p>
+
+          <button className="latest-show__button" type="button" onClick={retry}>
+            Try again
+          </button>
+        </div>
+      ) : !data ? (
+        <div className="latest-show__empty">
+          <span className="latest-show__empty-icon">
+            <CalendarPlus size={28} aria-hidden="true" />
+          </span>
+
+          <div>
+            <h3>Your first show is waiting.</h3>
+
+            <p>
+              Complete a show to see its rating, opening match and main event
+              here.
+            </p>
+
+            <Link
+              className="latest-show__button"
+              to={`/mygm/${careerId}/booking`}
+            >
+              Open booking
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
         </div>
       ) : (
-        <p className="latest-show__message">
-          No matches were recorded for this show.
-        </p>
-      )}
+        <div className="latest-show__panel">
+          <div className="latest-show__overview">
+            <div className="latest-show__identity">
+              <span className="latest-show__logo" aria-hidden="true">
+                <WidgetImage
+                  src={data.event.logo_url ?? null}
+                  fallback={
+                    data.event.kind === "ple" ? (
+                      <Trophy size={34} />
+                    ) : (
+                      <CalendarDays size={34} />
+                    )
+                  }
+                />
+              </span>
 
-      <footer className="latest-show__footer">
-        <Link
-          className="latest-show__button"
-          to={`/mygm/${careerId}/history/${data.event.id}`}
-        >
-          View show results
-        </Link>
-      </footer>
+              <div className="latest-show__event-copy">
+                <p className="latest-show__period">
+                  Season {data.event.season} · Week {data.event.week}
+                </p>
+
+                <h3>{data.event.name}</h3>
+
+                <p className="latest-show__metadata">
+                  <span>{showTypeLabels[data.event.show_type]}</span>
+
+                  <span>
+                    {data.summary.match_count}{" "}
+                    {data.summary.match_count === 1 ? "match" : "matches"}
+                    {" · "}
+                    {data.summary.promo_count}{" "}
+                    {data.summary.promo_count === 1 ? "promo" : "promos"}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div className="latest-show__overall-rating">
+              <span>Show rating</span>
+
+              <strong>
+                <Star size={19} aria-hidden="true" />
+
+                {data.event.rating === null ? (
+                  "Not recorded"
+                ) : (
+                  <>
+                    {data.event.rating.toFixed(2)}
+                    <span>/ 5</span>
+                  </>
+                )}
+              </strong>
+            </div>
+          </div>
+
+          {opener ? (
+            <div className="latest-show__highlights">
+              <MatchHighlight
+                title={matches.length === 1 ? "Opener & Main event" : "Opener"}
+                match={opener}
+              />
+
+              {mainEvent && (
+                <MatchHighlight title="Main event" match={mainEvent} />
+              )}
+            </div>
+          ) : (
+            <p className="latest-show__message">
+              No matches were recorded for this show.
+            </p>
+          )}
+
+          <footer className="latest-show__footer">
+            <Link
+              className="latest-show__results-link"
+              to={`/mygm/${careerId}/history/${data.event.id}`}
+            >
+              Full show results
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
+          </footer>
+        </div>
+      )}
     </section>
   );
 }
