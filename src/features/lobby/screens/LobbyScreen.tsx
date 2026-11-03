@@ -5,7 +5,9 @@ import {
   CalendarDays,
   Check,
   Globe2,
+  LoaderCircle,
   LogOut,
+  Plus,
   Swords,
   Trophy,
   UsersRound,
@@ -72,7 +74,8 @@ export default function LobbyScreen() {
               aria-label={isSigningOut ? "Signing out" : "Sign out"}
               title="Sign out"
             >
-              <LogOut size={19} aria-hidden="true" />
+              {isSigningOut ? <LoaderCircle className="lobby__spinner" size={19} aria-hidden="true" /> : <LogOut size={19} aria-hidden="true" />}
+              <span>{isSigningOut ? "Signing out…" : "Sign out"}</span>
             </button>
           </div>
         </div>
@@ -80,17 +83,16 @@ export default function LobbyScreen() {
 
       <main className="lobby__content">
         <section className="lobby__welcome" aria-labelledby="lobby-title">
-          <p className="lobby__eyebrow">Welcome back, {displayName}</p>
+          <p className="lobby__eyebrow"><span aria-hidden="true" />Welcome back, {displayName}</p>
 
           <h1 id="lobby-title">
-            Every career.
-            <br />
-            <span>A story worth keeping.</span>
+            Your next chapter.<br />
+            <span>Your rules.</span>
           </h1>
 
           <p className="lobby__description">
-            Your roster, your rivalries, your biggest moments. Choose a mode and
-            write your next chapter.
+            A home for your roster, rivalries and biggest moments.
+            Choose your mode and get back to ringside.
           </p>
         </section>
 
@@ -115,7 +117,7 @@ export default function LobbyScreen() {
               aria-labelledby="mygm-mode-title"
             >
               <div className="mode-card__topline">
-                <span className="mode-card__eyebrow">Career management</span>
+                <span className="mode-card__eyebrow">The general manager's desk</span>
 
                 <span className="mode-card__status">
                   <Check size={13} aria-hidden="true" />
@@ -128,8 +130,6 @@ export default function LobbyScreen() {
               </div>
 
               <div className="mode-card__content">
-                <span className="mode-card__edition">01</span>
-
                 <h3 id="mygm-mode-title">MyGM</h3>
 
                 <p>
@@ -155,10 +155,15 @@ export default function LobbyScreen() {
                 </li>
               </ul>
 
-              <Link className="mode-card__action" to="/mygm">
-                Explore MyGM
-                <ArrowRight size={19} aria-hidden="true" />
-              </Link>
+              <div className="mode-card__actions">
+                <Link className="mode-card__action" to="/mygm">
+                  Open MyGM
+                  <ArrowRight size={19} aria-hidden="true" />
+                </Link>
+                <Link className="mode-card__secondary" to="/mygm/new">
+                  <Plus size={17} aria-hidden="true" /> Create a career
+                </Link>
+              </div>
             </article>
 
             <article
@@ -178,8 +183,6 @@ export default function LobbyScreen() {
               </div>
 
               <div className="mode-card__content">
-                <span className="mode-card__edition">02</span>
-
                 <h3 id="universe-mode-title">Universe</h3>
 
                 <p>
@@ -204,7 +207,7 @@ export default function LobbyScreen() {
               </ul>
 
               <p className="mode-card__upcoming-note">
-                Your next universe is on the horizon.
+                A new way to tell your story. In the works.
               </p>
             </article>
           </div>

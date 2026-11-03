@@ -445,13 +445,13 @@
 
 @container (min-width: #{t.$screen-xl-min}) {
   .career-roster__list {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @container (min-width: 1500px) {
   .career-roster__list {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
@@ -494,3 +494,20 @@
     }
   }
 }
+
+.career-roster {
+  &__title-status { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0 0 16px; color: t.$text-muted; font-size: .8125rem; line-height: 1.6; }
+  &__title-status button { min-height: 44px; padding: 8px 12px; border: 1px solid t.$border; border-radius: 10px; background: t.$surface; color: var(--roster-ink); }
+  a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--roster-ink); outline-offset: 3px; }
+}
+@container (max-width: 399px) {
+  .career-roster {
+    &__list { grid-template-columns: minmax(0, 1fr); }
+    &__filters { grid-template-columns: minmax(0, 1fr); }
+    &__header { padding: 20px; }
+    &__header-actions { margin-top: 0; }
+  }
+}
+
+.career-roster__toolbar { flex-wrap: wrap; }
+.career-roster__sort { flex-basis: 160px; }

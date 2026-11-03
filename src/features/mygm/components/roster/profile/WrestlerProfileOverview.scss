@@ -12,6 +12,8 @@
   border-radius: 24px;
 
   &__hero {
+    position: relative;
+    isolation: isolate;
     display: grid;
     grid-template-areas:
       "portrait"
@@ -36,7 +38,7 @@
     display: grid;
     place-items: center;
     min-width: 0;
-    height: 270px;
+    height: 320px;
     overflow: hidden;
     color: t.$text-muted;
     background: radial-gradient(
@@ -47,10 +49,13 @@
 
     img {
       display: block;
-      width: 100%;
-      max-width: 380px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: auto;
+      max-width: none;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       object-position: center top;
       -webkit-mask-image: linear-gradient(#000 0%, #000 70%, transparent 98%);
       mask-image: linear-gradient(#000 0%, #000 70%, transparent 98%);
@@ -62,13 +67,15 @@
     grid-area: identity;
     align-self: center;
     min-width: 0;
-    padding: 4px 20px 24px;
+    z-index: 2;
+    margin-top: -24px;
+    padding: 0 24px 32px;
 
     h2 {
       margin: 0;
       color: t.$text;
-      font-size: clamp(1.75rem, 6cqi, 3rem);
-      font-weight: 700;
+      font-size: clamp(2.25rem, 6.5cqi, 4.5rem);
+      font-weight: 800;
       letter-spacing: -0.045em;
       line-height: 1.1;
       overflow-wrap: anywhere;
@@ -79,10 +86,9 @@
     display: inline-flex;
     max-width: 100%;
     margin: 0 0 12px;
-    padding: 5px 9px;
-    background: rgba(t.$background, 0.75);
-    border: 1px solid rgba(t.$text, 0.1);
-    border-radius: 7px;
+    padding: 0;
+    letter-spacing: .16em;
+    text-transform: uppercase;
     color: var(--profile-ink);
     font-size: 0.6875rem;
     font-weight: 600;
@@ -172,7 +178,8 @@
   &__information {
     display: grid;
     min-width: 0;
-    padding: 0 20px;
+    padding: 0 24px;
+    background: linear-gradient(150deg, rgba(t.$text, .02), transparent);
   }
 
   &__section {
@@ -181,11 +188,17 @@
     border-top: 1px solid rgba(t.$text, 0.08);
 
     h3 {
-      margin: 0 0 18px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 24px;
       color: t.$text;
-      font-size: 0.875rem;
-      font-weight: 600;
+      font-size: 1rem;
+      font-weight: 650;
+      letter-spacing: -.025em;
+      svg { flex-shrink: 0; color: var(--profile-ink); }
     }
+    &:only-child { grid-column: 1 / -1; }
   }
 
   &__details {
@@ -226,7 +239,7 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    margin: 20px 0 0;
+    margin: 0;
     color: t.$text-muted;
     font-size: 0.75rem;
     line-height: 1.6;
@@ -249,7 +262,8 @@
   .wrestler-overview {
     &__hero {
       grid-template-areas: "identity portrait";
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      min-height: 440px;
       background-image:
         linear-gradient(
           90deg,
@@ -262,18 +276,19 @@
     }
 
     &__identity {
-      padding: 32px;
+      margin-top: 0;
+      padding: 40px;
     }
 
     &__portrait {
       align-self: stretch;
       height: auto;
-      min-height: 340px;
+      min-height: 440px;
 
       img {
         position: absolute;
-        inset: 0;
-        width: 100%;
+        inset: 0 auto auto 50%;
+        width: auto;
         max-width: none;
         height: 100%;
       }
@@ -289,4 +304,89 @@
       padding: 28px 0;
     }
   }
+}
+
+.wrestler-overview {
+  &__hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 80% 50%, color-mix(in srgb, var(--profile-accent) 12%, transparent), transparent 65%);
+  }
+  &__titles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+    li { display: grid; place-items: center; max-width: 100%; color: var(--profile-ink); font-size: .8125rem; overflow-wrap: anywhere; }
+    img { width: 112px; height: 60px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,.4)); }
+  }
+  &__skills dd > &__mic-rating { display: inline-flex; flex-wrap: wrap; gap: 3px; color: rgba(t.$text, .25); }
+  &__mic-rating .is-active { color: var(--profile-ink); stroke-width: 2.5; }
+}
+
+.wrestler-overview {
+  &__section-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+    h3 { margin-bottom: 0; }
+  }
+  &__style &__details dd {
+    font-size: 1.375rem;
+    line-height: 1.3;
+    font-weight: 700;
+    letter-spacing: -.03em;
+    text-transform: capitalize;
+  }
+  &__unlock {
+    max-width: 320px;
+    margin-top: 24px;
+    .wrestler-overview__hint { display: flex; align-items: center; gap: 7px; margin: 0 0 10px; }
+    > span { display: block; margin-top: 6px; color: t.$text-muted; font-size: .6875rem; font-variant-numeric: tabular-nums; }
+    progress {
+      display: block;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      overflow: hidden;
+      border: 0;
+      border-radius: 8px;
+      background: t.$surface-raised;
+      accent-color: var(--profile-ink);
+      &::-webkit-progress-bar { background: t.$surface-raised; }
+      &::-webkit-progress-value { background: var(--profile-ink); border-radius: 8px; }
+      &::-moz-progress-bar { background: var(--profile-ink); border-radius: 8px; }
+    }
+  }
+  &__details &__tenure {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    strong { font-size: 1.5rem; font-weight: 750; letter-spacing: -.04em; line-height: 1; }
+  }
+  &__contract--expiring, &__contract--expired {
+    padding: 5px 9px;
+    border-radius: 8px;
+    background: rgba(243,199,122,.08);
+  }
+  &__contract--expired { background: rgba(t.$error,.08); }
+}
+
+@container (min-width: 680px) {
+  .wrestler-overview__membership {
+    padding-left: 32px;
+    border-left: 1px solid rgba(t.$text, .07);
+  }
+}
+
+@container (max-width: 359px) {
+  .wrestler-overview__details { grid-template-columns: minmax(0, 1fr); }
 }

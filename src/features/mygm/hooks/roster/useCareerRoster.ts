@@ -26,6 +26,7 @@ interface CareerRosterState {
 }
 
 const defaultFilters: CareerRosterFilters = {
+  championsOnly: false,
   gender: "all",
   primaryClass: "all",
   role: "all",
@@ -59,7 +60,7 @@ export function useCareerRoster(careerId: string, pageSize = 12) {
 
   const { filters, page: requestedPage } = currentControls;
 
-  const { gender, primaryClass, role, category, sort } = filters;
+  const { gender, primaryClass, role, category, sort, championsOnly } = filters;
 
   const search = filters.search.trim();
 
@@ -69,6 +70,7 @@ export function useCareerRoster(careerId: string, pageSize = 12) {
   const isSearching = search !== debouncedSearch;
 
   const scope = JSON.stringify([
+    championsOnly,
     careerId,
     gender,
     primaryClass,
@@ -128,6 +130,7 @@ export function useCareerRoster(careerId: string, pageSize = 12) {
       try {
         const data = await getCareerRoster(
           {
+            championsOnly,
             careerId,
             gender,
             primaryClass,
@@ -180,6 +183,7 @@ export function useCareerRoster(careerId: string, pageSize = 12) {
       controller.abort();
     };
   }, [
+    championsOnly,
     careerId,
     gender,
     primaryClass,
@@ -218,6 +222,7 @@ export function useCareerRoster(careerId: string, pageSize = 12) {
       if (
         current.careerId === careerId &&
         nextFilters.gender === base.filters.gender &&
+        nextFilters.championsOnly === base.filters.championsOnly &&
         nextFilters.primaryClass === base.filters.primaryClass &&
         nextFilters.role === base.filters.role &&
         nextFilters.category === base.filters.category &&

@@ -1,0 +1,137 @@
+@use "../../../../styles/tokens" as t;
+
+// The wizard owns its theme; catalog and save logic stay in the existing steps.
+.new-career {
+  .career-setup-stepper {
+    margin: 0 0 28px;
+    padding: 6px;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 18px;
+
+    &__step { gap: 8px; padding: 10px 2px; border-radius: 12px; }
+    &__step.is-current { background: var(--setup-tint); }
+    &__step.is-current .career-setup-stepper__number { background: var(--setup-ink); border-color: transparent; color: t.$background; }
+    &__step.is-complete .career-setup-stepper__number { background: var(--setup-tint); border-color: var(--setup-accent); color: var(--setup-ink); }
+    &__number { width: 30px; height: 30px; border-radius: 10px; }
+    &__label { font-size: 0.625rem; }
+  }
+
+  .career-configuration, .roster-step, .championships-step { padding: 0; background: transparent; border: 0; border-radius: 0; }
+  .career-configuration { gap: 24px; }
+  .career-configuration__heading h2, .roster-step__heading h2, .championships-step__heading h2, .summary-step__heading h2 { font-size: clamp(1.25rem, 3vw, 1.5rem); font-weight: 650; letter-spacing: -0.025em; line-height: 1.3; }
+
+  .career-configuration__section, .career-configuration > .career-configuration__field {
+    padding: 20px;
+    background: t.$surface;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 20px;
+  }
+  fieldset.career-configuration__section { display: flow-root; }
+  .career-configuration__section > legend { float: left; width: 100%; margin: 0; padding: 0; }
+  .career-configuration__hint { clear: both; }
+  .career-configuration__managers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .career-configuration__choice-content { border-color: rgba(t.$text, 0.12); border-radius: 16px; }
+  .career-configuration__choice--brand .career-configuration__choice-content {
+    min-height: 150px;
+    padding: 20px 12px 16px;
+    background: linear-gradient(180deg, rgba(#101216, 0.5), rgba(#101216, 0.95)), var(--setup-background, none) center / cover, url("../../../../assets/backgrounds/news-arena.png") center / cover;
+  }
+  .career-configuration__choice--manager .career-configuration__choice-content { min-height: 192px; padding: 12px; background: radial-gradient(ellipse at 50% 100%, var(--setup-tint), transparent 80%), t.$background; }
+  .career-configuration__choice-input:checked + .career-configuration__choice-content { border-color: var(--setup-accent); box-shadow: 0 0 0 1px var(--setup-accent); }
+  .career-configuration__choice-input:focus-visible + .career-configuration__choice-content { outline-color: var(--setup-ink); }
+  .career-configuration__brand-image { height: 72px; color: color-mix(in srgb, var(--setup-accent) 40%, #{t.$text}); }
+  .career-configuration__brand-image img { height: 64px; max-height: 64px; }
+  .career-configuration__manager-image, .career-configuration__manager-image img { height: 132px; max-height: 132px; }
+  .career-configuration__check { width: 24px; height: 24px; border-radius: 8px; background: color-mix(in srgb, var(--setup-accent) 45%, #{t.$text}); color: t.$background; }
+  .career-configuration__show-managers { color: var(--setup-ink); }
+  .career-configuration__tracking { padding: 16px; border-color: rgba(t.$text, 0.1); }
+  .career-configuration__tracking:has(input:checked) { border-color: color-mix(in srgb, var(--setup-accent) 40%, transparent); }
+  .career-configuration__toggle input:checked, .championships-step__mitb-heading input:checked { background: var(--setup-ink); border-color: var(--setup-ink); }
+  .career-configuration__toggle input:checked::before, .championships-step__mitb-heading input:checked::before { background: t.$background; }
+  .career-configuration__field input:focus-visible, .career-configuration__field select:focus-visible { border-color: var(--setup-accent); outline-color: var(--setup-ink); }
+
+  .roster-step__toolbar, .roster-step__filter-grid, .championships-step__filter-grid { padding: 18px; border: 1px solid rgba(t.$text, 0.08); border-radius: 18px; background: t.$surface; }
+  .roster-step__search:focus-within { border-color: var(--setup-accent); box-shadow: 0 0 0 3px var(--setup-tint); }
+  .roster-step__search input:focus-visible { outline: none; }
+  .roster-step__catalog { min-height: 320px; }
+  .roster-step__selection { background: var(--setup-tint); border-color: color-mix(in srgb, var(--setup-accent) 30%, transparent); }
+  .roster-step__selection ul { max-height: 240px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+  .roster-step__selection > summary svg, .roster-step__selection > summary span, .roster-step__filters[open] > summary, .roster-step__filter-count { color: var(--setup-ink); }
+  .roster-pick-card { border-color: rgba(t.$text, 0.1); background: t.$surface; }
+  .roster-pick-card__portrait { height: 176px; background: radial-gradient(ellipse at 50% 80%, var(--setup-tint), transparent 80%), t.$surface; }
+  .roster-pick-card.is-selected { border-color: var(--setup-accent); box-shadow: inset 0 0 0 1px var(--setup-accent); }
+  .roster-pick-card.is-selected .roster-pick-card__portrait { background: radial-gradient(ellipse at 50% 80%, var(--setup-tint), transparent 80%), t.$background; }
+  .roster-pick-card.is-selected .roster-pick-card__indicator { background: var(--setup-ink); border-color: transparent; color: t.$background; }
+  .roster-pick-card__indicator { width: 30px; height: 30px; }
+
+  .championship-choice { background: t.$surface; border-color: rgba(t.$text, 0.1); border-radius: 20px; }
+  .championship-choice > summary { grid-template-columns: 80px minmax(0, 1fr) 18px; min-height: 140px; padding: 18px 14px; }
+  .championship-choice__art, .championship-choice__art img { width: 80px; height: 80px; }
+  .championship-choice.has-title { border-color: color-mix(in srgb, var(--setup-accent) 45%, transparent); }
+  .championship-choice.has-title > summary { background: radial-gradient(ellipse at 0% 50%, var(--setup-tint), transparent 80%); }
+  .championship-choice.has-title .championship-choice__status, .championships-step__filters[open] > summary, .championships-step__mitb-heading > svg { color: var(--setup-ink); }
+  .championship-choice__title-name, .championship-choice__status { font-size: 0.75rem; }
+  .championship-choice__holder-image, .championship-choice__holder-image img { width: 56px; height: 68px; }
+  .championships-step__mitb { background: t.$surface; border-color: rgba(t.$text, 0.1); }
+
+  .summary-step__hero { background: linear-gradient(100deg, rgba(#101216, 0.95), rgba(#101216, 0.5)), var(--setup-background, none) center / cover, url("../../../../assets/backgrounds/news-arena.png") center / cover; border-color: color-mix(in srgb, var(--setup-accent) 30%, transparent); }
+  .career-review__header h3 svg, .career-review__edit, .career-review__slot, .career-review__mitb > svg { color: var(--setup-ink); }
+  .career-review__lineup { display: flex; gap: 8px; align-items: center; margin: 16px 0; }
+  .career-review__lineup > span { display: grid; place-items: center; flex: 0 1 70px; min-width: 0; height: 88px; overflow: hidden; border-radius: 12px; color: t.$text-muted; background: radial-gradient(ellipse at 50% 80%, var(--setup-tint), transparent 90%), t.$background; }
+  .career-review__lineup img { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
+  .career-review__lineup > strong { flex-shrink: 0; font-size: 0.8125rem; color: var(--setup-ink); }
+  .career-review__title-image, .career-review__title-image img { width: 96px; height: 72px; }
+  .career-review__wrestler-image, .career-review__wrestler-image img { width: 48px; height: 64px; }
+  .career-review__slot { font-size: 0.6875rem; }
+
+  .career-configuration__actions, .roster-step__actions, .championships-step__actions, .summary-step__actions {
+    position: sticky;
+    z-index: 5;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    gap: 10px;
+    padding: 14px;
+    background: rgba(t.$background, 0.97);
+    border: 1px solid color-mix(in srgb, var(--setup-accent) 25%, #{t.$border});
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(#000, 0.25);
+  }
+  .career-configuration__actions { flex-direction: row; justify-content: space-between; }
+  .career-configuration__actions > :first-child { flex: 1; }
+  .career-configuration__actions > :last-child { flex: 2; }
+  .roster-step__actions > p svg, .championships-step__actions > p svg { color: var(--setup-ink); }
+  .career-configuration__button, .roster-step__button, .championships-step__button, .summary-step__button { min-width: 0; min-height: 48px; border-radius: 12px; font-size: 0.8125rem; }
+  .career-configuration__button--primary, .roster-step__button--primary, .championships-step__button--primary, .summary-step__button--primary { background: var(--setup-ink); border-color: transparent; color: t.$background; }
+  .career-configuration__button--primary:hover:not(:disabled), .roster-step__button--primary:hover:not(:disabled), .championships-step__button--primary:hover:not(:disabled), .summary-step__button--primary:hover:not(:disabled) { background: color-mix(in srgb, var(--setup-ink) 85%, white); border-color: transparent; }
+
+  @media (min-width: t.$screen-sm-min) {
+    .career-setup-stepper__step { flex-direction: row; }
+    .career-setup-stepper__label { font-size: 0.8125rem; }
+    .career-configuration__section, .career-configuration > .career-configuration__field { padding: 24px; }
+    .career-configuration__brands { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .career-configuration__managers { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .career-configuration__actions > :first-child, .career-configuration__actions > :last-child { flex: initial; }
+    .championship-choice > summary { grid-template-columns: 100px minmax(0, 1fr) 18px; padding: 20px; }
+    .championship-choice__art, .championship-choice__art img { width: 100px; height: 90px; }
+  }
+
+  @media (min-width: t.$screen-lg-min) {
+    .career-configuration__brands { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+    .career-configuration__managers { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .career-configuration__manager-image, .career-configuration__manager-image img { height: 160px; max-height: 160px; }
+    .roster-pick-card__portrait { height: 210px; }
+  }
+
+  @media (max-width: 380px) {
+    .championship-choice > summary { grid-template-columns: 56px minmax(0, 1fr) 16px; gap: 10px; padding: 14px 10px; }
+    .championship-choice__art, .championship-choice__art img { width: 56px; height: 64px; }
+    .career-review__title-image, .career-review__title-image img { width: 60px; height: 64px; }
+    .career-configuration__button, .roster-step__button, .championships-step__button, .summary-step__button { gap: 6px; padding-inline: 10px; font-size: 0.75rem; }
+  }
+
+  @media (hover: hover) {
+    .career-configuration__choice:hover .career-configuration__choice-content, .roster-pick-card:hover, .roster-step__page-button:hover:not(:disabled) { border-color: var(--setup-accent); }
+    .career-configuration__show-managers:hover { background: var(--setup-tint); border-color: var(--setup-accent); }
+    .career-review__edit:hover:not(:disabled) { border-color: var(--setup-accent); }
+  }
+}

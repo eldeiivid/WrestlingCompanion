@@ -1,9 +1,8 @@
 @use "../../../../../styles/tokens" as t;
 
 .news-carousel {
-  --news-accent: var(--career-accent, #{t.$text-muted});
-  --news-ink: color-mix(in srgb, var(--news-accent) 60%, #{t.$text});
-
+  --news-accent: var(--career-accent, #{t.$brand});
+  --news-ink: color-mix(in srgb, var(--news-accent) 50%, #{t.$text});
   min-width: 0;
   container-type: inline-size;
 
@@ -18,27 +17,32 @@
     padding: 4px;
     list-style: none;
     scroll-snap-type: x mandatory;
+    scroll-padding-inline: 4px;
     overscroll-behavior-x: contain;
     scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
-    &:focus-visible {
-      outline-offset: -2px;
-      border-radius: 26px;
-    }
   }
-
+  &__track::-webkit-scrollbar {
+    display: none;
+  }
+  &__track:focus-visible {
+    outline: 2px solid var(--news-ink);
+    outline-offset: -2px;
+    border-radius: 26px;
+  }
   &__slide {
     display: flex;
-    flex: 0 0 100%;
+    flex: 0 0 94%;
     min-width: 0;
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }
-
+  &__track::after {
+    content: "";
+    flex: 0 0 6%;
+  }
+  &__slide:only-child {
+    flex-basis: 100%;
+  }
   &__card {
     position: relative;
     isolation: isolate;
@@ -47,34 +51,9 @@
     width: 100%;
     min-width: 0;
     overflow: hidden;
-
-    background-color: #11151b;
-    background-image:
-      linear-gradient(
-        0deg,
-        rgba(#101216, 0.98) 0%,
-        rgba(#101216, 0.92) 38%,
-        rgba(#101216, 0.12) 100%
-      ),
-      url("../../../../../assets/backgrounds/news-arena.png");
-    background-size: cover;
-    background-position: 72% center;
-
+    background: t.$surface;
     border: 1px solid rgba(t.$text, 0.1);
     border-radius: 24px;
-
-    &::before {
-      position: absolute;
-      z-index: 0;
-      inset: 0;
-      background: radial-gradient(
-        ellipse at 75% 30%,
-        color-mix(in srgb, var(--news-accent) 18%, transparent),
-        transparent 70%
-      );
-      content: "";
-      pointer-events: none;
-    }
   }
 
   &__content {
@@ -85,14 +64,13 @@
     align-items: flex-start;
     min-width: 0;
     padding: 22px;
-    background: linear-gradient(180deg, #101216, rgba(#101216, 0.96));
 
     h3 {
-      margin: 18px 0 14px;
+      margin: 16px 0 12px;
       color: t.$text;
       font-size: 1.375rem;
       font-weight: 700;
-      letter-spacing: -0.04em;
+      letter-spacing: -0.035em;
       line-height: 1.2;
       overflow-wrap: anywhere;
     }
@@ -102,72 +80,69 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px 14px;
+    gap: 8px 12px;
   }
-
   &__category {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 6px 9px;
-    background: color-mix(in srgb, var(--news-accent) 15%, rgba(#101216, 0.8));
-    border: 1px solid color-mix(in srgb, var(--news-accent) 22%, transparent);
+    background: color-mix(in srgb, var(--news-accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--news-accent) 24%, transparent);
     border-radius: 8px;
     color: var(--news-ink);
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
     font-weight: 600;
-
-    svg {
-      flex-shrink: 0;
-    }
   }
-
+  &__category svg {
+    flex-shrink: 0;
+  }
   &__period {
     color: t.$text-muted;
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
     line-height: 1.5;
   }
-
   &__description {
     max-width: 48ch;
     margin: 0;
     color: t.$text-muted;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     line-height: 1.75;
     overflow-wrap: anywhere;
   }
-
   &__link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 9px;
     min-height: 44px;
-    margin-top: auto;
-    padding-top: 20px;
-    border-radius: 6px;
+    margin-top: 20px;
+    padding: 10px 12px;
+    background: rgba(t.$text, 0.03);
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 10px;
     color: t.$text;
     font-size: 0.8125rem;
     font-weight: 600;
     text-decoration: none;
-
-    svg {
-      color: var(--news-ink);
-    }
-
-    &:hover {
-      color: var(--news-ink);
-    }
   }
-
+  &__link svg {
+    color: var(--news-ink);
+  }
   &__visual {
     position: relative;
     z-index: 1;
     order: -1;
-    height: 220px;
+    height: 224px;
     min-width: 0;
     overflow: hidden;
-    background: transparent;
+    background:
+      radial-gradient(
+        ellipse at 50% 70%,
+        color-mix(in srgb, var(--news-accent) 20%, transparent),
+        transparent 75%
+      ),
+      linear-gradient(145deg, #{t.$surface-raised}, #{t.$surface});
 
     &::after {
       position: absolute;
@@ -175,30 +150,22 @@
       right: 0;
       bottom: 0;
       left: 0;
-      height: 80px;
-      background: linear-gradient(180deg, rgba(#101216, 0), #101216);
+      height: 64px;
+      background: linear-gradient(transparent, #{t.$surface});
       content: "";
       pointer-events: none;
     }
-  }
-
-  &__card--team &__visual {
-    height: 240px;
   }
 
   &__versus {
     position: absolute;
     inset: 0;
     display: grid;
-    grid-template-columns:
-      minmax(0, 1fr)
-      24px
-      minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
     align-items: stretch;
     min-width: 0;
     padding: 12px 8px 0;
   }
-
   &__vs {
     position: absolute;
     z-index: 6;
@@ -209,25 +176,20 @@
     width: 38px;
     height: 38px;
     transform: translate(-50%, -50%);
-    background: rgba(#101216, 0.78);
-    border: 1px solid rgba(t.$text, 0.1);
-    border-radius: 13px;
+    background: rgba(t.$background, 0.85);
+    border: 1px solid color-mix(in srgb, var(--news-accent) 30%, transparent);
+    border-radius: 12px;
     color: var(--news-ink);
     font-size: 0.8125rem;
     font-weight: 750;
     font-style: italic;
-    box-shadow: 0 4px 18px rgba(#000, 0.25);
   }
-
-  // Leave the central grid column available for the VS badge.
   &__versus > .news-carousel__group:first-child {
     grid-column: 1;
   }
-
   &__versus > .news-carousel__group:last-child {
     grid-column: 3;
   }
-
   &__group {
     position: relative;
     display: flex;
@@ -236,7 +198,6 @@
     height: 100%;
     min-width: 0;
   }
-
   &__person {
     position: relative;
     z-index: 1;
@@ -245,18 +206,14 @@
     min-width: 0;
     margin: 0;
   }
-
-  &__group--pair {
-    .news-carousel__person {
-      flex: 0 0 76%;
-
-      + .news-carousel__person {
-        z-index: 2;
-        margin-left: -38%;
-      }
-    }
+  &__group--pair .news-carousel__person {
+    flex: 0 0 76%;
   }
-
+  &__group--pair .news-carousel__person + .news-carousel__person {
+    z-index: 2;
+    margin-left: -38%;
+  }
+  // All renders share the same height, without clipping individual slots.
   &__portrait {
     position: relative;
     display: grid;
@@ -264,32 +221,31 @@
     width: 100%;
     height: 100%;
     min-width: 0;
-    overflow: hidden;
-
-    img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      filter: drop-shadow(0 6px 12px rgba(#000, 0.35));
-    }
+    overflow: visible;
   }
-
+  &__portrait img {
+    position: absolute;
+    inset: 0 auto auto 50%;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    transform: translateX(-50%);
+    object-fit: contain;
+    object-position: center top;
+    filter: drop-shadow(0 6px 12px rgba(#000, 0.25));
+  }
   &__initials {
     display: grid;
     place-items: center;
     width: 60px;
     height: 60px;
-    background: rgba(t.$text, 0.07);
-    border: 1px solid rgba(t.$text, 0.1);
+    background: rgba(t.$text, 0.06);
+    border: 1px solid rgba(t.$text, 0.12);
     border-radius: 20px;
     color: t.$text-muted;
     font-size: 1.125rem;
     font-weight: 600;
   }
-
   &__extra {
     position: absolute;
     z-index: 7;
@@ -299,20 +255,18 @@
     background: t.$surface-raised;
     border-radius: 8px;
     color: t.$text;
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
   }
-
   &__champions {
     position: absolute;
     inset: 12px 10% 0;
     min-width: 0;
   }
-
   &__belt {
     position: absolute;
     z-index: 6;
-    right: 12px;
-    bottom: 12px;
+    right: 14px;
+    bottom: 14px;
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
     justify-items: center;
@@ -321,90 +275,109 @@
     width: 132px;
     height: 88px;
     padding: 8px;
-    background: rgba(#101216, 0.88);
-    border: 1px solid rgba(t.$text, 0.12);
+    background: rgba(t.$background, 0.9);
+    border: 1px solid rgba(t.$text, 0.14);
     border-radius: 14px;
     color: var(--news-ink);
     box-shadow: 0 8px 24px rgba(#000, 0.2);
-
-    img {
-      width: 100%;
-      height: 54px;
-      object-fit: contain;
-    }
   }
-
+  &__belt img {
+    width: 100%;
+    height: 54px;
+    object-fit: contain;
+  }
   &__belt-label {
     color: t.$text-muted;
-    font-size: 0.5625rem;
+    font-size: 0.625rem;
     font-weight: 500;
-    letter-spacing: 0.04em;
     line-height: 1.4;
   }
-
   &__footer {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    padding: 14px 4px 0;
+    gap: 4px 20px;
+    padding: 6px 4px 0;
   }
-
   &__pagination {
     display: flex;
     align-items: center;
-    flex: 1;
+    flex: 1 1 100%;
     gap: 5px;
-    max-width: 180px;
     min-width: 0;
 
-    > span {
+    > button {
+      display: flex;
       flex: 1;
+      align-items: center;
+      min-width: 0;
+      height: 44px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    > button > span {
+      display: block;
+      width: 100%;
       height: 3px;
+      overflow: hidden;
       background: t.$surface-raised;
-      border-radius: 999px;
-
-      &.is-active {
-        background: var(--news-accent);
-      }
+      border-radius: 8px;
+    }
+    > button.is-active > span {
+      background: color-mix(
+        in srgb,
+        var(--news-accent) 40%,
+        #{t.$surface-raised}
+      );
+    }
+    > button.is-active > span > span {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: var(--news-ink);
     }
   }
 
   &__controls {
     display: flex;
     align-items: center;
-    flex-shrink: 0;
     gap: 6px;
+    width: 100%;
 
     button {
       display: grid;
       place-items: center;
-      width: 44px;
+      flex-shrink: 0;
+      min-width: 44px;
       height: 44px;
-      padding: 0;
+      padding: 0 10px;
       background: t.$surface;
-      border: 1px solid t.$border;
+      border: 1px solid rgba(t.$text, 0.12);
       border-radius: 12px;
       color: t.$text;
-
-      &:hover:not(:disabled) {
-        border-color: var(--news-accent);
-      }
-
-      &:disabled {
-        opacity: 0.35;
-      }
+    }
+    button.news-carousel__playback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-right: auto;
+      color: var(--news-ink);
+      font-size: 0.75rem;
     }
   }
 
   &__position {
     min-width: 42px;
     color: t.$text-muted;
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     text-align: center;
     font-variant-numeric: tabular-nums;
   }
-
   &__empty {
     display: flex;
     align-items: flex-start;
@@ -413,27 +386,23 @@
     background: t.$surface;
     border: 1px solid rgba(t.$text, 0.08);
     border-radius: 24px;
-
-    > div {
-      min-width: 0;
-    }
-
-    h3 {
-      margin: 0 0 10px;
-      font-size: 1.125rem;
-      letter-spacing: -0.025em;
-      line-height: 1.4;
-    }
-
-    p {
-      max-width: 52ch;
-      margin: 0;
-      color: t.$text-muted;
-      font-size: 0.8125rem;
-      line-height: 1.75;
-    }
   }
-
+  &__empty > div {
+    min-width: 0;
+  }
+  &__empty h3 {
+    margin: 0 0 10px;
+    font-size: 1.125rem;
+    letter-spacing: -0.025em;
+    line-height: 1.4;
+  }
+  &__empty p {
+    max-width: 52ch;
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.875rem;
+    line-height: 1.75;
+  }
   &__empty-icon {
     display: grid;
     place-items: center;
@@ -442,9 +411,8 @@
     height: 48px;
     background: t.$surface-raised;
     border-radius: 15px;
-    color: t.$text-muted;
+    color: var(--news-ink);
   }
-
   &__sr-only {
     position: absolute;
     width: 1px;
@@ -454,96 +422,72 @@
     clip-path: inset(50%);
     white-space: nowrap;
   }
+  button:focus-visible,
+  a:focus-visible {
+    outline: 2px solid var(--news-ink);
+    outline-offset: 3px;
+  }
+
+  @media (hover: hover) {
+    &__controls button:hover,
+    &__link:hover {
+      border-color: var(--news-accent);
+      color: var(--news-ink);
+    }
+  }
 }
 
-@container (min-width: #{t.$screen-md-min}) {
+@container (min-width: 700px) {
   .news-carousel {
     &__card {
-      grid-template-columns:
-        minmax(0, 1fr)
-        minmax(0, 1.1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
       min-height: 340px;
-
-      background-image:
-        linear-gradient(
-          90deg,
-          rgba(#101216, 0.97) 0%,
-          rgba(#101216, 0.88) 36%,
-          rgba(#101216, 0.35) 65%,
-          rgba(#101216, 0.12) 100%
-        ),
-        url("../../../../../assets/backgrounds/news-arena.png");
-
-      background-position: center;
     }
-
-    &__card--team {
-      grid-template-columns:
-        minmax(0, 0.85fr)
-        minmax(0, 1.15fr);
-    }
-
     &__content {
       justify-content: center;
-      background: transparent;
       padding: 32px;
-
-      h3 {
-        font-size: clamp(1.5rem, 2.6cqi, 2.125rem);
-      }
     }
-
-    &__card--team &__content h3 {
-      font-size: clamp(1.375rem, 2.2cqi, 1.875rem);
+    &__content h3 {
+      font-size: clamp(1.5rem, 2.8cqi, 2rem);
     }
-
-    &__link {
-      margin-top: 18px;
-    }
-
-    &__visual,
-    &__card--team &__visual {
+    &__visual {
       order: initial;
       align-self: stretch;
       height: auto;
       min-height: 340px;
-
-      &::after {
-        height: 64px;
-        background: linear-gradient(transparent, rgba(#101216, 0.4));
-      }
     }
-
-    &__versus {
-      grid-template-columns:
-        minmax(0, 1fr)
-        30px
-        minmax(0, 1fr);
-      padding: 20px 20px 0;
+    &__visual::after {
+      height: 100%;
+      width: 56px;
+      top: 0;
+      right: auto;
+      background: linear-gradient(90deg, #{t.$surface}, transparent);
     }
-
-    &__vs {
-      width: 44px;
-      height: 44px;
-      font-size: 0.9375rem;
-      border-radius: 15px;
-    }
-
     &__champions {
       inset: 20px 12% 0;
     }
-
+    &__versus {
+      padding: 20px 20px 0;
+    }
     &__belt {
-      right: 24px;
+      right: 20px;
       bottom: 20px;
-      width: 160px;
-      height: 104px;
-      padding: 10px;
-
-      img {
-        width: 100%;
-        height: 64px;
-      }
+      width: 152px;
+      height: 100px;
+    }
+    &__belt img {
+      height: 64px;
+    }
+    &__pagination {
+      flex: 1 1 auto;
+      max-width: 240px;
+    }
+    &__controls {
+      width: auto;
+      margin-left: auto;
+    }
+    &__controls .news-carousel__playback {
+      margin-right: 12px;
     }
   }
 }
@@ -557,13 +501,156 @@
         color 160ms ease,
         transform 120ms ease;
     }
-
-    &__pagination > span {
-      transition: background-color 180ms ease;
+    &__controls button:active {
+      transform: scale(0.96);
     }
+    &[data-rotating="true"]
+      .news-carousel__pagination
+      > button.is-active
+      > span
+      > span {
+      transform-origin: left;
+      animation: news-autoplay-progress 7s linear both;
+    }
+  }
+}
 
-    &__controls button:active:not(:disabled) {
-      transform: scale(0.95);
+@keyframes news-autoplay-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+// Editorial composition: artwork and copy share one continuous stage.
+.news-carousel {
+  &__card {
+    background: #101319;
+    border-color: rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+  }
+  &__visual {
+    height: 280px;
+    background:
+      radial-gradient(
+        ellipse at 60% 70%,
+        color-mix(in srgb, var(--news-accent) 22%, transparent),
+        transparent 75%
+      ),
+      url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/sp-match-2.webp")
+        center / cover,
+      #101319;
+    &::after {
+      height: 100px;
+      background: linear-gradient(transparent, #101319);
+    }
+  }
+  &__content {
+    padding: 0 24px 28px;
+  }
+  &__content h3 {
+    font-size: clamp(1.6rem, 4cqi, 2.6rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+  }
+  &__category {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 750;
+  }
+  &__period {
+    color: #a5aab5;
+  }
+  &__description {
+    color: #b6bcc8;
+    line-height: 1.65;
+  }
+  &__link {
+    padding: 8px 0;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--news-accent) 45%, transparent);
+  }
+  &__vs {
+    background: transparent;
+    border: 0;
+    font-size: 1.8rem;
+    text-shadow: 0 2px 16px #000;
+  }
+  &__belt {
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
+    border: 0;
+    box-shadow: none;
+  }
+  &__belt-label {
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  &__footer {
+    padding-top: 10px;
+  }
+  &__controls button {
+    background: transparent;
+    border-radius: 50%;
+  }
+  &__controls button.news-carousel__playback {
+    border-radius: 24px;
+  }
+}
+
+@container (min-width: 700px) {
+  .news-carousel {
+    &__card {
+      grid-template-columns: minmax(0, 1fr);
+      min-height: 400px;
+    }
+    &__visual {
+      position: absolute;
+      inset: 0 0 0 32%;
+      height: 100%;
+      min-height: 400px;
+      &::after {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          linear-gradient(
+            90deg,
+            #101319 0%,
+            rgba(16, 19, 25, 0.8) 12%,
+            transparent 55%
+          ),
+          linear-gradient(0deg, #101319, transparent 45%);
+      }
+    }
+    &__content {
+      width: 56%;
+      box-sizing: border-box;
+      padding: 40px 0 40px 36px;
+      justify-content: center;
+    }
+    &__content h3 {
+      font-size: clamp(1.8rem, 3.8cqi, 3rem);
+    }
+    &__champions {
+      inset: 24px 5% 0 20%;
+    }
+    &__versus {
+      padding-left: 14%;
+    }
+    &__belt {
+      right: 24px;
+      bottom: 24px;
     }
   }
 }

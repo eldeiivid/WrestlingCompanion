@@ -31,6 +31,7 @@ interface LatestShowWidgetProps {
 interface MatchHighlightProps {
   title: string;
   match: ShowDetailMatch;
+  featured?: boolean;
 }
 
 const showTypeLabels: Record<ShowHistoryType, string> = {
@@ -71,7 +72,7 @@ function getTeams(match: ShowDetailMatch) {
   );
 }
 
-function MatchHighlight({ title, match }: MatchHighlightProps) {
+function MatchHighlight({ title, match, featured = false }: MatchHighlightProps) {
   const headingId = useId();
   const teams = getTeams(match);
 
@@ -104,7 +105,7 @@ function MatchHighlight({ title, match }: MatchHighlightProps) {
         : "Winner";
 
   return (
-    <article className="latest-show__highlight" aria-labelledby={headingId}>
+    <article className={`latest-show__highlight${featured ? " latest-show__highlight--featured" : ""}`} aria-labelledby={headingId}>
       <header className="latest-show__highlight-header">
         <h3 id={headingId}>{title}</h3>
 
@@ -121,7 +122,7 @@ function MatchHighlight({ title, match }: MatchHighlightProps) {
             <Fragment key={side}>
               {index > 0 && <span className="latest-show__versus">vs</span>}
 
-              <div className="latest-show__team">
+              <div className={`latest-show__team${members.length > 1 ? " latest-show__team--pair" : ""}`}>
                 {members.slice(0, 2).map((participant) => (
                   <span
                     className={[
@@ -207,7 +208,7 @@ export default function LatestShowWidget({ careerId }: LatestShowWidgetProps) {
       <header className="latest-show__header">
         <h2 id={headingId}>Latest show</h2>
 
-        <Link to={`/mygm/${careerId}/history`}>
+        <Link className="dashboard-section-link" to={`/mygm/${careerId}/history`}>
           View history
           <ArrowUpRight size={16} aria-hidden="true" />
         </Link>
@@ -317,10 +318,11 @@ export default function LatestShowWidget({ careerId }: LatestShowWidgetProps) {
               <MatchHighlight
                 title={matches.length === 1 ? "Opener & Main event" : "Opener"}
                 match={opener}
+                featured={matches.length === 1}
               />
 
               {mainEvent && (
-                <MatchHighlight title="Main event" match={mainEvent} />
+                <MatchHighlight title="Main event" match={mainEvent} featured />
               )}
             </div>
           ) : (

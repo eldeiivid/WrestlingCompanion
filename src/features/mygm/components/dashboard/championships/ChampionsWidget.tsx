@@ -120,7 +120,7 @@ export default function ChampionsWidget({
       <header className="champions-widget__header">
         <h2 id={headingId}>Championships</h2>
 
-        <Link to={`/mygm/${careerId}/titles`}>
+        <Link className="dashboard-section-link" to={`/mygm/${careerId}/titles`}>
           View all titles
           <ArrowUpRight size={16} aria-hidden="true" />
         </Link>

@@ -1,0 +1,55 @@
+@use "../../../../../styles/tokens" as t;
+
+.rivalry-action-modal {
+  --rivalry-action-accent: var(--career-accent, #{t.$accent});
+  position: fixed;
+  inset: auto 0 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  max-height: 92dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: t.$surface;
+  border: 1px solid rgba(t.$text, 0.1);
+  border-bottom: 0;
+  border-radius: 28px 28px 0 0;
+  color: t.$text;
+  color-scheme: dark;
+
+  &[open] { display: flex; flex-direction: column; }
+  &::backdrop { background: rgba(#080a0e, 0.78); backdrop-filter: blur(5px); }
+  &__header, &__footer { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 16px; padding: 20px; }
+  &__header { border-bottom: 1px solid rgba(t.$text, 0.08); }
+  &__heading { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  h2 { margin: 0; font-size: 1.125rem; font-weight: 650; line-height: 1.4; letter-spacing: -0.025em; }
+  &__icon { display: grid; flex-shrink: 0; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: color-mix(in srgb, var(--rivalry-action-accent) 10%, transparent); color: var(--rivalry-action-accent); }
+  &__icon--danger { background: rgba(t.$error, 0.08); color: t.$error; }
+  form { display: flex; flex-direction: column; min-height: 0; margin: 0; }
+  &__content { display: grid; gap: 20px; min-height: 0; padding: 24px 20px; overflow-y: auto; overscroll-behavior-y: contain; }
+  p { margin: 0; color: t.$text-muted; font-size: 0.8125rem; line-height: 1.75; overflow-wrap: anywhere; }
+  p.rivalry-action-modal__name { color: t.$text; font-weight: 600; }
+  button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 16px; border: 1px solid rgba(t.$text, 0.12); border-radius: 10px; background: transparent; color: t.$text; font: inherit; font-size: 0.8125rem; cursor: pointer; }
+  button.rivalry-action-modal__close { width: 44px; flex-shrink: 0; padding: 0; }
+  button.rivalry-action-modal__primary { border-color: var(--rivalry-action-accent); background: color-mix(in srgb, var(--rivalry-action-accent) 15%, transparent); }
+  button.rivalry-action-modal__danger { background: rgba(t.$error, 0.12); border-color: rgba(t.$error, 0.4); color: t.$error; }
+  &__footer { border-top: 1px solid rgba(t.$text, 0.08); }
+  fieldset { display: grid; gap: 8px; min-width: 0; margin: 0; padding: 0; border: 0; }
+  legend { margin-bottom: 12px; font-size: 0.75rem; color: t.$text-muted; }
+  &__winner, &__confirmation { display: flex; align-items: flex-start; gap: 12px; padding: 14px; background: t.$background; border: 1px solid rgba(t.$text, 0.1); border-radius: 10px; font-size: 0.8125rem; line-height: 1.6; cursor: pointer; overflow-wrap: anywhere; }
+  &__winner:has(:checked) { border-color: var(--rivalry-action-accent); }
+  input { flex-shrink: 0; margin: 3px 0 0; accent-color: var(--rivalry-action-accent); }
+  p.rivalry-action-modal__error { color: t.$error; }
+  :disabled { opacity: 0.45; cursor: not-allowed; }
+  :focus-visible { outline: 2px solid var(--rivalry-action-accent); outline-offset: 3px; }
+
+  @media (min-width: 576px) {
+    inset: 0;
+    width: min(520px, calc(100% - 48px));
+    max-height: min(85dvh, 720px);
+    margin: auto;
+    border-bottom: 1px solid rgba(t.$text, 0.1);
+    border-radius: 24px;
+  }
+}

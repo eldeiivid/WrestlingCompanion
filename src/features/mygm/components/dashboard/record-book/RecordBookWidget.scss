@@ -418,3 +418,74 @@
     }
   }
 }
+
+// A featured first entry and a compact ordered ranking share one list.
+.record-book-widget {
+  &__list { display: grid; gap: 0 28px; }
+  &__row:first-child {
+    position: relative;
+    isolation: isolate;
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 12px 16px;
+    padding: 24px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    border-radius: 18px;
+    background: radial-gradient(ellipse at 80% 0%, color-mix(in srgb, var(--record-accent) 16%, transparent), transparent 75%), t.$background;
+    .record-book-widget__rank {
+      grid-column: 1;
+      grid-row: 1;
+      align-self: start;
+      width: 36px;
+      height: 36px;
+      font-size: 1rem;
+      color: var(--record-ink);
+      background: color-mix(in srgb, var(--record-accent) 12%, transparent);
+    }
+    .record-book-widget__thumbnail {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: center;
+      width: 100%;
+      max-width: 220px;
+      height: 140px;
+      border-radius: 0;
+      background: transparent;
+      img { object-fit: contain; object-position: center; }
+      > svg { width: 64px; height: 64px; color: var(--record-ink); }
+    }
+    .record-book-widget__entry { grid-column: 1 / -1; grid-row: 2; }
+    .record-book-widget__name { font-size: 1.375rem; font-weight: 750; line-height: 1.2; letter-spacing: -.035em; }
+    .record-book-widget__description { font-size: .75rem; line-height: 1.7; }
+    .record-book-widget__metric {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      max-width: none;
+      margin-top: 4px;
+      text-align: left;
+      font-size: clamp(1.75rem, 4cqi, 2.5rem);
+      letter-spacing: -.04em;
+      line-height: 1.15;
+      font-weight: 750;
+    }
+  }
+  &__row:nth-child(2) { border-top: 0; }
+  a:focus-visible, button:focus-visible, &__panel:focus-visible {
+    outline: 2px solid var(--record-ink);
+    outline-offset: -3px;
+  }
+}
+
+@container (min-width: 800px) {
+  .record-book-widget {
+    &__list { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
+    &__row { grid-column: 2; }
+    &__row:first-child {
+      grid-column: 1;
+      grid-row: 1 / span var(--record-rows);
+      align-content: center;
+      margin-bottom: 0;
+    }
+    &__list:has(> :only-child) { grid-template-columns: minmax(0, 1fr); }
+  }
+}

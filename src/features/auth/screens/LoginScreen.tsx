@@ -59,7 +59,7 @@ export default function LoginScreen() {
   }
 
   return (
-    <AuthLayout>
+    <AuthLayout mode="login">
       <div className="auth-form">
         <header className="auth-form__heading">
           <p className="auth-form__eyebrow">Your next chapter</p>
@@ -72,6 +72,7 @@ export default function LoginScreen() {
         <form
           onSubmit={handleSubmit}
           aria-labelledby="login-title"
+          aria-describedby={errorMessage ? "login-error" : undefined}
           aria-busy={isSubmitting}
         >
           <div className="auth-form__fields">
@@ -135,7 +136,7 @@ export default function LoginScreen() {
           </div>
 
           {errorMessage && (
-            <p className="auth-form__error" role="alert">
+            <p className="auth-form__error" id="login-error" role="alert">
               {errorMessage}
             </p>
           )}

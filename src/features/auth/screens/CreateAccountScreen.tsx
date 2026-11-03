@@ -3,6 +3,7 @@ import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
+  Check,
   Eye,
   EyeOff,
   LoaderCircle,
@@ -100,7 +101,7 @@ export default function CreateAccountScreen() {
   }
 
   return (
-    <AuthLayout>
+    <AuthLayout mode="register">
       <div className="auth-form">
         {confirmationSent ? (
           <>
@@ -177,10 +178,12 @@ export default function CreateAccountScreen() {
                       onChange={(event) => setUsername(event.target.value)}
                       minLength={3}
                       maxLength={40}
+                      aria-describedby="register-username-hint"
                       disabled={isSubmitting}
                       required
                     />
                   </div>
+                  <p className="auth-form__hint" id="register-username-hint">3–40 characters. This is how we will greet you.</p>
                 </div>
 
                 <div className="auth-form__field">
@@ -220,6 +223,7 @@ export default function CreateAccountScreen() {
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
                       minLength={8}
+                      aria-describedby="register-password-hint"
                       disabled={isSubmitting}
                       required
                     />
@@ -242,6 +246,7 @@ export default function CreateAccountScreen() {
                       )}
                     </button>
                   </div>
+                  <p className="auth-form__hint" id="register-password-hint">Use at least 8 characters.</p>
                 </div>
 
                 <div className="auth-form__field">
@@ -263,10 +268,14 @@ export default function CreateAccountScreen() {
                         setConfirmPassword(event.target.value)
                       }
                       minLength={8}
+                      aria-describedby="register-confirm-hint"
                       disabled={isSubmitting}
                       required
                     />
                   </div>
+                  <p className={`auth-form__hint${confirmPassword && password === confirmPassword ? " auth-form__hint--success" : ""}`} id="register-confirm-hint" aria-live="polite">
+                    {confirmPassword && password === confirmPassword ? <><Check size={14} aria-hidden="true" /> Passwords match.</> : "Enter the same password again."}
+                  </p>
                 </div>
               </div>
 

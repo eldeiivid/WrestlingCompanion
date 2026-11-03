@@ -21,7 +21,7 @@ export default function NewsWidget({ careerId }: NewsWidgetProps) {
       <header className="news-widget__header">
         <h2 id={headingId}>Career news</h2>
 
-        <Link to={`/mygm/${careerId}/news`}>
+        <Link className="dashboard-section-link" to={`/mygm/${careerId}/news`}>
           View all news
           <ArrowUpRight size={16} aria-hidden="true" />
         </Link>

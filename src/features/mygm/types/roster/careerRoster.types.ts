@@ -38,6 +38,7 @@ export interface CareerRosterWrestler {
 }
 
 export interface CareerRosterFilters {
+  championsOnly: boolean;
   gender: CareerRosterGender | "all";
   primaryClass: string;
   role: CareerRosterRole | "all";

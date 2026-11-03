@@ -4,6 +4,16 @@ export type RivalryLevel = 1 | 2 | 3 | 4;
 
 export type RivalrySide = 1 | 2;
 
+export interface SaveRivalryInput {
+  careerId: string;
+  feudId: string | null;
+  requestId: string;
+  kind: "singles" | "tag_team";
+  level: RivalryLevel;
+  startedTick: number | null;
+  participants: { wrestler_id: string; side: RivalrySide }[];
+}
+
 export type RivalryStatus = "active" | "resolved" | "stale";
 
 export type RivalryAction = "none" | "create" | "increase" | "resolve";

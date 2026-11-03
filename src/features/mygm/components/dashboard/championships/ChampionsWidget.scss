@@ -53,7 +53,7 @@
     overflow-x: auto;
 
     margin: 0;
-    padding: 4px 4px 12px;
+    padding: 64px 4px 12px;
     list-style: none;
 
     scroll-snap-type: x proximity;
@@ -87,93 +87,73 @@
   }
 
   &__card-link {
+    position: relative;
+    isolation: isolate;
     display: flex;
     flex-direction: column;
     height: 100%;
     min-width: 0;
-    overflow: hidden;
-
-    background-color: t.$surface;
-    background-image:
-      linear-gradient(
-        180deg,
-        rgba(#101216, 0.12),
-        rgba(t.$surface, 0.72) 38%,
-        rgba(t.$surface, 0.97) 65%
-      ),
-      url("../../../../../assets/backgrounds/news-arena.png");
-    background-size: cover;
-    background-position: 72% top;
-
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 23px;
+    background: #101319;
+    border: 1px solid rgba(t.$text, .1);
+    border-radius: 20px;
     color: t.$text;
     text-decoration: none;
+    &::before {
+      position: absolute;
+      z-index: -1;
+      content: "";
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(0deg, #101319 30%, rgba(16,19,25,.45)), url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/chp-bg-1.webp") center top / auto 320px no-repeat;
+    }
   }
 
   &__visual {
     position: relative;
     isolation: isolate;
-    height: 160px;
+    height: 300px;
     min-width: 0;
-    overflow: hidden;
-    background: radial-gradient(
-      ellipse at 70% 50%,
-      color-mix(in srgb, var(--championship-accent) 12%, transparent),
-      transparent 75%
-    );
+    background: radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--championship-accent) 16%, transparent), transparent 72%);
   }
 
   &__category {
     position: absolute;
     z-index: 4;
-    top: 14px;
+    top: 72px;
     left: 16px;
-    max-width: calc(100% - 32px);
-    padding: 5px 8px;
-    background: rgba(t.$background, 0.82);
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 7px;
+    right: 16px;
     color: var(--championship-ink);
-    font-size: 0.625rem;
-    font-weight: 500;
+    font-size: .625rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-align: center;
+    text-transform: uppercase;
   }
 
   &__belt {
     position: absolute;
     z-index: 3;
-    bottom: 20px;
-    height: 78px;
-    padding: 8px;
+    top: -56px;
+    left: 5%;
     display: grid;
     place-items: center;
-    width: 44%;
-    max-width: 150px;
-    height: 90px;
-    background: rgba(t.$background, 0.76);
-    border: 1px solid rgba(t.$text, 0.1);
-    border-radius: 15px;
+    width: 90%;
+    height: 120px;
     color: var(--championship-ink);
-    box-shadow: 0 6px 18px rgba(#000, 0.2);
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
+    filter: drop-shadow(0 12px 12px rgba(0,0,0,.55));
+    img { width: 100%; height: 100%; object-fit: contain; }
   }
 
   &__people {
     position: absolute;
     z-index: 1;
-    top: 20px;
-    right: 0;
-    bottom: 0;
+    inset: 100px 0 0;
     display: flex;
-    align-items: stretch;
     justify-content: center;
-    width: 54%;
     min-width: 0;
+    overflow: hidden;
+    border-radius: 0;
+    mask-image: linear-gradient(#000 0%, #000 75%, transparent 100%);
   }
 
   &__person {
@@ -184,18 +164,15 @@
     min-width: 0;
     height: 100%;
     color: t.$text-muted;
-
     img {
       position: absolute;
-      inset: 0;
-      width: 100%;
+      inset: 0 auto auto 50%;
+      width: auto;
+      max-width: none;
       height: 100%;
-      object-fit: cover;
+      transform: translateX(-50%);
+      object-fit: contain;
       object-position: center top;
-
-      -webkit-mask-image: linear-gradient(#000 0%, #000 78%, transparent 100%);
-
-      mask-image: linear-gradient(#000 0%, #000 78%, transparent 100%);
     }
   }
 
@@ -450,7 +427,7 @@
 @container (min-width: #{t.$screen-sm-min}) {
   .champions-widget {
     &__visual {
-      height: 180px;
+      height: 320px;
     }
 
     &__body {
@@ -458,7 +435,16 @@
     }
 
     &__belt {
-      height: 90px;
+      height: 120px;
     }
   }
+}
+
+.champions-widget {
+  a:focus-visible, button:focus-visible, &__list:focus-visible {
+    outline: 2px solid var(--championship-ink);
+    outline-offset: 3px;
+  }
+  &__stats { margin-bottom: 18px; }
+  &__holder-label { color: var(--championship-ink); }
 }

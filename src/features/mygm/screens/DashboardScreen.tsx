@@ -1,5 +1,5 @@
-import { Link, useOutletContext } from "react-router-dom";
-import { ArrowUpRight, CalendarPlus } from "lucide-react";
+import { useOutletContext } from "react-router-dom";
+import DashboardWelcome from "../components/dashboard/welcome/DashboardWelcome";
 
 import ChampionsWidget from "../components/dashboard/championships/ChampionsWidget";
 import LatestShowWidget from "../components/dashboard/last-show/LatestShowWidget";
@@ -21,26 +21,7 @@ export default function DashboardScreen() {
 
   return (
     <div className="dashboard-screen">
-      <header className="dashboard-screen__heading">
-        <div>
-          <p className="dashboard-screen__eyebrow">Career overview</p>
-
-          <h1>Dashboard</h1>
-
-          <p className="dashboard-screen__description">
-            Your latest stories, results and career milestones.
-          </p>
-        </div>
-
-        <Link
-          className="dashboard-screen__booking"
-          to={`/mygm/${career.id}/booking`}
-        >
-          <CalendarPlus size={18} aria-hidden="true" />
-          Open booking
-          <ArrowUpRight size={17} aria-hidden="true" />
-        </Link>
-      </header>
+      <DashboardWelcome career={career} />
 
       <div className="dashboard-screen__sections">
         <div className="dashboard-screen__block">

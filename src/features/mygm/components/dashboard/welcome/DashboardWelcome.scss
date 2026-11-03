@@ -1,0 +1,118 @@
+@use "../../../../../styles/tokens" as t;
+
+.dashboard-welcome {
+  --welcome-accent: var(--career-accent, #{t.$brand});
+  --welcome-ink: color-mix(in srgb, var(--welcome-accent) 45%, #{t.$text});
+
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  overflow: hidden;
+  padding: 24px;
+  background: t.$surface;
+  border: 1px solid color-mix(in srgb, var(--welcome-accent) 24%, transparent);
+  border-radius: 24px;
+
+  &::before {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    content: "";
+    background: linear-gradient(90deg, rgba(#101216, 0.96), rgba(#101216, 0.65)), url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/sp-match-3.webp") 65% center / cover;
+    pointer-events: none;
+  }
+
+  &::after {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    content: "";
+    background: radial-gradient(ellipse at 100% 100%, color-mix(in srgb, var(--welcome-accent) 16%, transparent), transparent 65%);
+    pointer-events: none;
+  }
+
+  &__copy { min-width: 0; }
+  &__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px;
+    color: var(--welcome-ink);
+    font-size: 0.625rem;
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    line-height: 1.5;
+    text-transform: uppercase;
+
+    > span { width: 6px; height: 6px; border-radius: 50%; background: var(--welcome-ink); }
+  }
+
+  h1 {
+    margin: 0 0 16px;
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+    font-weight: 750;
+    letter-spacing: -0.045em;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+
+    > span { display: block; margin-top: 3px; color: var(--welcome-ink); }
+  }
+
+  &__description { max-width: 45ch; margin: 0; color: #cfccd7; font-size: 0.875rem; line-height: 1.75; }
+  &__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin-top: 24px; }
+  &__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    padding: 12px 16px;
+    background: var(--welcome-ink);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: t.$background;
+    font-size: 0.8125rem;
+    font-weight: 650;
+    line-height: 1.5;
+    text-decoration: none;
+
+    > svg { flex-shrink: 0; }
+    &:focus-visible { outline: 2px solid t.$text; outline-offset: 4px; }
+  }
+
+  &__show {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    max-width: 36ch;
+    padding-left: 12px;
+    border-left: 2px solid color-mix(in srgb, var(--welcome-accent) 50%, transparent);
+
+    > span { color: var(--welcome-ink); font-size: 0.6875rem; line-height: 1.5; }
+    > strong { color: t.$text; font-size: 0.8125rem; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+  }
+
+  @media (min-width: t.$screen-sm-min) {
+    padding: 32px;
+    &::before { background: linear-gradient(90deg, rgba(#101216, 0.96) 10%, rgba(#101216, 0.78) 48%, rgba(#101216, 0.25)), url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/sp-match-3.webp") center / cover; }
+    &__eyebrow { font-size: 0.6875rem; }
+    &__cta { width: auto; }
+  }
+
+  @media (hover: hover) {
+    &__cta:hover { background: color-mix(in srgb, var(--welcome-ink) 85%, white); }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &__cta { transition: background-color 160ms ease, transform 120ms ease; }
+    &__cta:active { transform: scale(0.985); }
+    &__cta > svg:last-child { transition: transform 160ms ease; }
+    @media (hover: hover) {
+      &__cta:hover > svg:last-child { transform: translateX(3px); }
+    }
+  }
+}
+

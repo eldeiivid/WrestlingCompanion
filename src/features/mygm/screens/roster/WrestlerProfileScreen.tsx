@@ -35,6 +35,7 @@ export default function WrestlerProfileScreen({
       backPath={`/mygm/${career.id}/${origin}`}
       backLabel={origin === "market" ? "Back to market" : "Back to roster"}
       data={data}
+      championshipHistory={data?.championship_history}
       isLoading={isLoading}
       errorMessage={errorMessage}
       canRefresh={Boolean(wrestlerId)}

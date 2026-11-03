@@ -231,10 +231,6 @@ export function useRivalries(careerId: string, pageSize = 10) {
   }
 
   function retry() {
-    if (isLoading) {
-      return;
-    }
-
     setState({
       scope,
       data: null,

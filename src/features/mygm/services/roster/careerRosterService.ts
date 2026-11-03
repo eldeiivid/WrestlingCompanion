@@ -1,11 +1,13 @@
 import { supabase } from "../../../../lib/supabase";
+import { dashboardService } from "../dashboardService";
+import { isWrestlerReignHistory } from "./wrestlerReignsValidation";
 
 import type {
   CareerRosterPage,
   GetCareerRosterInput,
 } from "../../types/roster/careerRoster.types";
 
-import type { WrestlerProfileData } from "../../types/roster/wrestlerProfile.types";
+import type { WrestlerProfileData, WrestlerProfileWithReigns } from "../../types/roster/wrestlerProfile.types";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -325,7 +327,7 @@ export function isWrestlerProfileData(
   );
 }
 
-export async function getCareerRoster(
+async function getCareerRosterPage(
   input: GetCareerRosterInput,
   signal: AbortSignal,
 ): Promise<CareerRosterPage> {
@@ -360,14 +362,49 @@ export async function getCareerRoster(
   return payload;
 }
 
+export async function getCareerRoster(
+  input: GetCareerRosterInput,
+  signal: AbortSignal,
+): Promise<CareerRosterPage> {
+  if (!input.championsOnly) return getCareerRosterPage(input, signal);
+
+  // The roster RPC does not support title filters. Collect matching pages in
+  // server sort order, then filter current champions before paginating.
+  const [first, dashboard] = await Promise.all([
+    getCareerRosterPage({ ...input, page: 1, pageSize: 24 }, signal),
+    dashboardService.getDashboard(input.careerId, signal),
+  ]);
+  const championIds = new Set(dashboard.championships
+    .filter(title => title.reign_id && title.category !== "mitb")
+    .flatMap(title => title.holders.map(holder => holder.id)));
+  const matching = [...first.items];
+  if (championIds.size > 0) {
+    for (let page = 2; page <= first.total_pages; page++) {
+      const result = await getCareerRosterPage({ ...input, page, pageSize: 24 }, signal);
+      matching.push(...result.items);
+    }
+  }
+  const champions = matching.filter(wrestler => championIds.has(wrestler.id));
+  const totalPages = Math.max(1, Math.ceil(champions.length / input.pageSize));
+  const page = Math.min(input.page, totalPages);
+  return {
+    ...first,
+    page,
+    page_size: input.pageSize,
+    total_count: champions.length,
+    total_pages: totalPages,
+    items: champions.slice((page - 1) * input.pageSize, page * input.pageSize),
+  };
+}
+
 export async function getWrestlerProfile(
   careerId: string,
   wrestlerId: string,
   signal: AbortSignal,
   historyLimit = 5,
-): Promise<WrestlerProfileData> {
+): Promise<WrestlerProfileWithReigns> {
   const { data, error } = await supabase
-    .rpc("wc_get_mygm_wrestler_profile", {
+    .rpc("wc_get_mygm_wrestler_profile_with_reigns", {
       p_game_id: careerId,
       p_wrestler_id: wrestlerId,
       p_history_limit: historyLimit,
@@ -381,7 +418,7 @@ export async function getWrestlerProfile(
   const payload: unknown = data;
 
   if (
-    !isWrestlerProfileData(payload) ||
+    !isWrestlerProfileWithReigns(payload) ||
     payload.career_id !== careerId ||
     payload.wrestler.id !== wrestlerId ||
     payload.match_history.items.length > historyLimit
@@ -390,4 +427,9 @@ export async function getWrestlerProfile(
   }
 
   return payload;
+}
+
+function isWrestlerProfileWithReigns(value: unknown): value is WrestlerProfileWithReigns {
+  return isRecord(value) && isWrestlerProfileData(value) &&
+    isWrestlerReignHistory(value.championship_history, value.current_tick, value.wrestler.id);
 }

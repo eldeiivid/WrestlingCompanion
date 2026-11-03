@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
 import RivalryDetailModal from "../../dashboard/rivalries/RivalryDetailModal";
 import RivalryLevel from "../../dashboard/rivalries/RivalryLevel";
 import RivalryParticipants from "../../dashboard/rivalries/RivalryParticipants";
@@ -38,7 +39,10 @@ export default function WrestlerActiveRivalries({
 
   return (
     <section className="wrestler-active-rivalries" aria-labelledby={headingId}>
-      <h2 id={headingId}>Active rivalries</h2>
+      <header className="wrestler-active-rivalries__header">
+        <h2 id={headingId}>Active rivalries<span>{rivalries.length}</span></h2>
+        <p>The stories this wrestler is involved in right now.</p>
+      </header>
 
       {rivalries.length === 0 ? (
         <p className="wrestler-active-rivalries__empty">No active rivalries.</p>
@@ -49,18 +53,18 @@ export default function WrestlerActiveRivalries({
 
             return (
               <li key={rivalry.id}>
-                <article className="wrestler-active-rivalries__card">
+                <article className="wrestler-active-rivalries__card" data-level={rivalry.level}>
+                  <div className="wrestler-active-rivalries__visual">
+                    <RivalryParticipants members={rivalry.members} variant="showcase" />
+                  </div>
+                  <div className="wrestler-active-rivalries__content">
+                  <p className="wrestler-active-rivalries__kind">{rivalry.kind === "singles" ? "Singles rivalry" : rivalry.kind === "tag_team" ? "Tag team rivalry" : "Stable rivalry"}</p>
                   <h3>{name}</h3>
-
-                  <RivalryParticipants members={rivalry.members} compact />
-
                   <RivalryLevel level={rivalry.level} />
-
-                  <p className="wrestler-active-rivalries__started">
-                    Started: Season {rivalry.started_season}
-                    {" · "}
-                    Week {rivalry.started_week}
-                  </p>
+                  <dl className="wrestler-active-rivalries__facts">
+                    <div><dt>Started</dt><dd>Season {rivalry.started_season} · Week {rivalry.started_week}</dd></div>
+                    <div><dt>Duration</dt><dd>{rivalry.weeks_active} {rivalry.weeks_active === 1 ? "week" : "weeks"}</dd></div>
+                  </dl>
 
                   <button
                     className="wrestler-active-rivalries__button"
@@ -70,7 +74,9 @@ export default function WrestlerActiveRivalries({
                     onClick={() => setSelectedFeudId(rivalry.id)}
                   >
                     View rivalry
+                    <ArrowUpRight size={18} aria-hidden="true" />
                   </button>
+                  </div>
                 </article>
               </li>
             );

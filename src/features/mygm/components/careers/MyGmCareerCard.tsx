@@ -77,7 +77,7 @@ export default function MyGmCareerCard({
             />
           )}
 
-          <span className="mygm-career-card__mode">MyGM</span>
+          <span className="mygm-career-card__mode">{career.brand_name || "MyGM"}</span>
 
           <div className="mygm-career-card__brand">
             {showLogo && career.brand_logo_url ? (

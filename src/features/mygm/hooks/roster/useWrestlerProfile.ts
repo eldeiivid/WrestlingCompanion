@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { getWrestlerProfile } from "../../services/roster/careerRosterService";
-import type { WrestlerProfileData } from "../../types/roster/wrestlerProfile.types";
+import type { WrestlerProfileWithReigns } from "../../types/roster/wrestlerProfile.types";
 
 interface WrestlerProfileState {
   scope: string;
-  data: WrestlerProfileData | null;
+  data: WrestlerProfileWithReigns | null;
   isLoading: boolean;
   errorMessage: string;
 }

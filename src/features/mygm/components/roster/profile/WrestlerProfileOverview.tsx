@@ -1,17 +1,27 @@
 import { useId, useState } from "react";
-import { Clock3, Mic2, Swords, UserRound } from "lucide-react";
+import { Clock3, IdCard, LockKeyhole, Mic, Sparkles, Swords, TriangleAlert, UserRound } from "lucide-react";
 
 import type {
   CareerRosterAcquisition,
   CareerRosterCategory,
 } from "../../../types/roster/careerRoster.types";
-import type { WrestlerProfileWrestler } from "../../../types/roster/wrestlerProfile.types";
+import type { WrestlerProfileChampionship, WrestlerProfileWrestler } from "../../../types/roster/wrestlerProfile.types";
 
 import "./WrestlerProfileOverview.scss";
 
 interface WrestlerProfileOverviewProps {
   wrestler: WrestlerProfileWrestler;
   currentTick: number;
+  championships: WrestlerProfileChampionship[];
+}
+
+function ProfileTitle({ title }: { title: WrestlerProfileChampionship }) {
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+  return <li title={title.name}>
+    {title.image_url && title.image_url !== failedUrl
+      ? <img src={title.image_url} alt={title.name} onError={() => setFailedUrl(title.image_url)} />
+      : <span>{title.name}</span>}
+  </li>;
 }
 
 const categoryLabels: Record<CareerRosterCategory, string> = {
@@ -37,6 +47,7 @@ function formatTick(tick: number): string {
 export default function WrestlerProfileOverview({
   wrestler,
   currentTick,
+  championships,
 }: WrestlerProfileOverviewProps) {
   const headingId = useId();
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
@@ -109,6 +120,12 @@ export default function WrestlerProfileOverview({
             <span>{wrestler.role === "face" ? "Face" : "Heel"}</span>
           </p>
 
+          {championships.length > 0 && (
+            <ul className="wrestler-overview__titles" aria-label="Current championships and briefcases">
+              {championships.map(title => <ProfileTitle key={title.id} title={title} />)}
+            </ul>
+          )}
+
           <p
             className={`wrestler-overview__status${
               wrestler.is_on_roster
@@ -123,7 +140,7 @@ export default function WrestlerProfileOverview({
           <dl className="wrestler-overview__skills">
             <div>
               <dt>
-                <Mic2 size={15} aria-hidden="true" />
+                <Mic size={15} aria-hidden="true" />
                 Mic skill
               </dt>
               <dd>
@@ -132,17 +149,16 @@ export default function WrestlerProfileOverview({
                     Not recorded
                   </span>
                 ) : (
-                  <>
-                    {wrestler.mic_skill}
-                    <span> / 5</span>
-                  </>
+                  <span className="wrestler-overview__mic-rating" role="img" aria-label={`${wrestler.mic_skill} of 5`}>
+                    {[1, 2, 3, 4, 5].map(point => <Mic key={point} size={22} aria-hidden="true" className={point <= (wrestler.mic_skill ?? 0) ? "is-active" : ""} />)}
+                  </span>
                 )}
               </dd>
             </div>
 
             <div>
               <dt>
-                <Swords size={15} aria-hidden="true" />
+                <Sparkles size={15} aria-hidden="true" />
                 In-ring level
               </dt>
               <dd>
@@ -160,8 +176,8 @@ export default function WrestlerProfileOverview({
       </div>
 
       <div className="wrestler-overview__information">
-        <section className="wrestler-overview__section" aria-label="Classes">
-          <h3>Wrestling style</h3>
+        <section className="wrestler-overview__section wrestler-overview__style" aria-label="Classes">
+          <h3><Swords size={18} aria-hidden="true" />Wrestling style</h3>
 
           <dl className="wrestler-overview__details">
             <div>
@@ -178,18 +194,28 @@ export default function WrestlerProfileOverview({
           </dl>
 
           {wrestler.in_ring_skill !== null && wrestler.in_ring_skill < 15 && (
-            <p className="wrestler-overview__hint">
-              A second class unlocks at in-ring level 15.
-            </p>
+            <div className="wrestler-overview__unlock">
+              <p className="wrestler-overview__hint"><LockKeyhole size={14} aria-hidden="true" />Secondary class · Unlocks at level 15</p>
+              <progress max={15} value={wrestler.in_ring_skill} aria-label="Progress toward secondary class unlock" />
+              <span>Level {wrestler.in_ring_skill} / 15</span>
+            </div>
           )}
         </section>
 
         {membership && (
           <section
-            className="wrestler-overview__section"
+            className="wrestler-overview__section wrestler-overview__membership"
             aria-label="Roster membership"
           >
-            <h3>Roster membership</h3>
+            <div className="wrestler-overview__section-heading">
+              <h3><IdCard size={18} aria-hidden="true" />Roster membership</h3>
+              <p className={`wrestler-overview__contract${contractClass}`}>
+                {remainingWeeks !== null && remainingWeeks <= 3
+                  ? <TriangleAlert size={15} aria-hidden="true" />
+                  : <Clock3 size={15} aria-hidden="true" />}
+                {contractLabel}
+              </p>
+            </div>
 
             <dl className="wrestler-overview__details">
               <div>
@@ -199,8 +225,8 @@ export default function WrestlerProfileOverview({
 
               <div>
                 <dt>Time on roster</dt>
-                <dd>
-                  {weeksOnRoster} {weeksOnRoster === 1 ? "week" : "weeks"}
+                <dd className="wrestler-overview__tenure">
+                  <strong>{weeksOnRoster}</strong> {weeksOnRoster === 1 ? "week" : "weeks"}
                 </dd>
               </div>
 
@@ -219,10 +245,6 @@ export default function WrestlerProfileOverview({
               </div>
             </dl>
 
-            <p className={`wrestler-overview__contract${contractClass}`}>
-              <Clock3 size={15} aria-hidden="true" />
-              {contractLabel}
-            </p>
           </section>
         )}
       </div>

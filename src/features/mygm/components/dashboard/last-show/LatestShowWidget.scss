@@ -40,23 +40,15 @@
 
   &__panel {
     min-width: 0;
-    overflow: hidden;
-    background:
-      radial-gradient(
-        ellipse at 0% 0%,
-        color-mix(in srgb, var(--show-accent) 8%, transparent),
-        transparent 60%
-      ),
-      t.$surface;
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 24px;
+    background: transparent;
   }
 
   &__overview {
     display: grid;
-    gap: 18px;
+    gap: 16px;
     min-width: 0;
-    padding: 20px;
+    padding: 0 0 20px;
+    border-bottom: 1px solid rgba(t.$text, 0.09);
   }
 
   &__identity {
@@ -86,8 +78,8 @@
 
     h3 {
       margin: 7px 0 10px;
-      font-size: 1.125rem;
-      font-weight: 650;
+      font-size: clamp(1.25rem, 3.5cqi, 2rem);
+      font-weight: 750;
       letter-spacing: -0.025em;
       line-height: 1.35;
       overflow-wrap: anywhere;
@@ -107,7 +99,7 @@
     gap: 5px 12px;
     margin: 0;
     color: t.$text-muted;
-    font-size: 0.625rem;
+    font-size: 0.75rem;
     line-height: 1.6;
 
     > span:first-child {
@@ -133,8 +125,8 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 1.375rem;
-      font-weight: 650;
+      font-size: clamp(2rem, 5cqi, 3.25rem);
+      font-weight: 750;
       line-height: 1.4;
       font-variant-numeric: tabular-nums;
 
@@ -155,18 +147,27 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     align-items: stretch;
-    gap: 14px;
-    padding: 0 16px;
+    gap: 16px;
+    padding: 20px 0 0;
   }
 
   &__highlight {
+    position: relative;
+    isolation: isolate;
     display: flex;
     flex-direction: column;
     min-width: 0;
-    padding: 18px;
-    background: t.$background;
-    border: 1px solid rgba(t.$text, 0.06);
-    border-radius: 18px;
+    overflow: hidden;
+    padding: 20px;
+    border-radius: 20px;
+    background:
+      linear-gradient(0deg, #101319 25%, rgba(16, 19, 25, 0.25)),
+      url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/sp-match-2.webp")
+        center / cover;
+    > :not(.latest-show__teams) {
+      position: relative;
+      z-index: 2;
+    }
   }
 
   &__highlight-header {
@@ -180,8 +181,10 @@
     h3 {
       margin: 0;
       color: var(--show-ink);
-      font-size: 0.75rem;
-      font-weight: 600;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
   }
 
@@ -200,12 +203,23 @@
   }
 
   &__teams {
+    position: relative;
     display: flex;
-    align-items: center;
+    align-items: end;
     justify-content: center;
     gap: 8px;
     min-width: 0;
-    margin-bottom: 18px;
+    height: 240px;
+    margin: -8px -20px -24px;
+    padding: 0 12px;
+    &::after {
+      position: absolute;
+      z-index: 3;
+      content: "";
+      inset: 46% 0 0;
+      background: linear-gradient(transparent, #101319 90%);
+      pointer-events: none;
+    }
   }
 
   &__team {
@@ -218,48 +232,45 @@
     min-width: 0;
   }
 
+  &__team--pair .latest-show__portrait {
+    flex: 0 0 76%;
+    max-width: none;
+    + .latest-show__portrait {
+      z-index: 2;
+      margin-left: -38%;
+    }
+  }
+
   &__portrait {
     position: relative;
+    z-index: 1;
     display: grid;
     place-items: center;
     flex: 1;
-    max-width: 76px;
     min-width: 0;
-    height: 88px;
-    overflow: hidden;
-    background: t.$surface;
-    border: 1px solid rgba(t.$text, 0.05);
-    border-radius: 12px;
+    max-width: 200px;
+    height: 240px;
+    overflow: visible;
     color: t.$text-muted;
-
     > img {
-      width: 100%;
+      position: absolute;
+      inset: 0 auto auto 50%;
+      width: auto;
+      max-width: none;
       height: 100%;
-      object-fit: cover;
+      transform: translateX(-50%);
+      object-fit: contain;
       object-position: center top;
-    }
-
-    &.is-winner {
-      border-color: color-mix(in srgb, var(--show-accent) 50%, transparent);
     }
   }
 
   &__winner-mark {
-    position: absolute;
-    right: 3px;
-    bottom: 3px;
-    display: grid;
-    place-items: center;
-    width: 18px;
-    height: 18px;
-    background: t.$background;
-    border: 1px solid var(--show-ink);
-    border-radius: 6px;
-    color: var(--show-ink);
+    display: none;
   }
 
   &__extra {
     position: absolute;
+    z-index: 4;
     top: 3px;
     right: 0;
     padding: 3px 5px;
@@ -270,16 +281,20 @@
   }
 
   &__versus {
+    position: relative;
+    z-index: 4;
+    align-self: center;
     flex-shrink: 0;
-    color: t.$text-muted;
-    font-size: 0.625rem;
-    font-weight: 600;
+    color: rgba(t.$text, 0.65);
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-style: italic;
   }
 
   &__participants {
     margin: 0 0 10px;
-    font-size: 0.9375rem;
-    font-weight: 600;
+    font-size: 1.0625rem;
+    font-weight: 700;
     line-height: 1.5;
     letter-spacing: -0.015em;
     overflow-wrap: anywhere;
@@ -294,23 +309,21 @@
   }
 
   &__result {
-    display: grid;
-    gap: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 10px;
     margin: auto 0 0;
-    padding-top: 14px;
-    border-top: 1px solid rgba(t.$text, 0.07);
-
+    padding-top: 12px;
     dt {
-      color: t.$text-muted;
-      font-size: 0.625rem;
+      color: var(--show-ink);
+      font-size: 0.6875rem;
     }
-
     dd {
       margin: 0;
       color: t.$text;
       font-size: 0.8125rem;
-      font-weight: 600;
-      line-height: 1.6;
+      font-weight: 650;
       overflow-wrap: anywhere;
     }
   }
@@ -472,7 +485,7 @@
       gap: 7px;
       min-width: 132px;
       padding: 14px;
-      background: rgba(t.$background, 0.6);
+      background: transparent;
       border: 0;
       border-radius: 16px;
     }
@@ -491,7 +504,44 @@
 
 @container (min-width: #{t.$screen-md-min}) {
   .latest-show__highlights {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    > :only-child {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+.latest-show {
+  &__highlight--featured {
+    background-image:
+      linear-gradient(0deg, #101319 25%, rgba(16, 19, 25, 0.25)),
+      url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/sp-match-1.webp");
+  }
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--show-ink);
+    outline-offset: 4px;
+  }
+}
+
+@container (max-width: 360px) {
+  .latest-show {
+    &__identity {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    &__empty {
+      flex-direction: column;
+    }
+    &__overall-rating {
+      flex-wrap: wrap;
+    }
+    &__teams {
+      height: 200px;
+    }
+    &__portrait {
+      height: 200px;
+    }
   }
 }
 

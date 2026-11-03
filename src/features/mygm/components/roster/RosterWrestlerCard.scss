@@ -13,15 +13,15 @@
     height: 100%;
     min-width: 0;
     overflow: hidden;
-    background-color: t.$surface;
+    background-color: #101319;
     background-image:
       linear-gradient(
         180deg,
         rgba(#101216, 0.2),
-        rgba(t.$surface, 0.8) 42%,
-        rgba(t.$surface, 0.98) 70%
+        rgba(#101319, 0.8) 42%,
+        #101319 70%
       ),
-      url("../../../../assets/backgrounds/news-arena.png");
+      url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/stk-bg-1.webp");
     background-size: cover;
     background-position: 75% top;
     border: 1px solid rgba(t.$text, 0.08);
@@ -32,7 +32,7 @@
 
   &__image {
     position: relative;
-    height: 148px;
+    height: 240px;
     min-width: 0;
     overflow: hidden;
     background: radial-gradient(
@@ -53,7 +53,7 @@
     border: 1px solid rgba(t.$text, 0.08);
     border-radius: 6px;
     color: var(--talent-ink);
-    font-size: 0.5625rem;
+    font-size: 0.75rem;
     font-weight: 500;
   }
 
@@ -83,7 +83,7 @@
     flex: 1;
     flex-direction: column;
     min-width: 0;
-    padding: 12px;
+    padding: 18px;
   }
 
   &__header {
@@ -102,7 +102,7 @@
   &__meta {
     margin: 5px 0 0;
     color: t.$text-muted;
-    font-size: 0.625rem;
+    font-size: 0.75rem;
     line-height: 1.6;
   }
 
@@ -215,11 +215,11 @@
 @container (min-width: #{t.$screen-sm-min}) {
   .roster-wrestler-card {
     &__image {
-      height: 180px;
+      height: 260px;
     }
 
     &__content {
-      padding: 16px;
+      padding: 20px;
     }
 
     &__header h2 {
@@ -265,4 +265,43 @@
       transform: translate(2px, -2px);
     }
   }
+}
+
+.roster-wrestler-card {
+  &[data-titleholder="true"] &__link { border-color: rgba(226, 192, 113, .35); }
+  &__titles {
+    position: absolute;
+    z-index: 3;
+    top: 9px;
+    right: 9px;
+    width: 76px;
+    max-height: calc(100% - 18px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    filter: drop-shadow(0 3px 5px rgba(0, 0, 0, .65));
+    ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    li { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: .6875rem; line-height: 1.5; color: #e7d9b8; }
+    img { width: 76px; height: 40px; object-fit: contain; flex-shrink: 0; }
+    svg { flex-shrink: 0; }
+    span { overflow-wrap: anywhere; }
+  }
+  &[data-titleholder="true"] &__category { max-width: calc(100% - 103px); }
+  &__stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    > div { padding: 0; background: transparent; }
+    dd { display: flex; align-items: center; gap: 6px; font-size: .9375rem; }
+    dd > svg { color: var(--talent-ink); }
+  }
+  &__mic-rating {
+    display: inline-flex;
+    gap: 2px;
+    color: rgba(t.$text, .22);
+    .is-active { color: var(--talent-ink); stroke-width: 2.5; }
+  }
+  &__link:focus-visible { outline: 2px solid var(--talent-ink); outline-offset: 3px; }
+  &__footer { min-height: 44px; }
 }

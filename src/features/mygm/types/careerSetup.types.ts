@@ -3,6 +3,7 @@ export interface BrandOption {
   name: string;
   logo_url: string | null;
   primary_color: string | null;
+  background_url?: string | null;
 }
 
 export interface ManagerOption {

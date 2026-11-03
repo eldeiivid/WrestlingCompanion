@@ -1,6 +1,7 @@
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Clock3, TriangleAlert, UserRound } from "lucide-react";
+import { ArrowUpRight, Clock3, Mic, Sparkles, TriangleAlert, UserRound } from "lucide-react";
+import type { DashboardChampionship } from "../../types/dashboard.types";
 
 import type {
   CareerRosterCategory,
@@ -13,6 +14,18 @@ interface RosterWrestlerCardProps {
   careerId: string;
   currentTick: number;
   wrestler: CareerRosterWrestler;
+  championships: DashboardChampionship[];
+}
+
+function HeldTitle({ title }: { title: DashboardChampionship }) {
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+  return (
+    <li title={title.name}>
+      {title.image_url && title.image_url !== failedUrl
+        ? <img src={title.image_url} alt={title.name} loading="lazy" onError={() => setFailedUrl(title.image_url)} />
+        : <span>{title.name}</span>}
+    </li>
+  );
 }
 
 const categoryLabels: Record<CareerRosterCategory, string> = {
@@ -25,6 +38,7 @@ export default function RosterWrestlerCard({
   careerId,
   currentTick,
   wrestler,
+  championships,
 }: RosterWrestlerCardProps) {
   const headingId = useId();
   const contractId = useId();
@@ -68,7 +82,7 @@ export default function RosterWrestlerCard({
     remainingWeeks === 0 || isExpiringSoon ? TriangleAlert : Clock3;
 
   return (
-    <article className="roster-wrestler-card" aria-labelledby={headingId}>
+    <article className="roster-wrestler-card" data-titleholder={championships.length > 0} aria-labelledby={headingId}>
       <Link
         className="roster-wrestler-card__link"
         to={`/mygm/${careerId}/roster/${wrestler.id}`}
@@ -94,6 +108,13 @@ export default function RosterWrestlerCard({
               <UserRound size={52} strokeWidth={1.2} />
             )}
           </span>
+          {championships.length > 0 && (
+            <div className="roster-wrestler-card__titles">
+              <ul aria-label="Current titles and briefcases">
+                {championships.map(title => <HeldTitle key={title.id} title={title} />)}
+              </ul>
+            </div>
+          )}
         </div>
 
         <div className="roster-wrestler-card__content">
@@ -125,28 +146,24 @@ export default function RosterWrestlerCard({
 
           <dl className="roster-wrestler-card__stats">
             <div>
-              <dt>Mic</dt>
-
-              <dd
-                aria-label={
-                  wrestler.mic_skill === null ? "Not recorded" : undefined
-                }
-              >
-                {wrestler.mic_skill === null
-                  ? "—"
-                  : `${wrestler.mic_skill} / 5`}
+              <dt className="roster-wrestler-card__sr-only">Mic skill</dt>
+              <dd title={wrestler.mic_skill === null ? "Mic skill not recorded" : `Mic skill: ${wrestler.mic_skill} of 5`}>
+                {wrestler.mic_skill === null ? (
+                  <><Mic size={16} aria-hidden="true" /><span aria-label="Not recorded">—</span></>
+                ) : (
+                  <span className="roster-wrestler-card__mic-rating" role="img" aria-label={`${wrestler.mic_skill} of 5`}>
+                    {[1, 2, 3, 4, 5].map(point => (
+                      <Mic key={point} size={16} aria-hidden="true" className={point <= wrestler.mic_skill! ? "is-active" : ""} />
+                    ))}
+                  </span>
+                )}
               </dd>
             </div>
-
             <div>
-              <dt>Ring level</dt>
-
-              <dd
-                aria-label={
-                  wrestler.in_ring_skill === null ? "Not recorded" : undefined
-                }
-              >
-                {wrestler.in_ring_skill ?? "—"}
+              <dt className="roster-wrestler-card__sr-only">Ring level</dt>
+              <dd title="Ring level">
+                <Sparkles size={17} aria-hidden="true" />
+                <span aria-label={wrestler.in_ring_skill === null ? "Not recorded" : undefined}>{wrestler.in_ring_skill ?? "—"}</span>
               </dd>
             </div>
           </dl>

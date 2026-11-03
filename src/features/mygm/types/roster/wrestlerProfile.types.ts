@@ -11,6 +11,7 @@ import type {
 
 import type { DashboardChampionship } from "../dashboard.types";
 import type { FeaturedRivalry } from "../rivalries/rivalries.types";
+import type { ChampionshipDivision } from "../championships/championships.types";
 
 export interface WrestlerProfileMembership extends CareerRosterMembership {
   brand_id: string;
@@ -79,4 +80,14 @@ export interface WrestlerProfileChampionship extends DashboardChampionship {
   reign_id: string;
   won_tick: number;
   duration_weeks: number;
+}
+
+export interface WrestlerProfileReign extends WrestlerProfileChampionship {
+  division: ChampionshipDivision;
+  lost_tick: number | null;
+  status: "current" | "completed";
+}
+
+export interface WrestlerProfileWithReigns extends WrestlerProfileData {
+  championship_history: WrestlerProfileReign[];
 }

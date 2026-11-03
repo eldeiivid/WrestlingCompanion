@@ -47,11 +47,13 @@
 
   &__match {
     min-width: 0;
-    padding: 20px 0;
+    display: grid;
+    gap: 18px;
+    padding: 24px 0;
   }
 
   &__period {
-    margin: 0 0 10px;
+    margin: 5px 0;
     color: t.$text-muted;
     font-size: 0.6875rem;
     line-height: 1.6;
@@ -69,8 +71,8 @@
       min-width: 0;
       margin: 0;
       color: t.$text;
-      font-size: 0.875rem;
-      font-weight: 600;
+      font-size: 1.125rem;
+      font-weight: 700;
       letter-spacing: -0.015em;
       line-height: 1.6;
       overflow-wrap: anywhere;
@@ -82,7 +84,7 @@
     padding: 4px 8px;
     background: rgba(t.$text, 0.04);
     border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 6px;
+    border-radius: 8px;
     color: t.$text-muted;
     font-size: 0.6875rem;
     font-weight: 600;
@@ -141,7 +143,7 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 4px 16px;
-    margin-top: 12px;
+    margin-top: 0;
   }
 
   &__rating {
@@ -160,7 +162,9 @@
 
     strong {
       color: t.$text;
-      font-weight: 600;
+      font-weight: 750;
+      font-size: 1.375rem;
+      letter-spacing: -.03em;
     }
 
     > span {
@@ -175,7 +179,11 @@
     justify-content: center;
     gap: 8px;
     min-height: 44px;
-    color: t.$text-muted;
+    padding: 0 12px;
+    border: 1px solid rgba(t.$text, .12);
+    border-radius: 12px;
+    background: rgba(t.$text, .035);
+    color: t.$text;
     font-size: 0.75rem;
     font-weight: 500;
     text-decoration: none;
@@ -227,7 +235,7 @@
     }
 
     &__match-header h3 {
-      font-size: 0.9375rem;
+      font-size: 1.125rem;
     }
   }
 }
@@ -235,7 +243,28 @@
 @media (hover: hover) {
   .wrestler-recent-matches__link:hover {
     color: t.$text;
-    text-decoration: underline;
-    text-underline-offset: 4px;
+    border-color: var(--matches-ink);
+    background: color-mix(in srgb, var(--matches-accent) 8%, transparent);
   }
+}
+
+.wrestler-recent-matches {
+  &__event { min-width: 0; padding-left: 12px; border-left: 2px solid rgba(t.$text,.16); }
+  &__event-name { margin: 0; color: var(--matches-ink); font-size: .8125rem; font-weight: 650; line-height: 1.5; overflow-wrap: anywhere; }
+  &__segment { color: t.$text-muted; font-size: .6875rem; }
+  &__content { min-width: 0; }
+  &__match[data-result="winner"] &__event { border-color: t.$success; }
+  &__match[data-result="loser"] &__event { border-color: t.$error; }
+}
+
+@container (min-width: 800px) {
+  .wrestler-recent-matches {
+    &__match { grid-template-columns: minmax(120px, .65fr) minmax(0, 2fr) minmax(110px, .6fr); align-items: start; gap: 28px; }
+    &__footer { flex-direction: column; align-items: flex-end; gap: 14px; }
+    &__match-header { flex-wrap: nowrap; }
+    &__match-header h3 { flex-basis: auto; }
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .wrestler-recent-matches__link { transition: background-color 160ms ease, border-color 160ms ease; }
 }

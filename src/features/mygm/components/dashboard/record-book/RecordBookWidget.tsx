@@ -1,5 +1,5 @@
 import { useId, useRef, useState } from "react";
-import type { KeyboardEvent } from "react";
+import type { CSSProperties, KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
@@ -227,7 +227,7 @@ export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
       <header className="record-book-widget__header">
         <h2 id={headingId}>Record Book</h2>
 
-        <Link to={recordBookPath}>
+        <Link className="dashboard-section-link" to={recordBookPath}>
           View record book
           <ArrowUpRight size={16} aria-hidden="true" />
         </Link>
@@ -323,7 +323,10 @@ export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
                       <p>{category.emptyMessage}</p>
                     </div>
                   ) : (
-                    <ol className="record-book-widget__list">
+                    <ol
+                      className="record-book-widget__list"
+                      style={{ "--record-rows": Math.max(1, category.entries.length - 1) } as CSSProperties}
+                    >
                       {category.entries.map((entry) => (
                         <li
                           className={[

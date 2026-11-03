@@ -3,153 +3,53 @@
 .wrestler-active-rivalries {
   --rivalry-accent: var(--career-accent, #{t.$text-muted});
   --rivalry-ink: color-mix(in srgb, var(--rivalry-accent) 60%, #{t.$text});
-
   container-type: inline-size;
   min-width: 0;
-
-  > h2 {
-    margin: 0 0 16px;
-    color: t.$text;
-    font-size: 1.125rem;
-    font-weight: 650;
-    letter-spacing: -0.025em;
-    line-height: 1.3;
+  &__header {
+    margin-bottom: 20px;
+    h2 { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0; font-size: 1.125rem; font-weight: 650; letter-spacing: -.025em; line-height: 1.3; }
+    h2 span { padding: 3px 8px; border-radius: 7px; background: t.$surface; color: t.$text-muted; font-size: .6875rem; font-weight: 500; letter-spacing: normal; }
+    p { margin: 7px 0 0; color: t.$text-muted; font-size: .8125rem; line-height: 1.6; }
   }
-
-  &__empty {
-    margin: 0;
-    padding: 20px;
-    background: t.$surface;
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 20px;
-    color: t.$text-muted;
-    font-size: 0.8125rem;
-    line-height: 1.6;
-  }
-
-  &__list {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-
-    > li {
-      min-width: 0;
-    }
-  }
-
+  &__empty { margin: 0; padding: 24px; background: rgba(t.$surface,.6); border-left: 2px solid rgba(t.$text,.12); border-radius: 0 16px 16px 0; color: t.$text-muted; font-size: .8125rem; line-height: 1.6; }
+  &__list { display: grid; grid-template-columns: minmax(0,1fr); gap: 20px; margin: 0; padding: 0; list-style: none; > li { min-width: 0; } }
   &__card {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    gap: 20px;
-    height: 100%;
-    min-width: 0;
-    padding: 20px;
-    overflow: hidden;
-    background-color: t.$surface;
-    background-image:
-      linear-gradient(
-        180deg,
-        rgba(t.$surface, 0.78),
-        rgba(t.$surface, 0.92) 55%,
-        t.$surface
-      ),
-      url("../../../../../assets/backgrounds/news-arena.png");
-    background-position: center top;
-    background-size: cover;
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 20px;
-
-    > h3 {
-      margin: 0;
-      color: t.$text;
-      font-size: 1rem;
-      font-weight: 650;
-      letter-spacing: -0.025em;
-      line-height: 1.4;
-      overflow-wrap: anywhere;
-    }
-
-    > * {
-      min-width: 0;
-    }
+    display: flex; flex-direction: column; min-width: 0; height: 100%; overflow: hidden; border: 1px solid rgba(t.$text,.08); border-radius: 20px;
+    background: linear-gradient(180deg, rgba(16,19,25,.05), #101319 58%), url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/rivalry-bg-3.webp") center top / cover, #101319;
   }
-
-  &__started {
-    margin: 0;
-    color: t.$text-muted;
-    font-size: 0.6875rem;
-    line-height: 1.6;
+  &__visual { padding: 16px 12px 0; background: radial-gradient(ellipse at 50% 65%, color-mix(in srgb,var(--rivalry-accent) 14%,transparent),transparent 75%); }
+  &__content { display: flex; flex: 1; flex-direction: column; gap: 18px; min-width: 0; padding: 0 24px 24px;
+    h3 { margin: 0; font-size: 1.375rem; font-weight: 750; letter-spacing: -.035em; line-height: 1.2; overflow-wrap: anywhere; text-wrap: balance; }
   }
+  &__kind { margin: 0 0 -10px; color: var(--rivalry-ink); font-size: .625rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; line-height: 1.5; }
+  &__facts { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 16px; margin: auto 0 0;
+    dt { margin-bottom: 5px; color: t.$text-muted; font-size: .6875rem; line-height: 1.5; }
+    dd { margin: 0; font-size: .75rem; line-height: 1.6; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  }
+  &__button { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 48px; padding: 12px 0 0; border: 0; border-top: 1px solid rgba(t.$text,.08); border-radius: 0; background: transparent; color: t.$text; font: inherit; font-size: .8125rem; font-weight: 600; text-align: left;
+    svg { flex-shrink: 0; color: var(--rivalry-ink); }
+    &:focus-visible { outline: 2px solid var(--rivalry-ink); outline-offset: 3px; border-radius: 6px; }
+  }
+  .rivalry-level { display: grid; gap: 10px; }
+  .rivalry-level__step { height: 6px; }
+  &__card[data-level="4"] .rivalry-level__step--active { background: var(--rivalry-ink); }
 
-  &__button {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    box-sizing: border-box;
-    width: 100%;
-    min-height: 48px;
-    margin-top: auto;
-    padding: 14px 0 0;
-    background: transparent;
-    border: 0;
-    border-top: 1px solid rgba(t.$text, 0.08);
-    border-radius: 0;
-    color: t.$text;
-    font: inherit;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-align: left;
-    cursor: pointer;
-
-    &::after {
-      content: "↗";
-      flex-shrink: 0;
-      color: var(--rivalry-ink);
-      font-size: 1.125rem;
-      line-height: 1;
+  // Profile showcase only; shared participant views keep their existing layout.
+  .rivalry-participants--showcase {
+    grid-template-columns: minmax(0,1fr) 28px minmax(0,1fr); align-items: stretch; gap: 6px; height: 240px;
+    .rivalry-participants__side { position: relative; height: 100%; }
+    .rivalry-participants__side-label, figcaption, .rivalry-participants__extra-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
+    .rivalry-participants__members { align-items: stretch; flex-wrap: nowrap; gap: 0; height: 100%; > li { position: relative; flex: 1; min-width: 0; max-width: none; height: 100%; } }
+    .rivalry-participants__side--pair .rivalry-participants__members > li { flex: 0 0 76%; + li { z-index: 1; margin-left: -38%; } }
+    .rivalry-participants__member { height: 100%; }
+    .rivalry-participants__portrait { height: 100%; aspect-ratio: auto; overflow: visible; background: transparent; border: 0; border-radius: 0;
+      img { inset: 0 auto auto 50%; width: auto; max-width: none; height: 100%; transform: translateX(-50%); object-fit: contain; object-position: center top; background: transparent; mask-image: linear-gradient(#000 0%,#000 75%,transparent 100%); }
     }
-
-    &:focus-visible {
-      outline: 2px solid var(--rivalry-accent);
-      outline-offset: 4px;
-      border-radius: 4px;
-    }
+    .rivalry-participants__versus { position: relative; z-index: 2; font-size: 1.25rem; font-style: italic; font-weight: 800; color: var(--rivalry-ink); }
+    .rivalry-participants__extra { position: absolute; z-index: 3; top: 8px; right: 0; margin: 0; padding: 4px 6px; border-radius: 7px; background: t.$surface-raised; font-size: .6875rem; }
+    .rivalry-participants__empty { padding-top: 48px; font-size: .75rem; }
   }
 }
-
-@container (min-width: 640px) {
-  .wrestler-active-rivalries {
-    &__list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    &__card {
-      padding: 24px;
-    }
-  }
-}
-
-@media (hover: hover) {
-  .wrestler-active-rivalries__button:hover {
-    color: var(--rivalry-ink);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .wrestler-active-rivalries__button {
-    transition: color 160ms ease;
-
-    &::after {
-      transition: transform 160ms ease;
-    }
-
-    &:hover::after {
-      transform: translate(2px, -2px);
-    }
-  }
-}
+@container (min-width: 640px) { .wrestler-active-rivalries__list { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (hover: hover) { .wrestler-active-rivalries__button:hover { color: var(--rivalry-ink); } }
+@media (prefers-reduced-motion: no-preference) { .wrestler-active-rivalries__button { transition: color 160ms ease; } }

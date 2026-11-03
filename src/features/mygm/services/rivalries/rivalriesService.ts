@@ -5,7 +5,46 @@ import type {
   RivalriesPage,
   RivalryDetailData,
   RivalryListItem,
+  SaveRivalryInput,
 } from "../../types/rivalries/rivalries.types";
+
+export async function manageRivalry(
+  careerId: string,
+  feudId: string,
+  action: "resolve" | "delete",
+  winningSide: 1 | 2 | null = null,
+): Promise<string> {
+  const { data, error } = await supabase.rpc("wc_manage_mygm_rivalry", {
+    p_game_id: careerId,
+    p_feud_id: feudId,
+    p_action: action,
+    p_winning_side: winningSide,
+  });
+
+  if (error) throw new Error(error.message);
+  if (data !== feudId) {
+    throw new Error("The action response could not be verified. Refresh rivalries before retrying.");
+  }
+  return data;
+}
+
+export async function saveRivalry(input: SaveRivalryInput): Promise<string> {
+  const { data, error } = await supabase.rpc("wc_save_mygm_rivalry", {
+    p_game_id: input.careerId,
+    p_feud_id: input.feudId,
+    p_request_id: input.requestId,
+    p_kind: input.kind,
+    p_level: input.level,
+    p_started_tick: input.startedTick,
+    p_participants: input.participants,
+  });
+
+  if (error) throw new Error(error.message);
+  if (typeof data !== "string" || !data) {
+    throw new Error("The save response could not be verified. Refresh rivalries before retrying.");
+  }
+  return data;
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);

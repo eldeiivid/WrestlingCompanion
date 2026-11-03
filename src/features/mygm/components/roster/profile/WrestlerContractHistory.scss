@@ -54,7 +54,7 @@
 
   &__stage {
     min-width: 0;
-    padding: 20px;
+    padding: 24px;
     background: t.$surface;
     border: 1px solid rgba(t.$text, 0.08);
     border-radius: 20px;
@@ -76,8 +76,8 @@
     h3 {
       margin: 0;
       color: t.$text;
-      font-size: 1rem;
-      font-weight: 650;
+      font-size: 1.375rem;
+      font-weight: 750;
       letter-spacing: -0.025em;
       line-height: 1.4;
       overflow-wrap: anywhere;
@@ -100,8 +100,10 @@
     border: 1px solid rgba(t.$text, 0.08);
     border-radius: 6px;
     color: t.$text-muted;
-    font-size: 0.6875rem;
-    font-weight: 600;
+    font-size: 0.625rem;
+    font-weight: 650;
+    letter-spacing: .08em;
+    text-transform: uppercase;
     line-height: 1.5;
 
     &--active,
@@ -154,15 +156,20 @@
 
   &__events {
     margin: 24px 0 0;
-    padding: 0;
+    padding: 24px 0 0;
     border-top: 1px solid rgba(t.$text, 0.08);
     list-style: none;
   }
 
   &__event {
+    position: relative;
+    display: grid;
+    grid-template-columns: 32px minmax(0,1fr);
+    gap: 6px 14px;
     min-width: 0;
-    padding: 20px 0;
-    border-top: 1px solid rgba(t.$text, 0.06);
+    padding: 0 0 28px;
+    &::before { position: absolute; content: ""; top: 32px; bottom: 0; left: 15px; width: 1px; background: rgba(t.$text,.12); }
+    &:last-child::before { display: none; }
 
     &:last-child {
       padding-bottom: 0;
@@ -228,8 +235,9 @@
     justify-content: center;
     box-sizing: border-box;
     min-height: 44px;
+    gap: 8px;
     padding: 10px 14px;
-    background: transparent;
+    background: rgba(t.$text,.035);
     border: 1px solid rgba(t.$text, 0.12);
     border-radius: 10px;
     color: t.$text-muted;
@@ -268,7 +276,7 @@
 @container (min-width: 640px) {
   .wrestler-contract-history {
     &__stage {
-      padding: 24px;
+      padding: 28px;
     }
 
     &__details {
@@ -298,4 +306,30 @@
       border-color 160ms ease,
       color 160ms ease;
   }
+}
+
+.wrestler-contract-history {
+  &__stage[data-status="active"] {
+    background: radial-gradient(ellipse at 0% 0%,color-mix(in srgb,var(--contract-accent) 8%,transparent),transparent 65%),t.$surface;
+    border-color: color-mix(in srgb,var(--contract-accent) 22%,transparent);
+  }
+  &__details { padding-bottom: 4px; dd { font-weight: 600; } }
+  &__event &__event-period { grid-column: 2; grid-row: 1; margin: 3px 0 0; }
+  &__event-marker { position: relative; z-index: 1; grid-column: 1; grid-row: 1 / span 2; display: grid; place-items: center; align-self: start; width: 32px; height: 32px; border: 1px solid color-mix(in srgb,var(--contract-accent) 22%,transparent); border-radius: 50%; background: t.$surface; color: var(--contract-ink); }
+  &__event-content { grid-column: 2; grid-row: 2; min-width: 0; h4 { font-size: .9375rem; font-weight: 650; margin: 0 0 10px; letter-spacing: -.015em; } }
+  &__event[data-action="terminated"] &__event-marker { color: t.$error; border-color: rgba(t.$error,.25); }
+  &__event[data-action="expired"] &__event-marker { color: #f3c77a; border-color: rgba(#f3c77a,.25); }
+  &__cost strong { color: t.$text; font-weight: 650; font-variant-numeric: tabular-nums; }
+}
+
+@container (min-width: 760px) {
+  .wrestler-contract-history {
+    &__event { grid-template-columns: 150px 32px minmax(0,1fr); gap: 10px 20px; &::before { left: 185px; } }
+    &__event &__event-period { grid-column: 1; grid-row: 1; text-align: right; margin-top: 6px; }
+    &__event-marker { grid-column: 2; grid-row: 1; }
+    &__event-content { grid-column: 3; grid-row: 1; padding-top: 4px; }
+  }
+}
+@container (max-width: 319px) {
+  .wrestler-contract-history { &__stage { padding: 20px; } &__details { grid-template-columns: minmax(0,1fr); } }
 }

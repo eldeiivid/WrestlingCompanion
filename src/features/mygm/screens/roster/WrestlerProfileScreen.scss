@@ -234,3 +234,14 @@
     transform: rotate(360deg);
   }
 }
+
+// The wrestler's identity is the visual heading once the profile is loaded.
+.wrestler-profile__heading--compact {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.wrestler-profile__toolbar { margin-bottom: 0; }

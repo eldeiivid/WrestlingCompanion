@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import {
   ArrowUpRight,
   ChevronLeft,
@@ -9,10 +9,14 @@ import {
   Swords,
   Trophy,
   UserRound,
+  Plus,
 } from "lucide-react";
 
 import RivalryDetailModal from "../../components/dashboard/rivalries/RivalryDetailModal";
 import RivalryLevel from "../../components/dashboard/rivalries/RivalryLevel";
+import RivalryEditorModal from "../../components/dashboard/rivalries/RivalryEditorModal";
+import RivalryActionsMenu from "../../components/dashboard/rivalries/RivalryActionsMenu";
+import RivalryActionModal from "../../components/dashboard/rivalries/RivalryActionModal";
 
 import { useRivalries } from "../../hooks/rivalries/useRivalries";
 
@@ -106,9 +110,15 @@ function MemberPortrait({ src }: { src: string | null }) {
 function RivalryCard({
   rivalry,
   onOpen,
+  onEdit,
+  onResolve,
+  onDelete,
 }: {
   rivalry: RivalryListItem;
   onOpen: () => void;
+  onEdit: () => void;
+  onResolve: () => void;
+  onDelete: () => void;
 }) {
   const headingId = useId();
   const name = getRivalryName(rivalry);
@@ -139,6 +149,7 @@ function RivalryCard({
           >
             {statusLabels[rivalry.status]}
           </span>
+          <RivalryActionsMenu rivalry={rivalry} name={name} onEdit={onEdit} onResolve={onResolve} onDelete={onDelete} />
         </div>
 
         <div className="rivalries-screen__sides">
@@ -238,6 +249,9 @@ export default function RivalriesScreen() {
   const headingId = useId();
 
   const [selectedFeudId, setSelectedFeudId] = useState<string | null>(null);
+  const [editor, setEditor] = useState<{ rivalry: RivalryListItem | null } | null>(null);
+  const [pendingAction, setPendingAction] = useState<{ rivalry: RivalryListItem; action: "resolve" | "delete" } | null>(null);
+  const [notice, setNotice] = useState("");
 
   const {
     data,
@@ -274,6 +288,10 @@ export default function RivalriesScreen() {
           </p>
         </div>
 
+        <div className="rivalries-screen__actions">
+        <button className="rivalries-screen__button rivalries-screen__create" type="button" aria-haspopup="dialog" onClick={() => setEditor({ rivalry: null })}>
+          <Plus size={17} aria-hidden="true" /> Create rivalry
+        </button>
         <button
           className="rivalries-screen__button rivalries-screen__refresh"
           type="button"
@@ -284,7 +302,10 @@ export default function RivalriesScreen() {
           <RefreshCw size={17} aria-hidden="true" />
           <span>Refresh</span>
         </button>
+        </div>
       </header>
+
+      {notice && <p className="rivalries-screen__notice" role="status">{notice}</p>}
 
       <fieldset className="rivalries-screen__filters">
         <legend className="rivalries-screen__sr-only">Filter rivalries</legend>
@@ -410,7 +431,7 @@ export default function RivalriesScreen() {
             <p>
               {hasFilterChanges
                 ? "Try another search or reset your filters."
-                : "Start a rivalry through your show results to begin its story."}
+                : "Create a rivalry here or through your show results to begin its story."}
             </p>
 
             {hasFilterChanges ? (
@@ -422,13 +443,15 @@ export default function RivalriesScreen() {
                 Reset filters
               </button>
             ) : (
-              <Link
+              <button
                 className="rivalries-screen__button"
-                to={`/mygm/${career.id}/booking`}
+                type="button"
+                aria-haspopup="dialog"
+                onClick={() => setEditor({ rivalry: null })}
               >
-                Go to booking
-                <ArrowUpRight size={16} aria-hidden="true" />
-              </Link>
+                Create rivalry
+                <Plus size={16} aria-hidden="true" />
+              </button>
             )}
           </div>
         )}
@@ -441,6 +464,9 @@ export default function RivalriesScreen() {
                   <RivalryCard
                     rivalry={rivalry}
                     onOpen={() => setSelectedFeudId(rivalry.id)}
+                    onEdit={() => setEditor({ rivalry })}
+                    onResolve={() => setPendingAction({ rivalry, action: "resolve" })}
+                    onDelete={() => setPendingAction({ rivalry, action: "delete" })}
                   />
                 </li>
               ))}
@@ -485,6 +511,36 @@ export default function RivalriesScreen() {
         feudId={selectedFeudId}
         onClose={() => setSelectedFeudId(null)}
       />
+      {editor && (
+        <RivalryEditorModal
+          key={career.id}
+          careerId={career.id}
+          currentTick={data?.current_tick ?? career.current_tick}
+          rivalry={editor.rivalry}
+          onClose={() => setEditor(null)}
+          onSaved={() => {
+            const created = !editor.rivalry;
+            setEditor(null);
+            if (created) resetFilters();
+            retry();
+          }}
+        />
+      )}
+      {pendingAction && (
+        <RivalryActionModal
+          key={`${career.id}:${pendingAction.rivalry.id}:${pendingAction.action}`}
+          careerId={career.id}
+          rivalry={pendingAction.rivalry}
+          action={pendingAction.action}
+          onClose={() => setPendingAction(null)}
+          onCompleted={() => {
+            setNotice(pendingAction.action === "delete" ? "Rivalry deleted. Associated matches and shows were kept." : "Rivalry finished. You can find it under Resolved.");
+            setSelectedFeudId(null);
+            setPendingAction(null);
+            retry();
+          }}
+        />
+      )}
     </section>
   );
 }

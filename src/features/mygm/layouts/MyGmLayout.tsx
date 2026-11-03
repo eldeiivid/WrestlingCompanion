@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 import {
   Link,
@@ -71,6 +72,11 @@ function CareerSeasonGate({ context }: CareerSeasonGateProps) {
 export default function MyGmLayout() {
   const { careerId } = useParams();
   const { pathname } = useLocation();
+  const contentRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
 
   const { career, isLoading, errorMessage, refreshCareer } =
     useMyGmCareer(careerId);
@@ -122,11 +128,13 @@ export default function MyGmLayout() {
 
   return (
     <div className="mygm-layout" style={theme}>
+      <a className="mygm-layout__skip" href="#career-content">Skip to career content</a>
       <CareerHeader career={career} />
 
       <CareerNavigation careerId={career.id} />
 
-      <main className="mygm-layout__content">
+      <main ref={contentRef} id="career-content" className="mygm-layout__content" tabIndex={-1}>
+        <div className="mygm-layout__atmosphere" aria-hidden="true" />
         {errorMessage && (
           <div className="mygm-layout__notice">
             <p role="alert">{errorMessage}</p>

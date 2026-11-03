@@ -7,6 +7,7 @@ import type { CareerConfigurationDraft } from "../../types/careerDraft.types";
 import type { CareerSetupCatalogs } from "../../types/careerSetup.types";
 
 import "./CareerConfigurationStep.scss";
+import { careerSetupTheme } from "./careerSetupTheme";
 
 interface CareerConfigurationStepProps {
   catalogs: CareerSetupCatalogs;
@@ -100,6 +101,7 @@ export default function CareerConfigurationStep({
             <label
               className="career-configuration__choice career-configuration__choice--brand"
               key={brand.id}
+              style={careerSetupTheme(brand)}
             >
               <input
                 className="career-configuration__choice-input"

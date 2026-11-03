@@ -67,7 +67,7 @@ export default function FeaturedRivalriesWidget({
         </div>
 
         <Link
-          className="featured-rivalries__view-all"
+          className="featured-rivalries__view-all dashboard-section-link"
           to={`/mygm/${careerId}/rivalries`}
         >
           View all rivalries
@@ -137,7 +137,7 @@ export default function FeaturedRivalriesWidget({
 
               return (
                 <li key={rivalry.id}>
-                  <article className="featured-rivalries__card">
+                  <article className="featured-rivalries__card" data-level={rivalry.level}>
                     <div className="featured-rivalries__visual">
                       <RivalryParticipants
                         members={rivalry.members}

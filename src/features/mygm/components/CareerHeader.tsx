@@ -231,6 +231,7 @@ export default function CareerHeader({ career }: CareerHeaderProps) {
           </Link>
 
           <div className="career-header__copy">
+            <p className="career-header__eyebrow">MyGM <span aria-hidden="true">·</span> {career.brand_name}</p>
             <p className="career-header__career-name" title={career.name}>
               {career.name}
             </p>
@@ -277,6 +278,7 @@ export default function CareerHeader({ career }: CareerHeaderProps) {
             Week {week}
             {!isCompact && <span> / 50</span>}
           </strong>
+          <span className="career-header__season-track" aria-hidden="true"><span style={{ width: `${((week - 1) / 50) * 100}%` }} /></span>
         </div>
 
         {metricCount > 0 && (

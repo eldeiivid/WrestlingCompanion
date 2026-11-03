@@ -9,9 +9,10 @@ import "./AuthLayout.scss";
 
 interface AuthLayoutProps {
   children: ReactNode;
+  mode: "login" | "register";
 }
 
-export default function AuthLayout({ children }: AuthLayoutProps) {
+export default function AuthLayout({ children, mode }: AuthLayoutProps) {
   return (
     <div className="auth-layout">
       <header className="auth-layout__header">
@@ -31,13 +32,13 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       <main className="auth-layout__main">
         <aside className="auth-layout__story" aria-label="About WrestlingBook">
           <div className="auth-layout__story-copy">
-            <p className="auth-layout__eyebrow">A home for your career</p>
+            <p className="auth-layout__eyebrow"><span aria-hidden="true" /> Your career. Center stage.</p>
 
             <h2>
               Every rivalry.
-              <br />
+              <br />{" "}
               Every reign.
-              <br />
+              <br />{" "}
               <span>Your story.</span>
             </h2>
 
@@ -48,9 +49,8 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           </div>
 
           <div className="auth-layout__art" aria-hidden="true">
-            <div className="auth-layout__halo" />
-
             <img src={brandSymbol} alt="" />
+            <span>Built for your next main event.</span>
           </div>
 
           <ul className="auth-layout__features" aria-label="Career tools">
@@ -72,7 +72,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         </aside>
 
         <section className="auth-layout__panel">
-          <div className="auth-layout__form-container">{children}</div>
+          <div className="auth-layout__form-container" key={mode}>{children}</div>
         </section>
       </main>
 

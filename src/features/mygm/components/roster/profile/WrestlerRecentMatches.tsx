@@ -82,13 +82,15 @@ export default function WrestlerRecentMatches({
 
             return (
               <li key={match.segment_id}>
-                <article className="wrestler-recent-matches__match">
+                <article className="wrestler-recent-matches__match" data-result={match.wrestler_result ?? "unrecorded"}>
+                  <div className="wrestler-recent-matches__event">
+                    <p className="wrestler-recent-matches__event-name">{match.event_name || "Show"}</p>
                   <p className="wrestler-recent-matches__period">
                     Season {match.season} · Week {match.week}
-                    {" · "}
-                    Segment {match.position}
                   </p>
-
+                    <span className="wrestler-recent-matches__segment">Segment {match.position}</span>
+                  </div>
+                  <div className="wrestler-recent-matches__content">
                   <header className="wrestler-recent-matches__match-header">
                     <h3>{getMatchup(match) || "Participants not recorded"}</h3>
 
@@ -125,6 +127,7 @@ export default function WrestlerRecentMatches({
                       {winnerNames.join(" & ")}
                     </p>
                   )}
+                  </div>
 
                   <footer className="wrestler-recent-matches__footer">
                     <p

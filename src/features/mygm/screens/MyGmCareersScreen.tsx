@@ -1,5 +1,6 @@
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Gamepad2, Plus, RotateCcw } from "lucide-react";
+import { ArrowLeft, Gamepad2, Plus, RotateCcw, Search, X } from "lucide-react";
 
 import { useAuth } from "../../auth/hooks/useAuth";
 import { useMyGmCareers } from "../hooks/useMyGmCareers";
@@ -13,6 +14,14 @@ export default function MyGmCareersScreen() {
   const { user } = useAuth();
 
   const { careers, isLoading, errorMessage, retry } = useMyGmCareers(user?.id);
+  const [search, setSearch] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
+  const [sort, setSort] = useState("newest");
+  const query = search.trim().toLocaleLowerCase();
+  const visibleCareers = careers.filter(career =>
+    [career.name, career.brand_name, career.manager_name].some(value => value?.toLocaleLowerCase().includes(query)),
+  );
+  if (sort === "name") visibleCareers.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="mygm-careers">
@@ -38,11 +47,11 @@ export default function MyGmCareersScreen() {
           <div>
             <p className="mygm-careers__eyebrow">MyGM · Career library</p>
 
-            <h1>Your next chapter awaits.</h1>
+            <h1>Your careers.<br />{" "}<span>Your legacy.</span></h1>
 
             <p className="mygm-careers__description">
-              Return to your brand or build a new legacy. Every career has its
-              own story.
+              Pick up where your story left off, or build something new.
+              Your brands and biggest moments live here.
             </p>
           </div>
 
@@ -64,11 +73,31 @@ export default function MyGmCareersScreen() {
             <h2 id="career-library-title">Your careers</h2>
 
             {!isLoading && !errorMessage && (
-              <span className="mygm-careers__count">
+              <span className="mygm-careers__count" role="status">
                 {careers.length} {careers.length === 1 ? "career" : "careers"}
               </span>
             )}
           </header>
+
+          {!isLoading && !errorMessage && careers.length > 0 && (
+            <div className="mygm-careers__tools">
+              <div className="mygm-careers__search">
+                <Search size={18} aria-hidden="true" />
+                <input ref={searchRef} type="search" aria-label="Search careers by name, brand or manager" placeholder="Search careers, brands or GMs" maxLength={200} value={search} onChange={event => setSearch(event.target.value)} />
+                {search && <button type="button" aria-label="Clear career search" onClick={() => { setSearch(""); searchRef.current?.focus(); }}><X size={16} aria-hidden="true" /></button>}
+              </div>
+              <label className="mygm-careers__sort">
+                <span>Sort by</span>
+                <select value={sort} onChange={event => setSort(event.target.value)}>
+                  <option value="newest">Newest first</option>
+                  <option value="name">Name A–Z</option>
+                </select>
+              </label>
+            </div>
+          )}
+          {!isLoading && !errorMessage && careers.length > 0 && query && (
+            <p className="mygm-careers__results" role="status">{visibleCareers.length} of {careers.length} careers match your search.</p>
+          )}
 
           {isLoading ? (
             <>
@@ -77,12 +106,8 @@ export default function MyGmCareersScreen() {
               </p>
 
               <div className="mygm-careers__list" aria-hidden="true">
-                {careers.map((career, index) => (
-                  <MyGmCareerCard
-                    key={career.id}
-                    career={career}
-                    index={index}
-                  />
+                {[0, 1, 2].map(index => (
+                  <div className="mygm-careers__skeleton" key={index}><div /><span /><span /><span /></div>
                 ))}
               </div>
             </>
@@ -126,10 +151,17 @@ export default function MyGmCareersScreen() {
                 Create your first career
               </Link>
             </div>
+          ) : visibleCareers.length === 0 ? (
+            <div className="mygm-careers__empty">
+              <span className="mygm-careers__empty-icon"><Search size={28} aria-hidden="true" /></span>
+              <h3>No matching careers.</h3>
+              <p>Try a different career name, brand or General Manager.</p>
+              <button className="mygm-careers__button mygm-careers__button--secondary" type="button" onClick={() => { setSearch(""); searchRef.current?.focus(); }}>Clear search</button>
+            </div>
           ) : (
             <ul className="mygm-careers__list">
-              {careers.map((career) => (
-                <MyGmCareerCard key={career.id} career={career} />
+              {visibleCareers.map((career, index) => (
+                <MyGmCareerCard key={career.id} career={career} index={index} />
               ))}
             </ul>
           )}

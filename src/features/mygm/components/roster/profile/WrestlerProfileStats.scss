@@ -3,148 +3,78 @@
 .wrestler-profile-stats {
   --stats-accent: var(--career-accent, #{t.$text-muted});
   --stats-ink: color-mix(in srgb, var(--stats-accent) 60%, #{t.$text});
-
   container-type: inline-size;
   min-width: 0;
 
   &__header {
-    margin-bottom: 16px;
-
-    h2 {
-      margin: 0 0 6px;
-      color: t.$text;
-      font-size: 1.125rem;
-      font-weight: 650;
-      letter-spacing: -0.025em;
-      line-height: 1.3;
-    }
-
-    p {
-      margin: 0;
-      color: t.$text-muted;
-      font-size: 0.8125rem;
-      line-height: 1.6;
-    }
+    margin-bottom: 18px;
+    h2 { margin: 0 0 6px; color: t.$text; font-size: 1.125rem; font-weight: 650; letter-spacing: -.025em; line-height: 1.3; }
+    p { margin: 0; color: t.$text-muted; font-size: .8125rem; line-height: 1.6; }
   }
-
   &__panel {
     min-width: 0;
-    padding: 20px;
-    background: t.$surface;
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 20px;
+    padding: 24px;
+    background: radial-gradient(ellipse at 0% 0%, color-mix(in srgb, var(--stats-accent) 9%, transparent), transparent 65%), t.$surface;
+    border: 1px solid rgba(t.$text, .08);
+    border-radius: 24px;
   }
-
-  &__results {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px 12px;
-    margin: 0;
-  }
-
-  &__result {
-    display: flex;
-    flex-direction: column;
+  &__performance { display: grid; gap: 28px; min-width: 0; }
+  &__win-rate {
     min-width: 0;
-
-    dt {
-      color: t.$text-muted;
-      font-size: 0.6875rem;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
-
-    dd {
-      margin: 8px 0 0;
-      color: t.$text;
-      font-size: clamp(1.5rem, 5cqi, 2rem);
-      font-weight: 650;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.04em;
-      line-height: 1.2;
-      overflow-wrap: anywhere;
-    }
-
-    &--wins dd {
-      color: var(--stats-ink);
+    p { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; color: var(--stats-ink); font-size: .75rem; font-weight: 600; }
+    strong { display: block; color: t.$text; font-size: clamp(3rem, 8cqi, 4.5rem); letter-spacing: -.06em; line-height: 1; font-weight: 800; font-variant-numeric: tabular-nums; }
+    > span { display: block; margin-top: 10px; color: t.$text-muted; font-size: .6875rem; line-height: 1.5; }
+    progress {
+      display: block;
+      appearance: none;
+      width: 100%;
+      max-width: 240px;
+      height: 5px;
+      margin-top: 20px;
+      overflow: hidden;
+      border: 0;
+      border-radius: 8px;
+      background: t.$surface-raised;
+      accent-color: var(--stats-ink);
+      &::-webkit-progress-bar { background: t.$surface-raised; }
+      &::-webkit-progress-value { background: var(--stats-ink); border-radius: 8px; }
+      &::-moz-progress-bar { background: var(--stats-ink); border-radius: 8px; }
     }
   }
-
+  &__results { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: center; gap: 24px 12px; margin: 0; min-width: 0; }
+  &__result {
+    min-width: 0;
+    dt { color: t.$text-muted; font-size: .75rem; line-height: 1.5; overflow-wrap: anywhere; }
+    dd { margin: 8px 0 0; color: t.$text; font-size: clamp(1.75rem, 4cqi, 2.75rem); font-weight: 750; font-variant-numeric: tabular-nums; letter-spacing: -.045em; line-height: 1.15; overflow-wrap: anywhere; }
+    &--wins dd { color: var(--stats-ink); }
+    &--draws dd, &--no-contests dd { font-size: 1.25rem; color: t.$text-muted; font-weight: 600; }
+  }
   &__details {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 16px;
-    margin: 24px 0 0;
-    padding-top: 20px;
-    border-top: 1px solid rgba(t.$text, 0.08);
-
-    > div {
-      min-width: 0;
-    }
-
-    > div:first-child {
-      grid-column: 1 / -1;
-    }
-
-    dt {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      color: t.$text-muted;
-      font-size: 0.6875rem;
-      line-height: 1.5;
-
-      svg {
-        flex-shrink: 0;
-        color: var(--stats-ink);
-      }
-    }
-
-    dd {
-      margin: 8px 0 0;
-      color: t.$text;
-      font-size: 1.25rem;
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
-      line-height: 1.3;
-      overflow-wrap: anywhere;
-
-      > span {
-        color: t.$text-muted;
-        font-size: 0.8125rem;
-        font-weight: 400;
-      }
-
-      > .wrestler-profile-stats__unrated {
-        font-size: 0.875rem;
-      }
+    gap: 24px 16px;
+    margin: 28px 0 0;
+    padding-top: 24px;
+    border-top: 1px solid rgba(t.$text, .08);
+    > div { min-width: 0; }
+    > div:first-child { grid-column: 1 / -1; }
+    dt { display: flex; align-items: center; gap: 7px; color: t.$text-muted; font-size: .75rem; line-height: 1.5; svg { flex-shrink: 0; color: var(--stats-ink); } }
+    dd { margin: 10px 0 0; color: t.$text; font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.025em; line-height: 1.3; overflow-wrap: anywhere;
+      > span { color: t.$text-muted; font-size: .8125rem; font-weight: 400; letter-spacing: normal; }
+      > .wrestler-profile-stats__unrated { font-size: .875rem; }
     }
   }
 }
 
-@container (min-width: 560px) {
+@container (min-width: 680px) {
   .wrestler-profile-stats {
-    &__panel {
-      padding: 24px;
-    }
-
-    &__results {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 20px;
-    }
-
-    &__details {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 24px;
-
-      > div:first-child {
-        grid-column: auto;
-      }
-    }
-
-    &__result dt,
-    &__details dt {
-      font-size: 0.75rem;
-    }
+    &__panel { padding: 32px; }
+    &__performance { grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); gap: 40px; }
+    &__results { padding-left: 32px; border-left: 1px solid rgba(t.$text, .08); }
+    &__details { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; > div:first-child { grid-column: auto; } }
   }
+}
+
+@container (max-width: 319px) {
+  .wrestler-profile-stats { &__panel { padding: 20px; } &__details { grid-template-columns: minmax(0, 1fr); } }
 }

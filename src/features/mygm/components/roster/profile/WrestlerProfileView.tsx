@@ -10,13 +10,14 @@ import WrestlerChampionships from "./WrestlerChampionships";
 import WrestlerActiveRivalries from "./WrestlerActiveRivalries";
 import WrestlerContractHistory from "./WrestlerContractHistory";
 
-import type { WrestlerProfileData } from "../../../types/roster/wrestlerProfile.types";
+import type { WrestlerProfileData, WrestlerProfileReign } from "../../../types/roster/wrestlerProfile.types";
 
 interface WrestlerProfileViewProps {
   careerId: string;
   backPath: string;
   backLabel: string;
   data: WrestlerProfileData | null;
+  championshipHistory?: WrestlerProfileReign[];
   isLoading: boolean;
   errorMessage: string;
   canRefresh: boolean;
@@ -30,6 +31,7 @@ export default function WrestlerProfileView({
   backPath,
   backLabel,
   data,
+  championshipHistory,
   isLoading,
   errorMessage,
   canRefresh,
@@ -60,7 +62,7 @@ export default function WrestlerProfileView({
           </button>
         </div>
 
-        <div className="wrestler-profile__heading">
+        <div className={`wrestler-profile__heading${!isLoading && !errorMessage && data ? " wrestler-profile__heading--compact" : ""}`}>
           <p className="wrestler-profile__eyebrow">Career profile</p>
           <h1 id={headingId}>Wrestler profile</h1>
           <p className="wrestler-profile__description">
@@ -105,13 +107,18 @@ export default function WrestlerProfileView({
             <WrestlerProfileOverview
               wrestler={data.wrestler}
               currentTick={data.current_tick}
+              championships={data.championships}
             />
 
             {actions}
 
             <WrestlerProfileStats stats={data.stats} />
 
-            <WrestlerChampionships championships={data.championships} />
+            <WrestlerChampionships
+              championships={data.championships}
+              history={championshipHistory}
+              wrestlerId={data.wrestler.id}
+            />
 
             <WrestlerActiveRivalries
               careerId={careerId}

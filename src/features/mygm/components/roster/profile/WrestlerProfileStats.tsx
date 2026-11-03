@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { Star } from "lucide-react";
+import { Mic, Sparkles, Star, TrendingUp } from "lucide-react";
 
 import type { WrestlerProfileStats as WrestlerStats } from "../../../types/roster/wrestlerProfile.types";
 
@@ -15,6 +15,7 @@ export default function WrestlerProfileStats({
   stats,
 }: WrestlerProfileStatsProps) {
   const headingId = useId();
+  const winRate = stats.matches > 0 ? (stats.wins / stats.matches) * 100 : null;
 
   const results = [
     {
@@ -54,6 +55,13 @@ export default function WrestlerProfileStats({
       </header>
 
       <div className="wrestler-profile-stats__panel">
+        <div className="wrestler-profile-stats__performance">
+          <div className="wrestler-profile-stats__win-rate">
+            <p><TrendingUp size={17} aria-hidden="true" />Win rate</p>
+            <strong>{winRate === null ? "—" : `${winRate.toFixed(1)}%`}</strong>
+            {winRate !== null && <progress value={winRate} max={100} aria-label="Win rate across all matches" />}
+            <span>{winRate === null ? "No matches recorded yet" : "Wins across all matches"}</span>
+          </div>
         <dl className="wrestler-profile-stats__results">
           {results.map((result) => (
             <div
@@ -65,6 +73,7 @@ export default function WrestlerProfileStats({
             </div>
           ))}
         </dl>
+        </div>
 
         <dl className="wrestler-profile-stats__details">
           <div>
@@ -87,12 +96,12 @@ export default function WrestlerProfileStats({
           </div>
 
           <div>
-            <dt>4.5+ star matches</dt>
+            <dt><Sparkles size={15} aria-hidden="true" />4.5+ star matches</dt>
             <dd>{numberFormatter.format(stats.high_rated_matches)}</dd>
           </div>
 
           <div>
-            <dt>Promos performed</dt>
+            <dt><Mic size={15} aria-hidden="true" />Promos performed</dt>
             <dd>{numberFormatter.format(stats.promos_performed)}</dd>
           </div>
         </dl>

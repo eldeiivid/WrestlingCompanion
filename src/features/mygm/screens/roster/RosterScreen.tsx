@@ -9,12 +9,14 @@ import {
   Search,
   SlidersHorizontal,
   Store,
+  Trophy,
   UsersRound,
 } from "lucide-react";
 
 import RosterWrestlerCard from "../../components/roster/RosterWrestlerCard";
 
 import { useCareerRoster } from "../../hooks/roster/useCareerRoster";
+import { useMyGmDashboard } from "../../hooks/useMyGmDashboard";
 
 import type { MyGmOutletContext } from "../../types/mygm.types";
 import type { CareerRosterFilters } from "../../types/roster/careerRoster.types";
@@ -60,6 +62,16 @@ export default function RosterScreen() {
   const bodyRef = useRef<HTMLDivElement>(null);
 
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const titles = useMyGmDashboard(career.id);
+  const titlesByHolder = new Map<string, NonNullable<typeof titles.data>["championships"]>();
+  for (const title of titles.data?.championships ?? []) {
+    if (!title.reign_id) continue;
+    for (const holder of title.holders) {
+      const held = titlesByHolder.get(holder.id) ?? [];
+      held.push(title);
+      titlesByHolder.set(holder.id, held);
+    }
+  }
 
   const {
     data,
@@ -75,6 +87,7 @@ export default function RosterScreen() {
   } = useCareerRoster(career.id);
 
   const activeFilterCount = [
+    filters.championsOnly,
     filters.gender !== "all",
     filters.primaryClass !== "all",
     filters.role !== "all",
@@ -151,7 +164,7 @@ export default function RosterScreen() {
             className="career-roster__refresh"
             type="button"
             disabled={isLoading}
-            onClick={retry}
+            onClick={() => { retry(); titles.retry(); }}
             aria-label="Refresh roster"
             title="Refresh roster"
           >
@@ -177,6 +190,16 @@ export default function RosterScreen() {
         </label>
 
         <div className="career-roster__toolbar">
+          <button
+            type="button"
+            className={`career-roster__filter-toggle${filters.championsOnly ? " is-active" : ""}`}
+            aria-pressed={filters.championsOnly}
+            onClick={() => updateFilters({ championsOnly: !filters.championsOnly })}
+            title="Show current champions, including tag team champions"
+          >
+            <Trophy size={17} aria-hidden="true" />
+            Champions
+          </button>
           <label className="career-roster__sort">
             <span className="career-roster__sr-only">Sort roster</span>
 
@@ -322,6 +345,13 @@ export default function RosterScreen() {
         className="career-roster__body"
         aria-busy={isLoading || isSearching}
       >
+        {titles.isLoading && <p className="career-roster__title-status" role="status">Loading championship holders…</p>}
+        {titles.errorMessage && (
+          <div className="career-roster__title-status" role="status">
+            Championship holders could not be loaded.
+            <button type="button" onClick={titles.retry}>Retry titles</button>
+          </div>
+        )}
         {(hasFilterChanges || (!isLoading && !errorMessage && data)) && (
           <div className="career-roster__results-bar">
             <p role="status">
@@ -418,6 +448,7 @@ export default function RosterScreen() {
                 <li key={wrestler.id}>
                   <RosterWrestlerCard
                     careerId={career.id}
+                    championships={titlesByHolder.get(wrestler.id) ?? []}
                     wrestler={wrestler}
                     currentTick={data.current_tick}
                   />

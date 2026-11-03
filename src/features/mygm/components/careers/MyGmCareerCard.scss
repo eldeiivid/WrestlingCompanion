@@ -1,6 +1,7 @@
 @use "../../../../styles/tokens" as t;
 
 .mygm-career-card {
+  --card-ink: color-mix(in srgb, var(--card-brand) 55%, #{t.$text});
   min-width: 0;
 
   &__link {
@@ -20,11 +21,13 @@
     isolation: isolate;
     display: flex;
     align-items: flex-end;
-    height: 220px;
+    height: 184px;
     overflow: hidden;
     padding: 24px;
     background:
       radial-gradient(ellipse at 80% 30%, var(--card-tint), transparent 75%),
+      linear-gradient(180deg, rgba(#101216, 0.3), rgba(#101216, 0.8)),
+      url("../../../../assets/backgrounds/news-arena.png") center / cover,
       #171a22;
 
     &::after {
@@ -58,7 +61,9 @@
     padding: 5px 10px;
     background: rgba(#101216, 0.8);
     border: 1px solid rgba(t.$text, 0.12);
-    border-radius: 999px;
+    max-width: calc(100% - 48px);
+    overflow-wrap: anywhere;
+    border-radius: 8px;
     color: t.$text;
     font-size: 0.6875rem;
     font-weight: 600;
@@ -115,11 +120,11 @@
     display: flex;
     flex: 1;
     flex-direction: column;
-    padding: 24px;
+    padding: 20px;
 
     h3 {
       margin: 0 0 10px;
-      font-size: 1.25rem;
+      font-size: 1.125rem;
       font-weight: 650;
       letter-spacing: -0.025em;
       line-height: 1.35;
@@ -132,7 +137,7 @@
     align-items: baseline;
     flex-wrap: wrap;
     gap: 4px 8px;
-    margin: 0 0 24px;
+    margin: 0 0 16px;
     font-size: 0.75rem;
     line-height: 1.6;
 
@@ -201,7 +206,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin-top: 24px;
+    margin-top: 20px;
     padding-top: 16px;
     border-top: 1px solid rgba(t.$text, 0.07);
     font-size: 0.875rem;
@@ -216,17 +221,17 @@
     height: 40px;
     background: t.$surface-raised;
     border-radius: 12px;
-    color: t.$brand;
+    color: var(--card-ink);
   }
 }
 
 @media (hover: hover) {
   .mygm-career-card__link:hover {
-    border-color: rgba(t.$brand, 0.4);
+    border-color: color-mix(in srgb, var(--card-brand) 45%, transparent);
 
     .mygm-career-card__arrow {
-      background: t.$brand;
-      color: t.$brand-ink;
+      background: var(--card-tint);
+      color: var(--card-ink);
     }
   }
 }
@@ -267,9 +272,11 @@
 
 // Keyboard navigation receives the same visual emphasis.
 .mygm-career-card__link:focus-visible {
+  outline: 2px solid var(--card-ink);
+  outline-offset: 4px;
   .mygm-career-card__arrow {
-    background: t.$brand;
-    color: t.$brand-ink;
+    background: var(--card-tint);
+    color: var(--card-ink);
   }
 }
 

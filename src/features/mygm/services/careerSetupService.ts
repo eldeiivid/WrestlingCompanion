@@ -7,7 +7,7 @@ export const careerSetupService = {
       await Promise.all([
         supabase
           .from("wc_catalog_brands")
-          .select("id, name, logo_url, primary_color")
+          .select("*")
           .order("name", { ascending: true })
           .abortSignal(signal),
 
@@ -29,7 +29,14 @@ export const careerSetupService = {
     if (difficultiesResult.error) throw difficultiesResult.error;
 
     return {
-      brands: brandsResult.data ?? [],
+      brands: (brandsResult.data ?? []).map((brand) => ({
+        id: brand.id,
+        name: brand.name,
+        logo_url: brand.logo_url,
+        primary_color: brand.primary_color,
+        // Older catalogs can omit artwork without blocking career creation.
+        background_url: typeof brand.background_url === "string" ? brand.background_url : null,
+      })),
       managers: managersResult.data ?? [],
       difficulties: difficultiesResult.data ?? [],
     };

@@ -234,6 +234,11 @@ export default function SummaryStep({
           </button>
         </header>
 
+        <div className="career-review__lineup" aria-hidden="true">
+          {selectedWrestlers.slice(0, 6).map(wrestler => <span key={wrestler.id}><SummaryArtwork src={wrestler.image_url} kind="person" /></span>)}
+          {selectedWrestlers.length > 6 && <strong>+{selectedWrestlers.length - 6}</strong>}
+        </div>
+
         <details className="career-review__details">
           <summary>
             <span>
@@ -314,7 +319,7 @@ export default function SummaryStep({
           ) : selectedSlots.length === 0 ? (
             <p className="career-review__message">No championships selected.</p>
           ) : (
-            <details className="career-review__details">
+            <details className="career-review__details" open>
               <summary>
                 <span>{selectedSlots.length} of 6 titles selected</span>
 

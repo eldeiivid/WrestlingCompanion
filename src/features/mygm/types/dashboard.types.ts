@@ -19,3 +19,9 @@ export interface MyGmDashboardData {
   has_completed_shows: boolean;
   championships: DashboardChampionship[];
 }
+
+export interface DashboardCurrentShow {
+  id: string;
+  name: string;
+  status: "draft" | "confirmed";
+}

@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { ArrowDownToLine, ArrowUpRight, Check, Clock3, FilePenLine, RefreshCw, ShieldCheck, X } from "lucide-react";
 
 import { useWrestlerContractHistory } from "../../../hooks/roster/useWrestlerContractHistory";
 
@@ -42,6 +43,16 @@ const actionLabels: Record<ContractHistoryActionType, string> = {
   drafted: "Selected in the season draft",
 };
 
+const actionIcons = {
+  signed: FilePenLine,
+  extended: ArrowUpRight,
+  terminated: X,
+  expired: Clock3,
+  season_ended: Check,
+  retained: ShieldCheck,
+  drafted: ArrowDownToLine,
+} satisfies Record<ContractHistoryActionType, typeof Check>;
+
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -56,12 +67,14 @@ function formatPeriod(tick: number): string {
 }
 
 function ContractAction({ action }: { action: ContractHistoryAction }) {
+  const Icon = actionIcons[action.action];
   return (
-    <li className="wrestler-contract-history__event">
+    <li className="wrestler-contract-history__event" data-action={action.action}>
       <p className="wrestler-contract-history__event-period">
         {formatPeriod(action.tick)}
       </p>
-
+      <span className="wrestler-contract-history__event-marker" aria-hidden="true"><Icon size={16} /></span>
+      <div className="wrestler-contract-history__event-content">
       <h4>{actionLabels[action.action]}</h4>
 
       {action.added_weeks !== null && (
@@ -88,9 +101,9 @@ function ContractAction({ action }: { action: ContractHistoryAction }) {
       )}
 
       {action.cost !== null && (
-        <p>
+        <p className="wrestler-contract-history__cost">
           {action.action === "extended" ? "Extension cost" : "Signing cost"}:{" "}
-          {currencyFormatter.format(BigInt(action.cost))}
+          <strong>{currencyFormatter.format(BigInt(action.cost))}</strong>
         </p>
       )}
 
@@ -101,6 +114,7 @@ function ContractAction({ action }: { action: ContractHistoryAction }) {
       {action.action === "expired" && (
         <p>Released automatically after the contract expired.</p>
       )}
+      </div>
     </li>
   );
 }
@@ -129,6 +143,7 @@ export default function WrestlerContractHistory({
           disabled={isLoading}
           onClick={retry}
         >
+          <RefreshCw size={15} aria-hidden="true" />
           Refresh
         </button>
       </header>
@@ -167,6 +182,7 @@ export default function WrestlerContractHistory({
                   <li
                     className="wrestler-contract-history__stage"
                     key={stage.membership_id}
+                    data-status={stage.status}
                   >
                     <header className="wrestler-contract-history__stage-header">
                       <div>

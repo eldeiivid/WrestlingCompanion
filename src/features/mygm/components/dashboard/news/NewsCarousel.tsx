@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -6,6 +6,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Newspaper,
+  Pause,
+  Play,
   Swords,
   Trophy,
 } from "lucide-react";
@@ -144,30 +146,60 @@ function NewsVisual({ item }: { item: MyGmNewsItem }) {
   );
 }
 
-export default function NewsCarousel({ careerId, items }: NewsCarouselProps) {
+const AUTOPLAY_DELAY = 7000;
+
+export default function NewsCarousel(props: NewsCarouselProps) {
+  const [autoplayRequested, setAutoplayRequested] = useState<boolean | null>(null);
+  const feedKey = JSON.stringify([props.careerId, props.items.map(item => item.id)]);
+  return <NewsCarouselFeed key={feedKey} {...props} autoplayRequested={autoplayRequested} onAutoplayChange={setAutoplayRequested} />;
+}
+
+interface NewsCarouselFeedProps extends NewsCarouselProps {
+  autoplayRequested: boolean | null;
+  onAutoplayChange: (enabled: boolean) => void;
+}
+
+function NewsCarouselFeed({ careerId, items, autoplayRequested, onAutoplayChange }: NewsCarouselFeedProps) {
   const instructionsId = useId();
   const trackId = useId();
 
   const trackRef = useRef<HTMLUListElement>(null);
+  const carouselRef = useRef<HTMLElement>(null);
   const activeIndexRef = useRef(0);
   const scrollFrameRef = useRef<number | null>(null);
+  const scrollEndRef = useRef<number | null>(null);
 
   const [activeIndex, setActiveIndex] = useState(0);
-
-  const feedKey = JSON.stringify([careerId, items.map((item) => item.id)]);
+  const [reduceMotion, setReduceMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const [visible, setVisible] = useState(false);
+  const [pageVisible, setPageVisible] = useState(() => !document.hidden);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [interacting, setInteracting] = useState(false);
+  const [scrolling, setScrolling] = useState(false);
+  const autoplayEnabled = items.length > 1 && (autoplayRequested ?? !reduceMotion);
+  const rotating = autoplayEnabled && visible && pageVisible && !hovered && !focused && !interacting && !scrolling;
 
   const currentIndex =
     items.length > 0 ? Math.min(activeIndex, items.length - 1) : 0;
 
   useEffect(() => {
-    activeIndexRef.current = 0;
-    setActiveIndex(0);
-
-    trackRef.current?.scrollTo({
-      left: 0,
-      behavior: "instant",
-    });
-  }, [feedKey]);
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onPreference = () => setReduceMotion(preference.matches);
+    const onVisibility = () => setPageVisible(!document.hidden);
+    preference.addEventListener("change", onPreference);
+    document.addEventListener("visibilitychange", onVisibility);
+    const carousel = carouselRef.current;
+    const observer = new IntersectionObserver(entries => {
+      setVisible(entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= 0.25));
+    }, { threshold: [0, 0.25] });
+    if (carousel) observer.observe(carousel);
+    return () => {
+      preference.removeEventListener("change", onPreference);
+      document.removeEventListener("visibilitychange", onVisibility);
+      observer.disconnect();
+    };
+  }, []);
 
   // Keep the current item aligned when the sidebar changes width.
   useEffect(() => {
@@ -206,13 +238,14 @@ export default function NewsCarousel({ careerId, items }: NewsCarouselProps) {
         window.cancelAnimationFrame(resizeFrame);
       }
     };
-  }, [feedKey]);
+  }, []);
 
   useEffect(() => {
     return () => {
       if (scrollFrameRef.current !== null) {
         window.cancelAnimationFrame(scrollFrameRef.current);
       }
+      if (scrollEndRef.current !== null) window.clearTimeout(scrollEndRef.current);
     };
   }, []);
 
@@ -245,6 +278,9 @@ export default function NewsCarousel({ careerId, items }: NewsCarouselProps) {
   }
 
   function handleScroll() {
+    setScrolling(true);
+    if (scrollEndRef.current !== null) window.clearTimeout(scrollEndRef.current);
+    scrollEndRef.current = window.setTimeout(() => setScrolling(false), 180);
     if (scrollFrameRef.current !== null) return;
 
     scrollFrameRef.current = window.requestAnimationFrame(() => {
@@ -253,7 +289,7 @@ export default function NewsCarousel({ careerId, items }: NewsCarouselProps) {
     });
   }
 
-  function goToSlide(index: number) {
+  const goToSlide = useCallback((index: number) => {
     const track = trackRef.current;
     const firstSlide = track?.children.item(0);
     const slide = track?.children.item(index);
@@ -266,15 +302,19 @@ export default function NewsCarousel({ careerId, items }: NewsCarouselProps) {
       return;
     }
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    const wrapping = Math.abs(index - activeIndexRef.current) > 1;
 
     track.scrollTo({
       left: slide.offsetLeft - firstSlide.offsetLeft,
-      behavior: reduceMotion ? "instant" : "smooth",
+      behavior: reduceMotion || wrapping ? "instant" : "smooth",
     });
-  }
+  }, [reduceMotion]);
+
+  useEffect(() => {
+    if (!rotating) return;
+    const timer = window.setTimeout(() => goToSlide((activeIndexRef.current + 1) % items.length), AUTOPLAY_DELAY);
+    return () => window.clearTimeout(timer);
+  }, [rotating, currentIndex, items.length, goToSlide]);
 
   function handleKeyDown(event: KeyboardEvent<HTMLUListElement>) {
     if (event.target !== event.currentTarget || items.length < 2) {
@@ -324,13 +364,23 @@ export default function NewsCarousel({ careerId, items }: NewsCarouselProps) {
 
   return (
     <section
+      ref={carouselRef}
       className="news-carousel"
+      data-rotating={rotating}
       aria-label="Career news carousel"
       aria-roledescription="carousel"
+      onPointerEnter={event => { if (event.pointerType === "mouse") setHovered(true); }}
+      onPointerLeave={() => { setHovered(false); setInteracting(false); }}
+      onPointerDown={() => setInteracting(true)}
+      onPointerUp={() => setInteracting(false)}
+      onPointerCancel={() => setInteracting(false)}
+      onFocusCapture={event => setFocused(!(event.target instanceof Element && event.target.closest("[data-news-playback]")))}
+      onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}
     >
       <p className="news-carousel__sr-only" id={instructionsId}>
-        Swipe or use the left and right arrow keys to browse news. Use Home or
-        End to reach the first or last item.
+        {items.length > 1
+          ? "Swipe or use the left and right arrow keys to browse news. Use Home or End to reach the first or last item. Automatic news advances every seven seconds and pauses while you interact. Use the playback button to pause or resume."
+          : "Your latest career news."}
       </p>
 
       <ul
@@ -355,7 +405,7 @@ export default function NewsCarousel({ careerId, items }: NewsCarouselProps) {
           const CategoryIcon = isRivalry ? Swords : Trophy;
 
           return (
-            <li className="news-carousel__slide" key={item.id}>
+            <li className="news-carousel__slide" key={item.id} inert={index !== currentIndex}>
               <article
                 className={[
                   "news-carousel__card",
@@ -404,12 +454,17 @@ export default function NewsCarousel({ careerId, items }: NewsCarouselProps) {
 
       {items.length > 1 && (
         <div className="news-carousel__footer">
-          <div className="news-carousel__pagination" aria-hidden="true">
+          <div className="news-carousel__pagination" role="group" aria-label="Choose a news item">
             {items.map((item, index) => (
-              <span
+              <button
+                type="button"
                 key={item.id}
                 className={index === currentIndex ? "is-active" : ""}
-              />
+                aria-label={`Go to news ${index + 1}`}
+                aria-current={index === currentIndex ? "true" : undefined}
+                aria-controls={trackId}
+                onClick={() => goToSlide(index)}
+              ><span><span key={`${currentIndex}:${rotating}`} /></span></button>
             ))}
           </div>
 
@@ -418,12 +473,15 @@ export default function NewsCarousel({ careerId, items }: NewsCarouselProps) {
             role="group"
             aria-label="News carousel controls"
           >
+            <button type="button" className="news-carousel__playback" data-news-playback aria-label={autoplayEnabled ? "Pause automatic news" : "Play automatic news"} aria-controls={trackId} onClick={() => onAutoplayChange(!autoplayEnabled)}>
+              {autoplayEnabled ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
+              <span>{autoplayEnabled ? "Auto" : "Paused"}</span>
+            </button>
             <button
               type="button"
               aria-label="Previous news"
               aria-controls={trackId}
-              disabled={currentIndex === 0}
-              onClick={() => goToSlide(currentIndex - 1)}
+              onClick={() => goToSlide((currentIndex - 1 + items.length) % items.length)}
             >
               <ChevronLeft size={19} aria-hidden="true" />
             </button>
@@ -431,7 +489,7 @@ export default function NewsCarousel({ careerId, items }: NewsCarouselProps) {
             <span
               className="news-carousel__position"
               role="status"
-              aria-live="polite"
+              aria-live={!autoplayEnabled || focused || hovered || interacting ? "polite" : "off"}
               aria-atomic="true"
             >
               {currentIndex + 1} / {items.length}
@@ -441,8 +499,7 @@ export default function NewsCarousel({ careerId, items }: NewsCarouselProps) {
               type="button"
               aria-label="Next news"
               aria-controls={trackId}
-              disabled={currentIndex === items.length - 1}
-              onClick={() => goToSlide(currentIndex + 1)}
+              onClick={() => goToSlide((currentIndex + 1) % items.length)}
             >
               <ChevronRight size={19} aria-hidden="true" />
             </button>
