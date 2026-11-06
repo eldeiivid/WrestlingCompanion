@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { Pencil, Star } from "lucide-react";
+import { ChevronDown, Pencil, Star } from "lucide-react";
 
 import BookingSegmentCard from "./BookingSegmentCard";
 
@@ -364,6 +364,10 @@ export default function BookingResultsReview({
         </footer>
       </section>
 
+      <header className="results-review__segments-heading">
+        <h3>Recorded results</h3>
+        <p>{segments.length} segments · In running order</p>
+      </header>
       <div className="results-review__segments">
         {segments.map((segment, index) => {
           const matchResult = draft.matches[segment.id];
@@ -413,6 +417,22 @@ export default function BookingResultsReview({
 
           return (
             <div className="results-review__segment" key={segment.id}>
+              <details className="results-review__card-details">
+                <summary>
+                  <span className="results-review__segment-copy">
+                    <span>
+                      Segment {segment.position} · {segment.kind === "match" ? "Match" : "Promo"}
+                      {" · "}{segment.label}
+                      {segment.kind === "match" && segment.stipulation_name
+                        ? ` · ${segment.stipulation_name}` : ""}
+                    </span>
+                    <strong>
+                      {segment.participants.map((participant) => participant.name).join(" · ") || "Participants unavailable"}
+                    </strong>
+                    <span className="results-review__disclosure-label">View segment card</span>
+                  </span>
+                  <ChevronDown size={18} aria-hidden="true" />
+                </summary>
               <BookingSegmentCard
                 segment={segment}
                 financesEnabled={booking.finances_enabled}
@@ -430,6 +450,7 @@ export default function BookingResultsReview({
                 onEdit={() => {}}
                 onDelete={() => {}}
               />
+              </details>
 
               <div className="results-review__recorded">
                 <div className="results-review__result-heading">

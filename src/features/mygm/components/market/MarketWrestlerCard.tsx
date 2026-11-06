@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
-import { ArrowUpRight, UserRound } from "lucide-react";
+import { ArrowUpRight, Mic, Sparkles, UserRound } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import type {
   MarketCategory,
@@ -10,7 +11,7 @@ import "./MarketWrestlerCard.scss";
 
 interface MarketWrestlerCardProps {
   wrestler: MarketWrestler;
-  onViewProfile: (wrestler: MarketWrestler) => void;
+  careerId: string;
 }
 
 const categoryLabels: Record<MarketCategory, string> = {
@@ -21,13 +22,18 @@ const categoryLabels: Record<MarketCategory, string> = {
 
 export default function MarketWrestlerCard({
   wrestler,
-  onViewProfile,
+  careerId,
 }: MarketWrestlerCardProps) {
   const headingId = useId();
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
 
   const primaryClass = wrestler.primary_class?.trim() ?? "";
   const secondaryClass = wrestler.secondary_class?.trim() ?? "";
+  const profilePath = wrestler.career_wrestler_id
+    ? `/mygm/${careerId}/market/wrestlers/${wrestler.career_wrestler_id}`
+    : wrestler.catalog_wrestler_id
+      ? `/mygm/${careerId}/market/catalog/${wrestler.catalog_wrestler_id}`
+      : null;
 
   const hasSecondaryClass =
     (wrestler.in_ring_skill ?? 0) >= 15 &&
@@ -85,29 +91,32 @@ export default function MarketWrestlerCard({
 
         <dl className="market-wrestler-card__stats">
           <div>
-            <dt>Mic skill</dt>
+            <dt className="market-wrestler-card__sr-only">Mic skill</dt>
             <dd>
               {wrestler.mic_skill === null
-                ? "Not recorded"
-                : `${wrestler.mic_skill} / 5`}
+                ? <><Mic size={16} aria-hidden="true" /><span>Not recorded</span></>
+                : <span className="market-wrestler-card__mic-rating" role="img" aria-label={`Mic skill: ${wrestler.mic_skill} of 5`}>
+                    {[1, 2, 3, 4, 5].map((point) => (
+                      <Mic key={point} size={16} aria-hidden="true" className={point <= wrestler.mic_skill! ? "is-active" : ""} />
+                    ))}
+                  </span>}
             </dd>
           </div>
 
           <div>
-            <dt>Ring level</dt>
-            <dd>{wrestler.in_ring_skill ?? "Not recorded"}</dd>
+            <dt className="market-wrestler-card__sr-only">Ring level</dt>
+            <dd><Sparkles size={17} aria-hidden="true" />{wrestler.in_ring_skill ?? "Not recorded"}</dd>
           </div>
         </dl>
 
-        <button
+        {profilePath ? <Link
           className="market-wrestler-card__button"
-          type="button"
+          to={profilePath}
           aria-label={`View profile: ${wrestler.name}`}
-          onClick={() => onViewProfile(wrestler)}
         >
           View profile
           <ArrowUpRight size={16} aria-hidden="true" />
-        </button>
+        </Link> : <p className="market-wrestler-card__unavailable">Profile unavailable</p>}
       </div>
     </article>
   );

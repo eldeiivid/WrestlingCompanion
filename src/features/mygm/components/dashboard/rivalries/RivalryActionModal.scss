@@ -2,6 +2,7 @@
 
 .rivalry-action-modal {
   --rivalry-action-accent: var(--career-accent, #{t.$accent});
+  --rivalry-action-ink: color-mix(in srgb, var(--rivalry-action-accent) 60%, #{t.$text});
   position: fixed;
   inset: auto 0 0;
   box-sizing: border-box;
@@ -38,7 +39,11 @@
   fieldset { display: grid; gap: 8px; min-width: 0; margin: 0; padding: 0; border: 0; }
   legend { margin-bottom: 12px; font-size: 0.75rem; color: t.$text-muted; }
   &__winner, &__confirmation { display: flex; align-items: flex-start; gap: 12px; padding: 14px; background: t.$background; border: 1px solid rgba(t.$text, 0.1); border-radius: 10px; font-size: 0.8125rem; line-height: 1.6; cursor: pointer; overflow-wrap: anywhere; }
-  &__winner:has(:checked) { border-color: var(--rivalry-action-accent); }
+  &__winner:has(:checked) {
+    border-color: var(--rivalry-action-ink);
+    background: color-mix(in srgb, var(--rivalry-action-accent) 8%, #{t.$background});
+    box-shadow: inset 0 0 0 1px var(--rivalry-action-ink);
+  }
   input { flex-shrink: 0; margin: 3px 0 0; accent-color: var(--rivalry-action-accent); }
   p.rivalry-action-modal__error { color: t.$error; }
   :disabled { opacity: 0.45; cursor: not-allowed; }
@@ -53,3 +58,36 @@
     border-radius: 24px;
   }
 }
+
+.rivalry-action-modal {
+  &__summary {
+    display: grid;
+    gap: 8px;
+    padding: 16px;
+    background:
+      linear-gradient(110deg, rgba(t.$background, 0.9), rgba(t.$background, 0.6)),
+      url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/rivalry-bg-3.webp") center / cover;
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 16px;
+  }
+  p.rivalry-action-modal__name { font-size: 1rem; line-height: 1.5; letter-spacing: -0.025em; }
+  p.rivalry-action-modal__outcome {
+    padding: 12px;
+    color: var(--rivalry-action-ink);
+    background: color-mix(in srgb, var(--rivalry-action-accent) 6%, transparent);
+    border-radius: 12px;
+    font-size: 0.75rem;
+  }
+  &__winner, &__confirmation { border-radius: 12px; }
+  input { width: 18px; height: 18px; }
+  &__confirmation { border-color: rgba(t.$error, 0.25); input { accent-color: t.$error; } }
+  &__footer { flex-wrap: wrap; button { flex: 1; } }
+  button svg { flex-shrink: 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &__spinner { animation: rivalry-action-spin 900ms linear infinite; }
+    button, &__winner { transition: background-color 160ms ease, border-color 160ms ease; }
+  }
+}
+
+@keyframes rivalry-action-spin { to { transform: rotate(360deg); } }

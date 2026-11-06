@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { X } from "lucide-react";
+import { LoaderCircle, TriangleAlert, UserMinus, X } from "lucide-react";
 
 import { useTerminateContract } from "../../hooks/market/useTerminateContract";
 
@@ -44,6 +44,7 @@ export default function TerminateContractModal({
 }: TerminateContractModalProps) {
   const headingId = useId();
   const descriptionId = useId();
+  const consequencesId = useId();
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const submittingRef = useRef(false);
@@ -166,7 +167,7 @@ export default function TerminateContractModal({
     >
       <header className="terminate-contract-modal__header">
         <div>
-          <h2 id={headingId}>Terminate contract</h2>
+          <h2 id={headingId}>Release wrestler</h2>
           <p>{wrestlerName}</p>
         </div>
 
@@ -191,22 +192,33 @@ export default function TerminateContractModal({
           roster.
         </p>
 
-        <ul className="terminate-contract-modal__consequences">
-          <li>The wrestler will become available in Market.</li>
-          <li>Career statistics and history will be preserved.</li>
-          <li>There is no termination cost or refund.</li>
-
-          {hasChampionships && (
-            <li>
-              All currently held championships will become vacant, including the
-              entire championship for shared titles.
-            </li>
+        <section className="terminate-contract-modal__impact" id={consequencesId}>
+          <h3>What will change</h3>
+          <ul className="terminate-contract-modal__consequences">
+            <li>The wrestler will become available in Market.</li>
+            <li>Career statistics and history will be preserved.</li>
+            <li>There is no termination cost or refund.</li>
+          </ul>
+          {(hasChampionships || hasActiveRivalries) && (
+            <div className="terminate-contract-modal__important">
+              <h4>
+                <TriangleAlert size={17} aria-hidden="true" />
+                Titles and rivalries
+              </h4>
+              <ul>
+                {hasChampionships && (
+                  <li>
+                    All currently held championships will become vacant, including
+                    the entire championship for shared titles.
+                  </li>
+                )}
+                {hasActiveRivalries && (
+                  <li>Active rivalries will become inactive.</li>
+                )}
+              </ul>
+            </div>
           )}
-
-          {hasActiveRivalries && (
-            <li>Active rivalries will become inactive.</li>
-          )}
-        </ul>
+        </section>
 
         <p className="terminate-contract-modal__notice">
           Wrestlers booked in pending shows must be removed from their matches,
@@ -234,8 +246,14 @@ export default function TerminateContractModal({
             className="terminate-contract-modal__button terminate-contract-modal__button--danger"
             type="submit"
             disabled={isTerminating}
+            aria-describedby={consequencesId}
           >
-            {isTerminating ? "Terminating…" : "Terminate contract"}
+            {isTerminating ? (
+              <LoaderCircle className="terminate-contract-modal__spinner" size={17} aria-hidden="true" />
+            ) : (
+              <UserMinus size={17} aria-hidden="true" />
+            )}
+            {isTerminating ? "Releasing…" : "Release wrestler"}
           </button>
         </footer>
       </form>

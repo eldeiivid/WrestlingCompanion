@@ -1,11 +1,11 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { CSSProperties, FormEvent } from "react";
-import { Check, Search, Swords, UserRound, X } from "lucide-react";
+import { Check, CircleAlert, LoaderCircle, Search, Swords, UserRound, X } from "lucide-react";
 import { getCareerRoster } from "../../../services/roster/careerRosterService";
 import { saveRivalry } from "../../../services/rivalries/rivalriesService";
 import type { RivalryLevel, RivalryListItem, RivalryWrestler, SaveRivalryInput } from "../../../types/rivalries/rivalries.types";
 import type { CareerRosterGender } from "../../../types/roster/careerRoster.types";
-import arenaBackground from "../../../../../assets/backgrounds/news-arena.png";
+import RivalryLevelMeter from "./RivalryLevel";
 import "./RivalryEditorModal.scss";
 
 interface Props {
@@ -37,6 +37,7 @@ function WrestlerPortrait({ wrestler }: { wrestler?: RivalryWrestler }) {
 export default function RivalryEditorModal({ careerId, currentTick, rivalry, onClose, onSaved }: Props) {
   const headingId = useId();
   const hintId = useId();
+  const readinessId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const submittingRef = useRef(false);
   const mountedRef = useRef(false);
@@ -157,7 +158,7 @@ export default function RivalryEditorModal({ careerId, currentTick, rivalry, onC
   }
 
   return (
-    <dialog ref={dialogRef} className="rivalry-editor" style={{ "--rivalry-editor-arena": `url("${arenaBackground}")` } as CSSProperties} aria-labelledby={headingId} onCancel={event => { event.preventDefault(); close(); }}>
+    <dialog ref={dialogRef} className="rivalry-editor" style={{ "--rivalry-editor-arena": 'url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/rivalry-bg-3.webp")' } as CSSProperties} aria-labelledby={headingId} onCancel={event => { event.preventDefault(); close(); }}>
       <header className="rivalry-editor__header">
         <div className="rivalry-editor__heading">
           <span className="rivalry-editor__icon"><Swords size={20} aria-hidden="true" /></span>
@@ -186,6 +187,7 @@ export default function RivalryEditorModal({ careerId, currentTick, rivalry, onC
             </select>
           </label>
           </div>
+          <RivalryLevelMeter level={level} />
           </div>
           <div className="rivalry-editor__matchup" role="group" aria-label="Selected rivalry participants">
             {([1, 2] as const).map(side => (
@@ -243,20 +245,38 @@ export default function RivalryEditorModal({ careerId, currentTick, rivalry, onC
           <div className="rivalry-editor__section">
           <h3>Starting point</h3>
           <div className="rivalry-editor__sides">
-            <label>Start season<input type="number" min={1} max={Math.floor((currentTick - 1) / 50) + 1} required={week !== ""} disabled={week === ""} value={season} onChange={event => { setSeason(event.target.value); setError(""); }} /></label>
-            <label>Start week (optional)<input type="number" min={1} max={50} value={week} aria-describedby={hintId} placeholder={String(((currentTick - 1) % 50) + 1)} onChange={event => { setWeek(event.target.value); setError(""); }} /></label>
+            <label>Start season<input type="number" min={1} max={Math.floor((currentTick - 1) / 50) + 1} required={week !== ""} disabled={week === ""} value={season} aria-invalid={!validDate} onChange={event => { setSeason(event.target.value); setError(""); }} /></label>
+            <label>Start week (optional)<input type="number" min={1} max={50} value={week} aria-invalid={!validDate} aria-describedby={hintId} placeholder={String(((currentTick - 1) % 50) + 1)} onChange={event => { setWeek(event.target.value); setError(""); }} /></label>
           </div>
           <p className="rivalry-editor__hint" id={hintId}>Leave the start week empty to use the current week and season.</p>
           </div>
         </fieldset>
+        <dl className="rivalry-editor__summary">
+          <div><dt>Rivalry</dt><dd>{kind === "singles" ? "Singles" : "Tag team"} · Level {level}</dd></div>
+          <div><dt>Participants</dt><dd>{slots.filter(slot => selected[slot]).length} / {slots.length} selected</dd></div>
+          <div><dt>Starts</dt><dd>{!validDate ? "Pending" : week === ""
+            ? `Season ${Math.floor((currentTick - 1) / 50) + 1} · Week ${((currentTick - 1) % 50) + 1}`
+            : `Season ${Number(season)} · Week ${Number(week)}`}</dd></div>
+        </dl>
         {loading && <p role="status">Loading participants…</p>}
         {loadError && <div role="alert"><p>{loadError}</p><button type="button" onClick={() => setAttempt(value => value + 1)}>Retry participants</button></div>}
         {!validDate && <p role="alert">Choose a start between season 1, week 1 and {rivalry?.ended_tick ? "the rivalry end" : "the current week"}.</p>}
         {error && <p role="alert">{error}</p>}
+        <p className={`rivalry-editor__readiness${canSubmit ? " rivalry-editor__readiness--ready" : ""}`} id={readinessId}>
+          {canSubmit ? <Check size={16} aria-hidden="true" /> : <CircleAlert size={16} aria-hidden="true" />}
+          {saving ? "Saving your rivalry…" : loading ? "Loading participants…"
+            : loadError ? "Retry loading participants to continue."
+              : !validParticipants ? "Choose a different wrestler for every participant slot."
+                : !validDate ? "Choose a valid starting season and week."
+                  : "Rivalry details are ready to save."}
+        </p>
         </div>
         <footer className="rivalry-editor__actions">
           <button type="button" disabled={saving} onClick={close}>Cancel</button>
-          <button type="submit" className="rivalry-editor__primary" disabled={!canSubmit || saving}>{saving ? "Saving…" : rivalry ? "Save changes" : "Create rivalry"}</button>
+          <button type="submit" className="rivalry-editor__primary" disabled={!canSubmit || saving} aria-describedby={readinessId}>
+            {saving && <LoaderCircle className="rivalry-editor__spinner" size={17} aria-hidden="true" />}
+            {saving ? "Saving…" : rivalry ? "Save changes" : "Create rivalry"}
+          </button>
         </footer>
       </form>
     </dialog>

@@ -31,7 +31,7 @@ const kindLabels: Record<RivalryKind, string> = {
 const statusLabels: Record<RivalryStatus, string> = {
   active: "Active",
   resolved: "Resolved",
-  stale: "Stale",
+  stale: "Inactive",
 };
 
 function getRivalryName(rivalry: RivalryDetail): string {
@@ -397,11 +397,11 @@ export default function RivalryDetailModal({
               <h3>{getRivalryName(data.rivalry)}</h3>
 
               <RivalryParticipants members={data.rivalry.members} />
-            </section>
 
             <div className="rivalry-modal__level">
               <RivalryLevel level={data.rivalry.level} />
             </div>
+            </section>
 
             <section
               className="rivalry-modal__overview"
@@ -435,7 +435,7 @@ export default function RivalryDetailModal({
                 )}
 
                 {data.rivalry.status === "resolved" && (
-                  <div>
+                  <div className="rivalry-modal__winner">
                     <dt>Rivalry winner</dt>
                     <dd>{winnerNames || "No winner assigned"}</dd>
                   </div>

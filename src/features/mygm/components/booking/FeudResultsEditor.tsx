@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Check, Flag, Plus, Swords, Trash2, TrendingUp } from "lucide-react";
 
 import {
   getBookingFeudActionKey,
@@ -116,7 +116,12 @@ function FeudActionEditor({
       <header className="feud-results__entry-header">
         <div>
           <p>Action {index + 1}</p>
-          <h3>{label}</h3>
+          <h3>
+            {action.action === "create" ? <Swords size={17} aria-hidden="true" />
+              : action.action === "increase" ? <TrendingUp size={17} aria-hidden="true" />
+                : <Flag size={17} aria-hidden="true" />}
+            {label}
+          </h3>
         </div>
 
         <button
@@ -237,12 +242,6 @@ function FeudActionEditor({
             })}
           </select>
 
-          {action.action === "increase" && selectedFeud && (
-            <p className="feud-results__hint">
-              Level {selectedFeud.level} → {Math.min(selectedFeud.level + 1, 4)}{" "}
-              when the show closes.
-            </p>
-          )}
         </div>
       )}
 
@@ -275,7 +274,20 @@ function FeudActionEditor({
         </div>
       )}
 
-      {error && <p className="feud-results__entry-hint">{error}</p>}
+      {!error && (selectedCandidate || selectedFeud) && (
+        <div className="feud-results__preview">
+          <p>On show close</p>
+          <strong>{selectedCandidate?.label ?? (selectedFeud ? getFeudLabel(selectedFeud) : "")}</strong>
+          <span>
+            {action.action === "create" ? "New rivalry · Level 1"
+              : action.action === "increase" && selectedFeud
+                ? `Level ${selectedFeud.level} → ${selectedFeud.level + 1}`
+                : "Rivalry ends"}
+          </span>
+        </div>
+      )}
+
+      {error && <p className="feud-results__entry-hint" role="status">{error}</p>}
     </section>
   );
 }
@@ -385,6 +397,7 @@ export default function FeudResultsEditor({
             isComplete ? " feud-results__status--complete" : ""
           }`}
         >
+          {isComplete && <Check size={13} aria-hidden="true" />}
           {isComplete ? "Complete" : "Pending"}
         </span>
       </header>
@@ -463,32 +476,56 @@ export default function FeudResultsEditor({
             </div>
 
             <div className="feud-results__add-actions">
+              <div>
               <button
                 type="button"
                 disabled={availableCandidates.length === 0}
+                aria-describedby={`${fieldId}-create-help`}
                 onClick={() => addAction("create")}
               >
                 <Plus size={15} aria-hidden="true" />
                 Start rivalry
               </button>
+              <p id={`${fieldId}-create-help`}>
+                {availableCandidates.length > 0
+                  ? "Start a new rivalry at level 1."
+                  : "No new rivalries fit this segment."}
+              </p>
+              </div>
 
+              <div>
               <button
                 type="button"
                 disabled={!canIncrease}
+                aria-describedby={`${fieldId}-increase-help`}
                 onClick={() => addAction("increase")}
               >
-                <Plus size={15} aria-hidden="true" />
+                <TrendingUp size={15} aria-hidden="true" />
                 Increase level
               </button>
+              <p id={`${fieldId}-increase-help`}>
+                {canIncrease
+                  ? "Raise an active rivalry by one level."
+                  : "No unselected rivalries below level 4 are available."}
+              </p>
+              </div>
 
+              <div>
               <button
                 type="button"
                 disabled={availableFeuds.length === 0}
+                aria-describedby={`${fieldId}-resolve-help`}
                 onClick={() => addAction("resolve")}
               >
-                <Plus size={15} aria-hidden="true" />
+                <Flag size={15} aria-hidden="true" />
                 End rivalry
               </button>
+              <p id={`${fieldId}-resolve-help`}>
+                {availableFeuds.length > 0
+                  ? "End a rivalry, with an optional winner."
+                  : "No unselected active rivalries fit this segment."}
+              </p>
+              </div>
             </div>
 
             <p className="feud-results__hint">
@@ -506,6 +543,14 @@ export default function FeudResultsEditor({
           </p>
         )}
       </fieldset>
+      {isComplete && (
+        <p className="feud-results__readiness" role="status">
+          <Check size={16} aria-hidden="true" />
+          {noChange
+            ? "No rivalry changes recorded for this segment."
+            : `${actions.length} rivalry ${actions.length === 1 ? "change" : "changes"} will be applied when you close the show.`}
+        </p>
+      )}
     </section>
   );
 }

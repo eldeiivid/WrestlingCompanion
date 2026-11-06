@@ -53,7 +53,7 @@ function AssetImage({
   fallback,
 }: {
   src: string | null;
-  fallback: "wrestler" | "title" | "background";
+  fallback: "wrestler" | "title" | "stipulation";
 }) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
 
@@ -77,7 +77,7 @@ function AssetImage({
     return <Trophy size={32} strokeWidth={1.25} aria-hidden="true" />;
   }
 
-  return null;
+  return <Swords size={24} strokeWidth={1.25} aria-hidden="true" />;
 }
 
 function getGroups(segment: BookingSegmentSummary): ParticipantGroup[] {
@@ -135,17 +135,15 @@ export default function BookingSegmentCard({
       .map((group) => group.members.map((member) => member.name).join(" & "))
       .join(isMatch ? " vs " : " → ") || "Participants unavailable";
 
-  const formatLabel = isMatch
-    ? [segment.label, segment.stipulation_name].filter(Boolean).join(" · ")
-    : segment.label;
-
   const positionLabel =
     isFirst && isLast
       ? "Only segment"
       : isFirst
         ? "Opener"
         : isLast
-          ? "Final segment"
+          ? isMatch
+            ? "Main event"
+            : "Final segment"
           : null;
 
   const teamsStyle = {
@@ -153,7 +151,11 @@ export default function BookingSegmentCard({
   } as CSSProperties;
 
   return (
-    <article className="booking-segment-card" aria-labelledby={headingId}>
+    <article
+      className={`booking-segment-card booking-segment-card--${segment.kind}`}
+      aria-labelledby={headingId}
+      aria-busy={movingDirection !== null}
+    >
       <header className="booking-segment-card__header">
         <div className="booking-segment-card__meta">
           <span
@@ -181,28 +183,41 @@ export default function BookingSegmentCard({
 
         {financesEnabled && (
           <span className="booking-segment-card__cost">
-            <span className="booking-segment-card__sr-only">Cost: </span>
+            <span className="booking-segment-card__cost-label">Cost</span>
             {currencyFormatter.format(BigInt(segment.cost))}
           </span>
         )}
 
-        <h3 id={headingId} className="booking-segment-card__format">
-          {formatLabel}
-          <span className="booking-segment-card__sr-only">
-            {": "}
-            {participantsLabel}
-          </span>
-        </h3>
+        <div className="booking-segment-card__match-info">
+          {isMatch && segment.stipulation_image_url && (
+            <div
+              className="booking-segment-card__stipulation-image"
+              aria-hidden="true"
+            >
+              <AssetImage
+                src={segment.stipulation_image_url}
+                fallback="stipulation"
+              />
+            </div>
+          )}
+          <div className="booking-segment-card__match-copy">
+            <h3 id={headingId} className="booking-segment-card__format">
+              {segment.label}
+              <span className="booking-segment-card__sr-only">
+                {": "}
+                {participantsLabel}
+              </span>
+            </h3>
+            {isMatch && segment.stipulation_name && (
+              <span className="booking-segment-card__stipulation">
+                {segment.stipulation_name}
+              </span>
+            )}
+          </div>
+        </div>
       </header>
 
       <div className="booking-segment-card__visual">
-        <div className="booking-segment-card__backdrop" aria-hidden="true">
-          <AssetImage
-            src={isMatch ? segment.stipulation_image_url : null}
-            fallback="background"
-          />
-        </div>
-
         {groups.length > 0 ? (
           <div
             className={`booking-segment-card__teams${
@@ -225,6 +240,11 @@ export default function BookingSegmentCard({
                   role="group"
                   aria-label={group.label}
                 >
+                  {!isMatch && groups.length > 1 && (
+                    <p className="booking-segment-card__group-label">
+                      {group.label}
+                    </p>
+                  )}
                   <div className="booking-segment-card__members">
                     {group.members.map((member) => (
                       <figure
@@ -302,6 +322,7 @@ export default function BookingSegmentCard({
             role="group"
             aria-label={`Reorder segment ${segment.position}`}
           >
+            <span className="booking-segment-card__reorder-label">Order</span>
             <button
               className="booking-segment-card__icon-button"
               type="button"

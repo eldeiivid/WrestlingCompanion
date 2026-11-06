@@ -5,11 +5,11 @@
   --modal-ink: color-mix(in srgb, var(--modal-accent) 60%, #{t.$text});
 
   position: fixed;
+  box-sizing: border-box;
   inset: auto 0 0;
   width: 100%;
   max-width: none;
-  height: 92vh;
-  height: 92dvh;
+  height: auto;
   max-height: 92dvh;
   margin: 0;
   padding: 0;
@@ -111,19 +111,18 @@
 
   &__hero {
     min-width: 0;
-    //overflow: hidden;
     padding: 20px 16px;
-    background-color: t.$surface;
+    background-color: #101319;
     background-image:
       linear-gradient(
         180deg,
-        rgba(#101216, 0.3),
-        rgba(#101216, 0.5) 45%,
-        rgba(#101216, 0.94)
+        rgba(#101319, 0.1),
+        rgba(#101319, 0.4) 45%,
+        #101319
       ),
-      url("../../../../../assets/backgrounds/news-arena.png");
+      url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/rivalry-bg-3.webp");
     background-size: cover;
-    background-position: 72% center;
+    background-position: center top;
     border: 1px solid rgba(t.$text, 0.08);
     border-radius: 22px;
 
@@ -166,10 +165,9 @@
 
   &__level {
     min-width: 0;
-    padding: 18px;
-    background: t.$surface;
-    border: 1px solid rgba(t.$text, 0.06);
-    border-radius: 17px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(t.$text, 0.08);
   }
 
   &__overview {
@@ -195,6 +193,10 @@
 
     > div {
       min-width: 0;
+      padding: 12px;
+      background: rgba(t.$background, 0.5);
+      border: 1px solid rgba(t.$text, 0.06);
+      border-radius: 12px;
     }
 
     dt {
@@ -211,6 +213,12 @@
       line-height: 1.6;
       overflow-wrap: anywhere;
     }
+  }
+
+  &__facts > &__winner {
+    background: color-mix(in srgb, var(--modal-accent) 7%, #{t.$background});
+    border-color: color-mix(in srgb, var(--modal-accent) 22%, transparent);
+    dd { color: var(--modal-ink); }
   }
 
   &__history {
@@ -307,15 +315,13 @@
     background: transparent;
     border: 0;
     border-radius: 0;
+    -webkit-mask-image: linear-gradient(#000 78%, transparent);
+    mask-image: linear-gradient(#000 78%, transparent);
 
     img {
       background: transparent;
-      object-fit: cover;
-      object-position: center top;
-
-      -webkit-mask-image: linear-gradient(#000 0%, #000 80%, transparent 100%);
-
-      mask-image: linear-gradient(#000 0%, #000 80%, transparent 100%);
+      object-fit: contain;
+      object-position: center bottom;
     }
   }
 
@@ -397,7 +403,7 @@
     inset: 0;
     width: calc(100% - 48px);
     max-width: 880px;
-    height: min(860px, 88dvh);
+    height: auto;
     max-height: 88dvh;
     margin: auto;
     border-bottom: 1px solid rgba(t.$text, 0.1);

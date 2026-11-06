@@ -9,16 +9,17 @@
   );
 
   display: flex;
+  position: relative;
   flex-direction: column;
   min-width: 0;
   overflow: hidden;
-  background-color: t.$surface;
+  background-color: #101319;
   background-image:
     linear-gradient(
       180deg,
       rgba(#101216, 0.2),
-      rgba(t.$surface, 0.8) 42%,
-      rgba(t.$surface, 0.98) 70%
+      rgba(#101319, 0.8) 42%,
+      #101319 70%
     ),
     url("../../../../assets/backgrounds/news-arena.png");
   background-position: 75% top;
@@ -28,7 +29,7 @@
 
   &__image {
     position: relative;
-    height: 148px;
+    height: 180px;
     min-width: 0;
     overflow: hidden;
     background: radial-gradient(
@@ -49,7 +50,7 @@
     border: 1px solid rgba(t.$text, 0.08);
     border-radius: 6px;
     color: var(--market-card-ink);
-    font-size: 0.5625rem;
+    font-size: 0.6875rem;
     font-weight: 500;
     line-height: 1.5;
     overflow-wrap: anywhere;
@@ -61,15 +62,15 @@
     display: grid;
     place-items: center;
     color: t.$text-muted;
+    -webkit-mask-image: linear-gradient(#000 78%, transparent);
+    mask-image: linear-gradient(#000 78%, transparent);
 
     img {
       display: block;
-      width: 80%;
+      width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      -webkit-mask-image: linear-gradient(#000 0%, #000 78%, transparent 100%);
-      mask-image: linear-gradient(#000 0%, #000 78%, transparent 100%);
+      object-fit: contain;
+      object-position: center bottom;
     }
   }
 
@@ -78,7 +79,7 @@
     flex: 1;
     flex-direction: column;
     min-width: 0;
-    padding: 12px;
+    padding: 16px;
   }
 
   &__header {
@@ -140,6 +141,9 @@
     }
 
     dd {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       margin: 0;
       color: t.$text;
       font-size: 0.8125rem;
@@ -171,6 +175,9 @@
     line-height: 1.5;
     text-align: left;
     cursor: pointer;
+    text-decoration: none;
+
+    &::after { content: ""; position: absolute; inset: 0; z-index: 2; }
 
     svg {
       flex-shrink: 0;
@@ -182,6 +189,25 @@
       outline-offset: 3px;
       border-radius: 4px;
     }
+  }
+
+  &:has(a:focus-visible) {
+    outline: 2px solid var(--market-card-ink);
+    outline-offset: 3px;
+  }
+
+  &__mic-rating {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    color: rgba(t.$text, 0.18);
+    .is-active { color: var(--market-card-ink); }
+  }
+
+  &__unavailable {
+    margin-top: auto;
+    color: t.$text-muted;
+    font-size: 0.6875rem;
   }
 
   &__sr-only {
@@ -200,7 +226,7 @@
 @container (min-width: 576px) {
   .market-wrestler-card {
     &__image {
-      height: 180px;
+      height: 240px;
     }
 
     &__content {

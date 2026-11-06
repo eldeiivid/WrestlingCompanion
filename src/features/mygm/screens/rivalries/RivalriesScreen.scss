@@ -1,8 +1,13 @@
 @use "../../../../styles/tokens" as t;
+@use "../../components/dashboard/rivalries/rivalryShowcase" as showcase;
 
 .rivalries-screen {
   --rivalries-accent: var(--career-accent, #{t.$accent});
   --rivalries-ink: color-mix(in srgb, var(--rivalries-accent) 60%, #{t.$text});
+  --rivalry-accent: var(--rivalries-accent);
+  --rivalry-ink: var(--rivalries-ink);
+
+  @include showcase.participants;
 
   container-type: inline-size;
   display: grid;
@@ -24,10 +29,10 @@
     h1 {
       margin: 0;
       color: t.$text;
-      font-size: clamp(1.75rem, 5vw, 2.25rem);
+      font-size: clamp(1.875rem, 4vw, 2.625rem);
       font-weight: 700;
       letter-spacing: -0.045em;
-      line-height: 1.2;
+      line-height: 1.15;
       overflow-wrap: anywhere;
     }
   }
@@ -35,18 +40,18 @@
   &__eyebrow {
     margin: 0 0 8px;
     color: var(--rivalries-ink);
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     line-height: 1.5;
     text-transform: uppercase;
   }
 
   &__description {
     max-width: 560px;
-    margin: 10px 0 0;
+    margin: 12px 0 0;
     color: t.$text-muted;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     line-height: 1.7;
   }
 
@@ -281,25 +286,19 @@
     height: 100%;
     min-width: 0;
     overflow: hidden;
-    background: t.$surface;
+    background:
+      linear-gradient(180deg, rgba(#101319, 0.05), rgba(#101319, 0.2) 25%, #101319 60%),
+      url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/rivalry-bg-3.webp") center top / cover,
+      #101319;
     border: 1px solid rgba(t.$text, 0.09);
-    border-radius: 22px;
+    border-radius: 20px;
   }
 
   &__visual {
     min-width: 0;
-    padding: 16px 12px 0;
-    background-color: #101216;
-    background-image:
-      linear-gradient(
-        180deg,
-        rgba(#101216, 0.2),
-        rgba(t.$surface, 0.55) 60%,
-        t.$surface
-      ),
-      url("../../../../assets/backgrounds/news-arena.png");
-    background-position: center top;
-    background-size: cover;
+    padding: 12px 10px 0;
+    background: radial-gradient(ellipse at 50% 75%,
+      color-mix(in srgb, var(--rivalries-accent) 16%, transparent), transparent 75%);
   }
 
   &__card-meta {
@@ -365,107 +364,35 @@
     color: var(--rivalries-ink);
   }
 
-  &__sides {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px;
-    min-width: 0;
-    padding-top: 16px;
-  }
-
-  &__side {
-    min-width: 0;
-  }
-
-  &__members {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
-    gap: 12px 4px;
-    min-width: 0;
-
-    > :only-child {
-      grid-column: 1 / -1;
-    }
-  }
-
-  &__member {
-    min-width: 0;
-    margin: 0;
-    text-align: center;
-
-    figcaption {
-      position: relative;
-      margin-top: -5px;
-      color: t.$text-muted;
-      font-size: 0.625rem;
-      line-height: 1.6;
-      overflow-wrap: anywhere;
-    }
-  }
-
-  &__portrait {
-    display: grid;
-    place-items: center;
-    min-width: 0;
-    height: 160px;
-    color: t.$text-muted;
-
-    img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      -webkit-mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
-      mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
-    }
-  }
-
-  &__versus {
-    position: absolute;
-    top: 84px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--rivalries-ink);
-    font-size: 0.8125rem;
-    font-weight: 750;
-    font-style: italic;
-    line-height: 1;
-    text-shadow: 0 2px 10px #000;
-  }
-
-  &__missing {
-    margin: 0;
-    padding: 40px 0;
-    color: t.$text-muted;
-    font-size: 0.6875rem;
-    line-height: 1.7;
-    text-align: center;
-  }
-
   &__card-content {
     display: flex;
     flex: 1;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
     min-width: 0;
-    padding: 20px;
+    padding: 0 24px 24px;
 
     > h2 {
       margin: 0;
       color: t.$text;
-      font-size: 1rem;
-      font-weight: 650;
-      letter-spacing: -0.025em;
-      line-height: 1.5;
+      font-size: 1.375rem;
+      font-weight: 750;
+      letter-spacing: -0.035em;
+      line-height: 1.2;
       overflow-wrap: anywhere;
     }
   }
 
   &__level {
     min-width: 0;
+  }
+
+  &__card .rivalry-level__heading { color: t.$text-muted; font-size: 0.6875rem; font-weight: 500; }
+  &__card .rivalry-level__step { border: 0; border-radius: 999px; background: t.$surface-raised; }
+  &__card .rivalry-level__step--active { background: var(--rivalries-accent); }
+  &__card[data-level="4"] .rivalry-level__step--active {
+    background: var(--rivalries-ink);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--rivalries-accent) 25%, transparent);
   }
 
   &__facts {

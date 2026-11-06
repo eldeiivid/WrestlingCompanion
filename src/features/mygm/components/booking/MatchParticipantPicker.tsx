@@ -120,7 +120,7 @@ export default function MatchParticipantPicker({
                   <div
                     className={`match-editor__slot${
                       activeIndex === index ? " match-editor__slot--active" : ""
-                    }`}
+                    }${selectedId ? " match-editor__slot--filled" : ""}`}
                     key={`${slot.side}-${slot.member}`}
                   >
                     <button

@@ -1,7 +1,9 @@
 @use "../../../../../styles/tokens" as t;
+@use "../championshipTheme" as theme;
 
 .reign-defenses-modal {
-  --defense-accent: var(--career-accent, #{t.$accent});
+  @include theme.prestige;
+  --defense-accent: var(--championship-gold);
   --defense-ink: color-mix(in srgb, var(--defense-accent) 60%, #{t.$text});
 
   position: fixed;
@@ -9,7 +11,7 @@
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  height: 92dvh;
+  height: auto;
   max-height: 92dvh;
   margin: 0;
   padding: 0;
@@ -42,7 +44,7 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 12px;
-    padding: 20px;
+    padding: 16px 20px;
     border-bottom: 1px solid rgba(t.$text, 0.08);
   }
 
@@ -118,22 +120,38 @@
   }
 
   &__count {
-    margin: 0 0 4px;
+    margin: 20px 0 16px;
     color: t.$text-muted;
     font-size: 0.6875rem;
     line-height: 1.6;
   }
 
   &__list {
-    margin: 0;
-    padding: 0;
+    display: grid;
+    gap: 16px;
+    margin: 0 0 0 6px;
+    padding: 0 0 0 20px;
+    border-left: 1px solid rgba(#e2c58a, 0.2);
     list-style: none;
   }
 
   &__card {
+    position: relative;
     min-width: 0;
-    padding: 20px 0;
-    border-top: 1px solid rgba(t.$text, 0.08);
+    padding: 4px 0 20px;
+    border-bottom: 1px solid rgba(t.$text, 0.08);
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: -27px;
+      width: 10px;
+      height: 10px;
+      border: 2px solid t.$surface;
+      border-radius: 50%;
+      background: var(--defense-ink);
+    }
 
     h3 {
       margin: 0;
@@ -152,6 +170,65 @@
     font-size: 0.625rem;
     font-variant-numeric: tabular-nums;
     line-height: 1.6;
+  }
+
+  &__event-kind {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 0;
+    color: var(--defense-ink);
+    font-size: 0.625rem;
+    line-height: 1.5;
+  }
+
+  &__summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
+    padding: 4px 0 20px;
+    border-bottom: 1px solid rgba(#e2c58a, 0.14);
+  }
+
+  &__belt {
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    height: 110px;
+    max-width: 240px;
+    width: 100%;
+    margin-inline: auto;
+    color: var(--defense-ink);
+    img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(#000, 0.5)); }
+  }
+
+  &__reign-copy {
+    min-width: 0;
+    h3 { margin: 7px 0; font-size: 1rem; font-weight: 600; letter-spacing: -0.025em; line-height: 1.5; overflow-wrap: anywhere; }
+    p { margin: 0; color: t.$text-muted; font-size: 0.6875rem; line-height: 1.7; }
+    > p:first-child { color: var(--defense-ink); }
+  }
+
+  &__champion-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0;
+    min-width: 0;
+    h3 { min-width: 0; margin: 0; }
+  }
+
+  &__reign-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding-top: 14px;
+    grid-column: 1 / -1;
+    > div { min-width: 0; }
+    dt { margin-bottom: 6px; color: t.$text-muted; font-size: 0.625rem; line-height: 1.5; }
+    dd { margin: 0; color: var(--defense-ink); font-size: 1.125rem; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    span { color: t.$text-muted; font-size: 0.75rem; font-weight: 400; }
   }
 
   &__match-type {
@@ -189,8 +266,8 @@
     display: grid;
     flex-shrink: 0;
     place-items: center;
-    width: 36px;
-    height: 44px;
+    width: 44px;
+    height: 56px;
     overflow: hidden;
     background: t.$background;
     border: 1px solid rgba(t.$text, 0.1);
@@ -205,8 +282,8 @@
       display: block;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: center top;
+      object-fit: contain;
+      object-position: center bottom;
     }
   }
 
@@ -250,6 +327,7 @@
     flex-shrink: 0;
     gap: 6px;
     margin: 0;
+    padding: 0;
     color: var(--defense-ink);
     font-variant-numeric: tabular-nums;
     line-height: 1.5;
@@ -375,7 +453,7 @@
     inset: 0;
     width: calc(100% - 48px);
     max-width: 800px;
-    height: min(820px, 88dvh);
+    height: auto;
     max-height: 88dvh;
     margin: auto;
     border-bottom: 1px solid rgba(t.$text, 0.1);
@@ -387,8 +465,10 @@
     }
 
     &__card {
-      padding-block: 24px;
+      padding: 4px 0 24px;
     }
+
+    &__summary { grid-template-columns: 160px minmax(0, 1fr); }
 
     &__card h3 {
       font-size: 0.9375rem;
@@ -421,6 +501,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .reign-defenses-modal {
+    &__spinner { animation: defenses-loading-spin 900ms linear infinite; }
     &[open]::backdrop {
       animation: reign-defenses-backdrop-enter 240ms ease-out;
     }
@@ -438,6 +519,8 @@
     }
   }
 }
+
+@keyframes defenses-loading-spin { to { transform: rotate(360deg); } }
 
 @keyframes reign-defenses-backdrop-enter {
   from {

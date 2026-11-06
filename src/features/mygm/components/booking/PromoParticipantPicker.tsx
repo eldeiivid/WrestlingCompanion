@@ -110,7 +110,7 @@ export default function PromoParticipantPicker({
             <div
               className={`promo-editor__slot${
                 activeIndex === index ? " promo-editor__slot--active" : ""
-              }`}
+              }${selectedId ? " promo-editor__slot--filled" : ""}`}
               key={`${slot.role}-${index}`}
             >
               <button

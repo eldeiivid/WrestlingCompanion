@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { Check, UserRound } from "lucide-react";
+import { Check, CircleAlert, UserRound } from "lucide-react";
 
 import PromoAutomaticEffectPreview from "./PromoAutomaticEffectPreview";
 
@@ -251,6 +251,7 @@ export default function PromoResultsEditor({
 
                   {effectField && (
                     <div className="promo-results__outcome">
+                      <h4>Record the promo outcome</h4>
                       <div className="promo-results__field">
                         <label htmlFor={amountId}>
                           {effectField === "moneyChange"
@@ -319,6 +320,23 @@ export default function PromoResultsEditor({
                   segment={segment}
                   wrestlers={wrestlers}
                 />
+                <p
+                  className={`promo-results__readiness${isComplete ? " promo-results__readiness--complete" : ""}`}
+                  role="status"
+                >
+                  {isComplete ? (
+                    <Check size={16} aria-hidden="true" />
+                  ) : (
+                    <CircleAlert size={16} aria-hidden="true" />
+                  )}
+                  {isComplete
+                    ? "Rating and effects recorded. Complete any rivalry settings below to continue."
+                    : !selectedRating
+                      ? "Choose a promo rating to continue."
+                      : !validEffect
+                        ? "Enter a valid promo outcome. Use 0 if there was no change."
+                        : "Resolve the automatic effect warning before continuing."}
+                </p>
               </article>
             );
           })}

@@ -5,7 +5,7 @@ import {
   useNavigate,
   useOutletContext,
 } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight, HardDrive, LoaderCircle } from "lucide-react";
 import BookingResultsReview from "../components/booking/BookingResultsReview";
 import BookingResultsStepper from "../components/booking/BookingResultsStepper";
 import FeudResultsEditor from "../components/booking/FeudResultsEditor";
@@ -371,11 +371,14 @@ function BookingResultsFlow({
       />
 
       <p className="booking-results-screen__draft-notice">
-        {isLoadingDraft
-          ? "Loading your results draft…"
-          : storageError
-            ? "Results are applied when you close the show. Check the draft storage warning below."
-            : "Your draft is saved on this device. Results are applied when you close the show."}
+        <HardDrive size={17} aria-hidden="true" />
+        <span>
+          {isLoadingDraft
+            ? "Loading your results draft…"
+            : storageError
+              ? "Results are applied when you close the show. Check the draft storage warning below."
+              : "Your draft is saved on this device. Results are applied when you close the show."}
+        </span>
       </p>
 
       <section
@@ -390,6 +393,11 @@ function BookingResultsFlow({
 
         {isLoading && (
           <p className="booking-results-screen__message" role="status">
+            <LoaderCircle
+              className="booking-results-screen__spinner"
+              size={18}
+              aria-hidden="true"
+            />
             Loading results…
           </p>
         )}
@@ -412,42 +420,44 @@ function BookingResultsFlow({
           <>
             {currentSegment ? (
               <>
-                <div className="booking-results-screen__segment-navigation">
-                  <label className="booking-results-screen__segment-picker">
-                    <span>Segment</span>
+                <div className="booking-results-screen__segment-toolbar">
+                  <div className="booking-results-screen__segment-navigation">
+                    <label className="booking-results-screen__segment-picker">
+                      <span>Segment</span>
 
-                    <select
-                      value={currentSegment.id}
-                      onChange={(event) =>
-                        handleSegmentChange(event.target.value)
-                      }
-                    >
-                      {orderedSegments.map((segment) => (
-                        <option key={segment.id} value={segment.id}>
-                          {getSegmentNavigationLabel(segment)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                      <select
+                        value={currentSegment.id}
+                        onChange={(event) =>
+                          handleSegmentChange(event.target.value)
+                        }
+                      >
+                        {orderedSegments.map((segment) => (
+                          <option key={segment.id} value={segment.id}>
+                            {getSegmentNavigationLabel(segment)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
 
-                  <p className="booking-results-screen__segment-count">
-                    Segment {currentIndex + 1} of {orderedSegments.length}
-                  </p>
-                </div>
-
-                <div className="booking-results-screen__progress">
-                  <div role="status">
-                    <span>Segment results complete</span>
-                    <strong>
-                      {completedCount} / {orderedSegments.length}
-                    </strong>
+                    <p className="booking-results-screen__segment-count">
+                      Segment {currentIndex + 1} of {orderedSegments.length}
+                    </p>
                   </div>
 
-                  <progress
-                    value={completedCount}
-                    max={Math.max(1, orderedSegments.length)}
-                    aria-label="Completed segment results"
-                  />
+                  <div className="booking-results-screen__progress">
+                    <div role="status">
+                      <span>Segment results complete</span>
+                      <strong>
+                        {completedCount} / {orderedSegments.length}
+                      </strong>
+                    </div>
+
+                    <progress
+                      value={completedCount}
+                      max={Math.max(1, orderedSegments.length)}
+                      aria-label="Completed segment results"
+                    />
+                  </div>
                 </div>
 
                 {currentSegment.kind === "match" ? (
@@ -504,6 +514,7 @@ function BookingResultsFlow({
                       }
                     }}
                   >
+                    <ArrowLeft size={16} aria-hidden="true" />
                     Previous segment
                   </button>
 
@@ -515,6 +526,7 @@ function BookingResultsFlow({
                       onClick={() => handleSegmentChange(nextSegment.id)}
                     >
                       Next segment
+                      <ArrowRight size={16} aria-hidden="true" />
                     </button>
                   ) : (
                     <button
@@ -524,6 +536,7 @@ function BookingResultsFlow({
                       onClick={() => handleStepChange("show")}
                     >
                       Continue to show results
+                      <ArrowRight size={16} aria-hidden="true" />
                     </button>
                   )}
                 </div>
@@ -576,6 +589,7 @@ function BookingResultsFlow({
                 disabled={isClosing}
                 onClick={() => handleStepChange("segments")}
               >
+                <ArrowLeft size={16} aria-hidden="true" />
                 Back to segment results
               </button>
 
@@ -586,6 +600,7 @@ function BookingResultsFlow({
                 onClick={() => handleStepChange("review")}
               >
                 Review results
+                <ArrowRight size={16} aria-hidden="true" />
               </button>
             </div>
 
@@ -623,7 +638,7 @@ function BookingResultsFlow({
               </p>
             )}
 
-            <div className="booking-results-screen__closing-notice">
+            <div className="booking-results-screen__closing-notice" id="booking-results-close-notice">
               <strong>Close this show and advance one week</strong>
               <p>
                 This applies the results to your career. Completed results
@@ -646,8 +661,13 @@ function BookingResultsFlow({
                 type="button"
                 disabled={isClosing || !allSegmentsComplete || !isShowComplete}
                 onClick={() => void handleCloseShow()}
+                aria-describedby="booking-results-close-notice"
               >
+                {isClosing ? (
+                  <LoaderCircle className="booking-results-screen__spinner" size={17} aria-hidden="true" />
+                ) : null}
                 {isClosing ? "Closing show…" : "Close show & advance week"}
+                {!isClosing && <ArrowRight size={17} aria-hidden="true" />}
               </button>
             </div>
           </>
@@ -705,6 +725,13 @@ export default function BookingResultsScreen() {
         <p className="booking-results-screen__description">
           Record segment results, review your show and close the week.
         </p>
+        {booking && (
+          <p className="booking-results-screen__event-meta">
+            Season {Math.floor((booking.event.tick - 1) / 50) + 1}
+            {" · "}Week {((booking.event.tick - 1) % 50) + 1}
+            {" · "}{booking.segments.length} segments
+          </p>
+        )}
       </header>
 
       {isLoading && (

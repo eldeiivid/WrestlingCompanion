@@ -11,8 +11,8 @@
   gap: 20px;
   min-width: 0;
   padding: 20px;
-  background: t.$surface;
-  border: 1px solid rgba(t.$text, 0.08);
+  background: color-mix(in srgb, var(--signing-accent) 5%, #{t.$surface});
+  border: 1px solid color-mix(in srgb, var(--signing-accent) 18%, transparent);
   border-radius: 20px;
 
   &__heading {
@@ -47,7 +47,7 @@
     padding: 10px 16px;
     background: color-mix(in srgb, var(--signing-accent) 12%, #{t.$surface});
     border: 1px solid color-mix(in srgb, var(--signing-accent) 30%, transparent);
-    border-radius: 10px;
+    border-radius: 12px;
     color: var(--signing-ink);
     font: inherit;
     font-size: 0.75rem;

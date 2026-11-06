@@ -1,6 +1,8 @@
 import { useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import {
+  Check,
+  CircleAlert,
   Clapperboard,
   Dumbbell,
   Flag,
@@ -420,8 +422,8 @@ function PromoEditorForm({
           >
             <header className="promo-editor__participants-header">
               <h3 id={participantsTitleId}>Participants</h3>
-              <span>
-                {participantIds.filter(Boolean).length} / {slots.length}
+              <span role="status">
+                {participantIds.filter(Boolean).length} / {slots.length} selected
               </span>
             </header>
 
@@ -451,12 +453,13 @@ function PromoEditorForm({
 
         {financesEnabled && selectedType && (
           <div className="promo-editor__cost" aria-live="polite">
+            <h3>Cost summary</h3>
             <p>
               Promo cost
               <strong>{formatMoney(promoCost)}</strong>
             </p>
 
-            <p>
+            <p className="promo-editor__cost-total">
               {isEditing
                 ? "Card total after changes"
                 : "Card total after adding"}
@@ -466,6 +469,21 @@ function PromoEditorForm({
             <p>
               Available budget
               <strong>{formatMoney(budgetAvailable)}</strong>
+            </p>
+
+            <p
+              className={exceedsBudget
+                ? "promo-editor__budget-error"
+                : "promo-editor__budget-remaining"}
+            >
+              {exceedsBudget ? "Over budget" : "Budget after this card"}
+              <strong>
+                {formatMoney(
+                  exceedsBudget
+                    ? projectedCost - BigInt(budgetAvailable)
+                    : BigInt(budgetAvailable) - projectedCost,
+                )}
+              </strong>
             </p>
 
             {exceedsBudget && (
@@ -483,7 +501,15 @@ function PromoEditorForm({
         )}
 
         <footer className="promo-editor__footer">
-          <p className="promo-editor__save-hint" id={saveHintId}>
+          <p
+            className={`promo-editor__save-hint${canSave ? " promo-editor__save-hint--ready" : ""}`}
+            id={saveHintId}
+          >
+            {canSave ? (
+              <Check size={16} aria-hidden="true" />
+            ) : (
+              <CircleAlert size={16} aria-hidden="true" />
+            )}
             {isSaving ? "Saving your promo…" : saveHint}
           </p>
 

@@ -121,8 +121,8 @@ export default function ChampionshipOverview({
             />
           </div>
 
-          {visibleHolders.length > 0 ? (
-            <div className="championship-overview__portraits">
+          {visibleHolders.length > 0 && (
+            <div className="championship-overview__portraits" aria-hidden="true">
               {visibleHolders.map((holder) => (
                 <span
                   className="championship-overview__portrait"
@@ -138,59 +138,23 @@ export default function ChampionshipOverview({
                 </span>
               )}
             </div>
-          ) : (
-            <div className="championship-overview__placeholder">
-              {reign ? (
-                <UserRound size={100} strokeWidth={1} />
-              ) : isBriefcase ? (
-                <Briefcase size={100} strokeWidth={1} />
-              ) : (
-                <Trophy size={100} strokeWidth={1} />
-              )}
-            </div>
           )}
         </div>
 
         <div className="championship-overview__identity">
           <header className="championship-overview__header">
-            <p className="championship-overview__category">
-              {categoryLabels[championship.category]}
-            </p>
-
+            <p className="championship-overview__category">{categoryLabels[championship.category]}</p>
             <h2 id={headingId}>{championship.name}</h2>
-
             <div className="championship-overview__meta">
-              <span>
-                {genderLabels[championship.gender]}
-                {!isBriefcase && (
-                  <>
-                    {" · "}
-                    {divisionLabels[championship.division]}
-                  </>
-                )}
-              </span>
-
-              <span
-                className={`championship-overview__status${
-                  reign ? " championship-overview__status--held" : ""
-                }`}
-              >
-                {statusLabel}
-              </span>
-
-              {!championship.is_active && (
-                <span className="championship-overview__inactive">
-                  Inactive title
-                </span>
-              )}
+              <span>{genderLabels[championship.gender]}{!isBriefcase && <> · {divisionLabels[championship.division]}</>}</span>
+              <span className={`championship-overview__status${reign ? " championship-overview__status--held" : ""}`}>{statusLabel}</span>
+              {!championship.is_active && <span className="championship-overview__inactive">Inactive title</span>}
             </div>
           </header>
 
-          <section
-            className="championship-overview__current"
-            aria-label={holderLabel}
-          >
+          <section className="championship-overview__current" aria-label={holderLabel}>
             <h3>{holderLabel}</h3>
+
 
             {reign ? (
               <>

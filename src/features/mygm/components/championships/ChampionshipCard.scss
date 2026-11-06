@@ -1,7 +1,9 @@
 @use "../../../../styles/tokens" as t;
+@use "./championshipTheme" as theme;
 
 .championship-card {
-  --title-card-accent: var(--career-accent, #{t.$accent});
+  @include theme.prestige;
+  --title-card-accent: var(--championship-gold);
   --title-card-ink: color-mix(
     in srgb,
     var(--title-card-accent) 60%,
@@ -14,34 +16,36 @@
   height: 100%;
   min-width: 0;
   overflow: hidden;
-  background: t.$surface;
-  border: 1px solid rgba(t.$text, 0.09);
-  border-radius: 22px;
+  background: #14171c;
+  border: 1px solid rgba(#e2c58a, 0.2);
+  border-radius: 24px;
 
   &__visual {
     position: relative;
+    display: grid;
+    grid-template-rows: auto 100px 180px;
+    gap: 14px;
+    padding: 16px 16px 0;
+    flex-shrink: 0;
     min-width: 0;
-    height: 200px;
+    height: auto;
     overflow: hidden;
     background-color: #101216;
     background-image:
       linear-gradient(
         180deg,
-        rgba(#101216, 0.15),
-        rgba(t.$surface, 0.35) 55%,
-        t.$surface
+        rgba(#101216, 0.2),
+        rgba(#101216, 0.4) 55%,
+        #14171c
       ),
-      url("../../../../assets/backgrounds/news-arena.png");
+      var(--championship-stage);
     background-position: center top;
     background-size: cover;
   }
 
   &__visual-meta {
-    position: absolute;
+    position: relative;
     z-index: 2;
-    top: 14px;
-    right: 14px;
-    left: 14px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -75,20 +79,14 @@
   }
 
   &__belt {
-    position: absolute;
-    z-index: 1;
-    top: 78px;
-    left: 16px;
+    position: relative;
     display: grid;
     place-items: center;
     box-sizing: border-box;
-    width: calc(44% - 8px);
-    max-width: 200px;
-    height: 90px;
-    padding: 10px;
-    background: rgba(t.$background, 0.82);
-    border: 1px solid rgba(t.$text, 0.1);
-    border-radius: 16px;
+    width: 100%;
+    max-width: 320px;
+    height: 100%;
+    margin-inline: auto;
     color: var(--title-card-ink);
 
     img {
@@ -96,19 +94,20 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 5px 8px rgba(#000, 0.25));
+      filter: drop-shadow(0 12px 20px rgba(#000, 0.55));
     }
   }
 
   &__portraits {
-    position: absolute;
-    right: 0;
-    bottom: 0;
+    position: relative;
+    grid-row: 3;
     display: flex;
-    justify-content: flex-end;
-    width: 54%;
-    max-width: 240px;
-    height: 180px;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(#000 75%, transparent);
+    mask-image: linear-gradient(#000 75%, transparent);
   }
 
   &__portrait {
@@ -120,17 +119,15 @@
     color: t.$text-muted;
 
     + .championship-card__portrait {
-      margin-left: -24px;
+      margin-left: 0;
     }
 
     img {
       display: block;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      -webkit-mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
-      mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
+      object-fit: contain;
+      object-position: center bottom;
     }
   }
 
@@ -152,16 +149,13 @@
   }
 
   &__placeholder {
-    position: absolute;
-    right: 0;
-    bottom: 22px;
+    grid-row: 3;
     display: grid;
     place-items: center;
-    width: 54%;
-    max-width: 240px;
-    height: 130px;
+    width: 100%;
+    height: 100%;
     color: t.$text-muted;
-    opacity: 0.3;
+    opacity: 0.18;
   }
 
   &__content {
@@ -179,7 +173,7 @@
     h2 {
       margin: 0;
       color: t.$text;
-      font-size: 1rem;
+      font-size: 1.125rem;
       font-weight: 650;
       letter-spacing: -0.025em;
       line-height: 1.4;
@@ -197,6 +191,8 @@
   &__holder-information {
     min-width: 0;
   }
+
+  &__holder-copy { min-width: 0; }
 
   &__holder-label {
     margin: 0 0 2px;
@@ -320,16 +316,15 @@
 @container (min-width: 440px) {
   .championship-card {
     &__visual {
-      height: 220px;
+      grid-template-rows: auto 110px 200px;
     }
 
     &__portraits {
-      height: 200px;
+      height: 100%;
     }
 
     &__belt {
-      top: 86px;
-      height: 96px;
+      height: 100%;
     }
 
     &__content {

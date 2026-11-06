@@ -142,6 +142,8 @@
     height: 112px;
     overflow: hidden;
     color: t.$text-muted;
+    -webkit-mask-image: linear-gradient(#000 80%, transparent);
+    mask-image: linear-gradient(#000 80%, transparent);
 
     img { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
   }
@@ -188,7 +190,7 @@
   &__roster > li { min-width: 0; }
   button.rivalry-editor__wrestler {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     gap: 7px;
     width: 100%;
@@ -202,6 +204,9 @@
     small { display: flex; align-items: center; gap: 4px; color: var(--rivalry-editor-ink); font-size: 0.625rem; }
     &[aria-pressed="true"] { border-color: var(--rivalry-editor-accent); background: color-mix(in srgb, var(--rivalry-editor-accent) 8%, #{t.$background}); }
     &:disabled { opacity: 0.65; }
+    .rivalry-editor__portrait { flex-shrink: 0; width: 48px; height: 60px; }
+    > span:not(.rivalry-editor__portrait) { text-align: left; }
+    small { margin-left: auto; }
   }
   &__no-results { grid-column: 1 / -1; padding: 28px 12px; text-align: center; color: t.$text-muted; font-size: 0.8125rem; }
 
@@ -256,6 +261,44 @@
     button { transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
   }
 }
+
+.rivalry-editor {
+  &__roster { grid-template-columns: minmax(0, 1fr); }
+
+  &__summary {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 16px;
+    background: color-mix(in srgb, var(--rivalry-editor-accent) 6%, #{t.$surface});
+    border: 1px solid color-mix(in srgb, var(--rivalry-editor-accent) 18%, transparent);
+    border-radius: 16px;
+    > div { min-width: 0; }
+    dt { margin-bottom: 6px; color: t.$text-muted; font-size: 0.6875rem; }
+    dd { margin: 0; font-size: 0.8125rem; line-height: 1.6; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  }
+
+  p.rivalry-editor__readiness {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    svg { flex-shrink: 0; margin-top: 2px; color: var(--rivalry-editor-ink); }
+    &--ready { color: var(--rivalry-editor-ink); }
+  }
+
+  &__actions button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  input[aria-invalid="true"] { border-color: t.$error; }
+
+  @media (min-width: t.$screen-sm-min) {
+    &__roster { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    &__summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    &__spinner { animation: rivalry-editor-spin 900ms linear infinite; }
+  }
+}
+
+@keyframes rivalry-editor-spin { to { transform: rotate(360deg); } }
 
 @keyframes rivalry-editor-enter {
   from { opacity: 0; transform: translateY(16px); }

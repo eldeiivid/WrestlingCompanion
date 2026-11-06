@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { X } from "lucide-react";
+import { Check, CircleAlert, LoaderCircle, UserPlus, X } from "lucide-react";
 
 import { useSignWrestler } from "../../hooks/market/useSignWrestler";
 
@@ -64,6 +64,10 @@ export default function SignWrestlerModal({
 }: SignWrestlerModalProps) {
   const headingId = useId();
   const descriptionId = useId();
+  const readinessId = useId();
+  const weeksErrorId = useId();
+  const costErrorId = useId();
+  const budgetErrorId = useId();
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const submittingRef = useRef(false);
@@ -268,6 +272,8 @@ export default function SignWrestlerModal({
               required
               autoFocus
               placeholder="Enter the number of weeks"
+              aria-invalid={weeks !== "" && !hasValidWeeks}
+              aria-describedby={weeks !== "" && !hasValidWeeks ? weeksErrorId : undefined}
               onChange={(event) => {
                 setWeeks(event.target.value);
                 clearError();
@@ -287,6 +293,9 @@ export default function SignWrestlerModal({
                 value={cost}
                 required
                 placeholder="Enter the cost from your game"
+                aria-invalid={cost !== "" && (!hasValidCost || exceedsBudget)}
+                aria-describedby={cost !== "" && !hasValidCost
+                  ? costErrorId : exceedsBudget ? budgetErrorId : undefined}
                 onChange={(event) => {
                   setCost(event.target.value);
                   clearError();
@@ -302,25 +311,26 @@ export default function SignWrestlerModal({
         </fieldset>
 
         {weeks !== "" && !hasValidWeeks && (
-          <p className="sign-wrestler-modal__error" role="alert">
+          <p className="sign-wrestler-modal__error" role="alert" id={weeksErrorId}>
             Enter a valid contract length of at least one week.
           </p>
         )}
 
         {financesEnabled && cost !== "" && !hasValidCost && (
-          <p className="sign-wrestler-modal__error" role="alert">
+          <p className="sign-wrestler-modal__error" role="alert" id={costErrorId}>
             Enter a whole signing cost between 0 and 9,223,372,036,854,775,807.
           </p>
         )}
 
         {exceedsBudget && (
-          <p className="sign-wrestler-modal__error" role="alert">
+          <p className="sign-wrestler-modal__error" role="alert" id={budgetErrorId}>
             The signing cost exceeds the available budget.
           </p>
         )}
 
         {endTick !== null && (
           <div className="sign-wrestler-modal__summary">
+            <h3>Contract summary</h3>
             <p>
               Starts: <strong>{formatPeriod(currentTick)}</strong>
             </p>
@@ -328,6 +338,22 @@ export default function SignWrestlerModal({
             <p>
               Last contracted week: <strong>{formatPeriod(endTick)}</strong>
             </p>
+            {financesEnabled && hasValidCost && (
+              <>
+                <p>
+                  Signing cost
+                  <strong>{currencyFormatter.format(BigInt(cost))}</strong>
+                </p>
+                <p className={exceedsBudget ? "sign-wrestler-modal__over-budget" : undefined}>
+                  {exceedsBudget ? "Over budget" : "Budget after signing"}
+                  <strong>
+                    {currencyFormatter.format(exceedsBudget
+                      ? BigInt(cost) - BigInt(budgetAvailable)
+                      : BigInt(budgetAvailable) - BigInt(cost))}
+                  </strong>
+                </p>
+              </>
+            )}
           </div>
         )}
 
@@ -336,6 +362,15 @@ export default function SignWrestlerModal({
             {errorMessage}
           </p>
         )}
+
+        <p className={`sign-wrestler-modal__readiness${canSubmit ? " sign-wrestler-modal__readiness--ready" : ""}`} id={readinessId}>
+          {canSubmit ? <Check size={16} aria-hidden="true" /> : <CircleAlert size={16} aria-hidden="true" />}
+          {isSigning ? "Signing this wrestler…"
+            : !hasValidWeeks ? "Enter a valid contract length to continue."
+              : financesEnabled && !hasValidCost ? "Enter the signing cost from your game. Use 0 if it is free."
+                : exceedsBudget ? "Reduce the signing cost to fit your available budget."
+                  : "Contract details are ready. Confirm to add this wrestler to your roster."}
+        </p>
 
         <footer className="sign-wrestler-modal__actions">
           <button
@@ -351,7 +386,10 @@ export default function SignWrestlerModal({
             className="sign-wrestler-modal__button sign-wrestler-modal__button--primary"
             type="submit"
             disabled={!canSubmit || isSigning}
+            aria-describedby={readinessId}
           >
+            {isSigning ? <LoaderCircle className="sign-wrestler-modal__spinner" size={17} aria-hidden="true" />
+              : <UserPlus size={17} aria-hidden="true" />}
             {isSigning ? "Signing…" : "Sign wrestler"}
           </button>
         </footer>

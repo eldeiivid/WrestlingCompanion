@@ -1,5 +1,6 @@
 import { useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { ArrowRight, Check, CircleAlert, Trophy } from "lucide-react";
 import { useBookingMatchOptions } from "../../hooks/useBookingMatchOptions";
 import { getMatchFeudSuggestions } from "../../rules/matchParticipantRules";
 import type {
@@ -184,6 +185,7 @@ function MatchEditorForm({
 }: MatchEditorFormProps) {
   const isEditing = initialSegment !== null;
   const participantsTitleId = useId();
+  const saveReadinessId = useId();
 
   const [segmentId] = useState(() => initialSegment?.id ?? crypto.randomUUID());
 
@@ -314,6 +316,22 @@ function MatchEditorForm({
     hasValidTitle &&
     hasValidInterference &&
     !exceedsBudget;
+
+  const saveRequirements = [
+    !selectedFormat && "Choose a match format.",
+    !selectedStipulation && "Choose a stipulation.",
+    !hasValidParticipants &&
+      "Fill every participant slot with an available wrestler.",
+    !hasValidTitle && "Choose a compatible championship or turn off Title match.",
+    !hasValidInterference &&
+      "Choose an available attacker and target or turn off Interference.",
+    exceedsBudget && "Reduce the card cost to fit the available budget.",
+  ].filter((requirement): requirement is string => Boolean(requirement));
+
+  const selectedAttacker = eligibleAttackers.find(
+    (item) => item.id === attackerId,
+  );
+  const selectedTarget = options.wrestlers.find((item) => item.id === targetId);
 
   function applyInterferenceSelection(
     selection: BookingMatchInterferenceInput,
@@ -594,6 +612,10 @@ function MatchEditorForm({
         <legend className="match-editor__legend">Match configuration</legend>
 
         <section className="match-editor__setup" aria-label="Match setup">
+          <div className="match-editor__section-heading">
+            <h3>Match setup</h3>
+            <span className="match-editor__section-note">Format & stipulation</span>
+          </div>
           <label className="match-editor__field">
             <span>Match format</span>
 
@@ -668,7 +690,13 @@ function MatchEditorForm({
             className="match-editor__participants"
             aria-labelledby={participantsTitleId}
           >
-            <h4 id={participantsTitleId}>Participants</h4>
+            <div className="match-editor__section-heading">
+              <h3 id={participantsTitleId}>Participants</h3>
+              <span className="match-editor__selection-count" role="status">
+                {participantIds.filter(Boolean).length} / {participantSlots.length}{" "}
+                selected
+              </span>
+            </div>
 
             <p className="match-editor__hint">
               Wrestlers booked in other matches or interferences are
@@ -749,7 +777,7 @@ function MatchEditorForm({
           </section>
         )}
 
-        <section className="match-editor__championship">
+        <section className="match-editor__championship" aria-label="Championship">
           <label className="match-editor__title-toggle">
             <input
               type="checkbox"
@@ -757,7 +785,10 @@ function MatchEditorForm({
               onChange={(event) => handleTitleMatchChange(event.target.checked)}
             />
 
-            <span>Title match</span>
+            <span className="match-editor__toggle-copy">
+              <strong>Title match</strong>
+              <small>Put a compatible championship on the line.</small>
+            </span>
           </label>
 
           {titleMatchEnabled && (
@@ -799,22 +830,17 @@ function MatchEditorForm({
                     </select>
                   </label>
 
-                  {selectedTitle && (
-                    <p className="match-editor__title-status">
-                      {selectedTitle.is_vacant
-                        ? "This championship is vacant."
-                        : `Current champions: ${selectedTitle.holders
-                            .map((holder) => holder.name)
-                            .join(" & ")}`}
-                    </p>
-                  )}
                 </>
               )}
 
               {selectedTitle && (
                 <div className="match-editor__title-preview">
                   <div className="match-editor__title-image" aria-hidden="true">
-                    <MatchEditorImage src={selectedTitle.image_url} />
+                    {selectedTitle.image_url ? (
+                      <MatchEditorImage src={selectedTitle.image_url} />
+                    ) : (
+                      <Trophy size={32} strokeWidth={1.25} />
+                    )}
                   </div>
 
                   <div>
@@ -836,7 +862,7 @@ function MatchEditorForm({
           )}
         </section>
 
-        <section className="match-editor__interference">
+        <section className="match-editor__interference" aria-label="Interference">
           <label className="match-editor__interference-toggle">
             <input
               type="checkbox"
@@ -846,7 +872,10 @@ function MatchEditorForm({
               }
             />
 
-            <span>Interference</span>
+            <span className="match-editor__toggle-copy">
+              <strong>Interference</strong>
+              <small>Send another wrestler to attack a participant.</small>
+            </span>
 
             {financesEnabled && (
               <span className="match-editor__option-cost">
@@ -924,6 +953,15 @@ function MatchEditorForm({
                     </label>
                   </div>
 
+                  {hasValidInterference && selectedAttacker && selectedTarget && (
+                    <div className="match-editor__interference-preview">
+                      <span>{selectedAttacker.name}</span>
+                      <ArrowRight size={16} aria-hidden="true" />
+                      <span className="match-editor__sr-only">attacks</span>
+                      <strong>{selectedTarget.name}</strong>
+                    </div>
+                  )}
+
                   {attackerId &&
                     !eligibleAttackers.some(
                       (wrestler) => wrestler.id === attackerId,
@@ -941,6 +979,7 @@ function MatchEditorForm({
 
         {financesEnabled && selectedStipulation && (
           <div className="match-editor__cost" aria-live="polite">
+            <h3>Cost summary</h3>
             <p>
               Stipulation
               <strong>{formatMoney(stipulationCost)}</strong>
@@ -953,7 +992,7 @@ function MatchEditorForm({
               </p>
             )}
 
-            <p>
+            <p className="match-editor__cost-total">
               Match total
               <strong>{formatMoney(matchCost)}</strong>
             </p>
@@ -963,6 +1002,23 @@ function MatchEditorForm({
                 ? "Card total after changes"
                 : "Card total after adding"}
               <strong>{formatMoney(projectedCost)}</strong>
+            </p>
+
+            <p>
+              Available budget
+              <strong>{formatMoney(budgetAvailable)}</strong>
+            </p>
+            <p
+              className={exceedsBudget
+                ? "match-editor__budget-error"
+                : "match-editor__budget-remaining"}
+            >
+              {exceedsBudget ? "Over budget" : "Budget after this card"}
+              <strong>
+                {formatMoney(exceedsBudget
+                  ? projectedCost - BigInt(budgetAvailable)
+                  : BigInt(budgetAvailable) - projectedCost)}
+              </strong>
             </p>
 
             {exceedsBudget && (
@@ -980,6 +1036,27 @@ function MatchEditorForm({
           </p>
         )}
 
+        <div
+          className={`match-editor__readiness${canSave ? " match-editor__readiness--ready" : ""}`}
+          id={saveReadinessId}
+        >
+          <p>
+            {canSave ? (
+              <Check size={16} aria-hidden="true" />
+            ) : (
+              <CircleAlert size={16} aria-hidden="true" />
+            )}
+            {isSaving ? "Saving your match…" : canSave ? "Ready to save" : "Before you save"}
+          </p>
+          {!canSave && (
+            <ul>
+              {saveRequirements.map((requirement) => (
+                <li key={requirement}>{requirement}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <div className="match-editor__actions">
           <button
             className="match-editor__button"
@@ -993,6 +1070,7 @@ function MatchEditorForm({
             className="match-editor__button match-editor__button--primary"
             type="submit"
             disabled={!canSave}
+            aria-describedby={saveReadinessId}
           >
             {isSaving ? "Saving…" : isEditing ? "Save changes" : "Save match"}
           </button>

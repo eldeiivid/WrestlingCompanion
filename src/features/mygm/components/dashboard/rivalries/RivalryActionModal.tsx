@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { Trash2, Trophy, X } from "lucide-react";
+import { LoaderCircle, Trash2, Trophy, X } from "lucide-react";
 import { manageRivalry } from "../../../services/rivalries/rivalriesService";
 import type { RivalryListItem, RivalrySide } from "../../../types/rivalries/rivalries.types";
 import "./RivalryActionModal.scss";
@@ -16,6 +16,7 @@ interface Props {
 export default function RivalryActionModal({ careerId, rivalry, action, onClose, onCompleted }: Props) {
   const headingId = useId();
   const descriptionId = useId();
+  const winnerName = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const submittingRef = useRef(false);
   const mountedRef = useRef(false);
@@ -82,21 +83,31 @@ export default function RivalryActionModal({ careerId, rivalry, action, onClose,
       </header>
       <form onSubmit={submit} aria-busy={saving}>
         <div className="rivalry-action-modal__content">
-          <p className="rivalry-action-modal__name">{name}</p>
+          <div className="rivalry-action-modal__summary">
+            <p className="rivalry-action-modal__name">{name}</p>
+            <p>Level {rivalry.level} · {rivalry.weeks_active} {rivalry.weeks_active === 1 ? "week" : "weeks"}</p>
+          </div>
           <p id={descriptionId}>{deleting ? "Permanently delete this rivalry, its participants and its rivalry history. Associated matches and shows will be kept; their link to this rivalry will be removed. This cannot be undone." : "Mark this rivalry as Resolved in the current week. Its participants and history will be preserved. Choose a winner or finish without assigning one."}</p>
           {deleting ? (
             <label className="rivalry-action-modal__confirmation"><input type="checkbox" checked={confirmed} required disabled={saving} onChange={event => setConfirmed(event.target.checked)} /> I understand this permanently deletes the rivalry.</label>
           ) : (
             <fieldset disabled={saving}>
               <legend>Rivalry winner</legend>
-              {[{ side: null, name: "No winner assigned" }, ...sides].map(option => <label className="rivalry-action-modal__winner" key={option.side ?? "none"}><input type="radio" name="winning-side" checked={winningSide === option.side} onChange={() => { setWinningSide(option.side); setError(""); }} /><span>{option.name}</span></label>)}
+              {[{ side: null, name: "No winner assigned" }, ...sides].map(option => <label className="rivalry-action-modal__winner" key={option.side ?? "none"}><input type="radio" name={winnerName} checked={winningSide === option.side} onChange={() => { setWinningSide(option.side); setError(""); }} /><span>{option.name}</span></label>)}
+              <p className="rivalry-action-modal__outcome">
+                {winningSide === null ? "This rivalry will finish without an assigned winner."
+                  : `Winner: ${sides.find(side => side.side === winningSide)?.name}`}
+              </p>
             </fieldset>
           )}
           {error && <p className="rivalry-action-modal__error" role="alert">{error}</p>}
         </div>
         <footer className="rivalry-action-modal__footer">
           <button type="button" disabled={saving} onClick={close} autoFocus>Cancel</button>
-          <button type="submit" className={deleting ? "rivalry-action-modal__danger" : "rivalry-action-modal__primary"} disabled={saving || (deleting && !confirmed)}>{saving ? deleting ? "Deleting…" : "Finishing…" : title}</button>
+          <button type="submit" className={deleting ? "rivalry-action-modal__danger" : "rivalry-action-modal__primary"} disabled={saving || (deleting && !confirmed)}>
+            {saving && <LoaderCircle className="rivalry-action-modal__spinner" size={17} aria-hidden="true" />}
+            {saving ? deleting ? "Deleting…" : "Finishing…" : title}
+          </button>
         </footer>
       </form>
     </dialog>

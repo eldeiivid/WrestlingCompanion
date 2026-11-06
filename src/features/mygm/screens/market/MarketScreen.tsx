@@ -1,11 +1,13 @@
 import { useId, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import {
   ChevronLeft,
   ChevronRight,
   RefreshCw,
   Search,
   SlidersHorizontal,
+  UsersRound,
+  LoaderCircle,
 } from "lucide-react";
 
 import MarketWrestlerCard from "../../components/market/MarketWrestlerCard";
@@ -16,7 +18,6 @@ import type {
   MarketGender,
   MarketRole,
   MarketSort,
-  MarketWrestler,
 } from "../../types/market/market.types";
 import type { MyGmOutletContext } from "../../types/mygm.types";
 
@@ -86,15 +87,14 @@ const categoryOptions: FilterOption<MarketCategory | "all">[] = [
 ];
 
 const sortOptions: FilterOption<MarketSort>[] = [
-  { value: "name_asc", label: "Name: A–Z" },
-  { value: "name_desc", label: "Name: Z–A" },
-  { value: "mic_skill_desc", label: "Mic skill: highest first" },
-  { value: "in_ring_skill_desc", label: "Ring level: highest first" },
+  { value: "name_asc", label: "Name A–Z" },
+  { value: "name_desc", label: "Name Z–A" },
+  { value: "mic_skill_desc", label: "Highest mic skill" },
+  { value: "in_ring_skill_desc", label: "Highest ring level" },
 ];
 
 export default function MarketScreen() {
   const { career } = useOutletContext<MyGmOutletContext>();
-  const navigate = useNavigate();
 
   const headingId = useId();
   const filtersId = useId();
@@ -132,41 +132,43 @@ export default function MarketScreen() {
       ? availableClasses
       : [...availableClasses, filters.primaryClass];
 
-  function handleViewProfile(wrestler: MarketWrestler) {
-    const basePath = `/mygm/${career.id}/market`;
-
-    if (wrestler.career_wrestler_id) {
-      navigate(`${basePath}/wrestlers/${wrestler.career_wrestler_id}`);
-      return;
-    }
-
-    if (wrestler.catalog_wrestler_id) {
-      navigate(`${basePath}/catalog/${wrestler.catalog_wrestler_id}`);
-    }
-  }
-
   return (
     <section className="market-screen" aria-labelledby={headingId}>
       <header className="market-screen__header">
         <div>
           <p className="market-screen__eyebrow">Build your brand</p>
-          <h1 id={headingId}>Market</h1>
+          <div className="market-screen__title">
+            <h1 id={headingId}>Market</h1>
+            {!isLoading && !errorMessage && data && (
+              <span className="market-screen__total">{data.available_count} available</span>
+            )}
+          </div>
 
           <p className="market-screen__description">
             Find the next addition to your roster.
           </p>
         </div>
 
-        <button
-          className="market-screen__button market-screen__refresh"
-          type="button"
-          disabled={isLoading}
-          onClick={retry}
-          aria-label="Refresh market"
-        >
-          <RefreshCw size={17} aria-hidden="true" />
-          <span>Refresh</span>
-        </button>
+        <div className="market-screen__header-actions">
+          <Link
+            className="market-screen__roster"
+            to={`/mygm/${career.id}/roster`}
+            aria-label="View your roster"
+          >
+            <UsersRound size={18} aria-hidden="true" />
+            <span>Your roster</span>
+          </Link>
+          <button
+            className="market-screen__button market-screen__refresh"
+            type="button"
+            disabled={isLoading}
+            onClick={retry}
+            aria-label="Refresh market"
+          >
+            <RefreshCw size={17} aria-hidden="true" />
+            <span>Refresh</span>
+          </button>
+        </div>
       </header>
 
       <div className="market-screen__tools">
@@ -264,7 +266,7 @@ export default function MarketScreen() {
       <section
         className="market-screen__results"
         aria-label="Available wrestlers"
-        aria-busy={isLoading}
+        aria-busy={isLoading || isSearching}
       >
         <div className="market-screen__results-header">
           <div>
@@ -290,6 +292,7 @@ export default function MarketScreen() {
 
         {isLoading ? (
           <p className="market-screen__message" role="status">
+            <LoaderCircle className="market-screen__spinner" size={18} aria-hidden="true" />
             {isSearching ? "Searching wrestlers…" : "Loading market…"}
           </p>
         ) : errorMessage ? (
@@ -308,6 +311,7 @@ export default function MarketScreen() {
           <>
             {data.items.length === 0 ? (
               <div className="market-screen__empty">
+                <Search size={28} strokeWidth={1.5} aria-hidden="true" />
                 <h2>No wrestlers found</h2>
 
                 <p>
@@ -315,6 +319,11 @@ export default function MarketScreen() {
                     ? "Try another search or reset your filters."
                     : "No wrestlers are currently available to sign."}
                 </p>
+                {hasFilters && (
+                  <button className="market-screen__button" type="button" onClick={resetFilters}>
+                    Reset filters
+                  </button>
+                )}
               </div>
             ) : (
               <ul className="market-screen__grid">
@@ -322,7 +331,7 @@ export default function MarketScreen() {
                   <li key={wrestler.market_key}>
                     <MarketWrestlerCard
                       wrestler={wrestler}
-                      onViewProfile={handleViewProfile}
+                      careerId={career.id}
                     />
                   </li>
                 ))}

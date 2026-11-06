@@ -36,8 +36,41 @@
 
   &__setup {
     display: grid;
-    gap: 24px;
+    gap: 20px;
     min-width: 0;
+  }
+
+  &__section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+
+    h3 {
+      margin: 0;
+      color: t.$text;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.5;
+    }
+  }
+
+  &__section-note,
+  &__selection-count {
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+    line-height: 1.5;
+  }
+
+  &__selection-count {
+    padding: 4px 8px;
+    background: color-mix(in srgb, var(--match-accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--match-accent) 18%, transparent);
+    border-radius: 8px;
+    color: var(--match-ink);
+    font-variant-numeric: tabular-nums;
   }
 
   &__configuration {
@@ -65,7 +98,7 @@
       padding: 10px 12px;
       background: t.$background;
       border: 1px solid rgba(t.$text, 0.12);
-      border-radius: 10px;
+      border-radius: 12px;
       color: t.$text;
       font: inherit;
       font-size: 1rem;
@@ -99,33 +132,39 @@
 
   &__stipulation-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 10px;
   }
 
   &__stipulation {
     position: relative;
+    box-sizing: border-box;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-height: 72px;
+    padding: 10px 34px 10px 10px;
     min-width: 0;
     overflow: hidden;
     background: t.$background;
     border: 1px solid rgba(t.$text, 0.1);
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
 
     > input {
       position: absolute;
       z-index: 1;
-      top: 10px;
+      top: 50%;
       right: 10px;
       width: 18px;
       height: 18px;
       margin: 0;
+      transform: translateY(-50%);
       accent-color: var(--match-accent);
     }
 
     &:has(> input:checked) {
+      background: color-mix(in srgb, var(--match-accent) 8%, #{t.$background});
       border-color: var(--match-ink);
       box-shadow: inset 0 0 0 1px var(--match-ink);
     }
@@ -142,8 +181,13 @@
   }
 
   &__stipulation-image {
-    display: block;
-    height: 88px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 64px;
+    height: 48px;
+    overflow: hidden;
+    border-radius: 8px;
     background: radial-gradient(
       ellipse at center,
       color-mix(in srgb, var(--match-accent) 12%, transparent),
@@ -154,14 +198,14 @@
       display: block;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
     }
   }
 
   &__stipulation-copy {
     display: grid;
     gap: 5px;
-    padding: 10px;
+    min-width: 0;
 
     strong {
       color: t.$text;
@@ -186,11 +230,8 @@
     border-top: 1px solid rgba(t.$text, 0.08);
   }
 
-  &__participants h4 {
-    margin: 0 0 8px;
-    color: t.$text;
-    font-size: 0.9375rem;
-    font-weight: 600;
+  &__participants > &__section-heading {
+    margin-bottom: 10px;
   }
 
   &__hint {
@@ -230,6 +271,10 @@
 
   &__team {
     min-width: 0;
+    padding: 14px;
+    background: rgba(t.$text, 0.02);
+    border: 1px solid rgba(t.$text, 0.06);
+    border-radius: 16px;
 
     h5 {
       margin: 0 0 10px;
@@ -249,11 +294,17 @@
     position: relative;
     min-width: 0;
     background: t.$background;
-    border: 1px solid rgba(t.$text, 0.1);
+    border: 1px dashed rgba(t.$text, 0.16);
     border-radius: 12px;
 
     &--active {
       border-color: var(--match-ink);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--match-accent) 12%, transparent);
+    }
+
+    &--filled {
+      border-style: solid;
+      background: color-mix(in srgb, var(--match-accent) 5%, #{t.$background});
     }
   }
 
@@ -262,6 +313,7 @@
     align-items: center;
     gap: 12px;
     width: 100%;
+    box-sizing: border-box;
     min-height: 80px;
     padding: 10px 44px 10px 10px;
     background: transparent;
@@ -299,8 +351,8 @@
       display: block;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: center top;
+      object-fit: contain;
+      object-position: center bottom;
     }
   }
 
@@ -363,7 +415,7 @@
     padding: 16px;
     background: t.$background;
     border: 1px solid color-mix(in srgb, var(--match-accent) 30%, transparent);
-    border-radius: 16px;
+    border-radius: 20px;
 
     &[hidden] {
       display: none;
@@ -471,6 +523,7 @@
 
     &[aria-pressed="true"] {
       border-color: var(--match-ink);
+      background: color-mix(in srgb, var(--match-accent) 8%, #{t.$surface});
     }
 
     &:focus-visible {
@@ -533,12 +586,70 @@
     }
   }
 
+  &__championship,
+  &__interference {
+    padding: 16px;
+    background: rgba(t.$text, 0.02);
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 16px;
+
+    &:has(input[type="checkbox"]:checked) {
+      border-color: color-mix(in srgb, var(--match-accent) 25%, transparent);
+    }
+  }
+
+  &__title-toggle,
+  &__interference-toggle {
+    flex-wrap: nowrap;
+    margin-bottom: 0;
+
+    &:has(input:checked) {
+      margin-bottom: 16px;
+    }
+  }
+
+  &__toggle-copy {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+    gap: 4px;
+
+    strong { font-size: 0.8125rem; font-weight: 600; }
+    small {
+      color: t.$text-muted;
+      font-size: 0.6875rem;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+  }
+
+  &__interference-preview {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 12px;
+    background: color-mix(in srgb, var(--match-accent) 6%, transparent);
+    border-radius: 12px;
+    color: t.$text;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+
+    svg { flex-shrink: 0; color: var(--match-ink); }
+    strong { font-weight: 600; }
+  }
+
   &__title-preview {
     display: flex;
     align-items: center;
     gap: 16px;
     min-width: 0;
     margin-top: 16px;
+    padding: 12px;
+    background: color-mix(in srgb, var(--match-accent) 6%, #{t.$background});
+    border-radius: 12px;
 
     > div:last-child {
       min-width: 0;
@@ -559,6 +670,7 @@
     place-items: center;
     width: 96px;
     height: 68px;
+    color: var(--match-ink);
 
     img {
       width: 100%;
@@ -581,6 +693,21 @@
     background: t.$background;
     border: 1px solid rgba(t.$text, 0.08);
     border-radius: 14px;
+
+    h3 {
+      margin: 0 0 16px;
+      color: t.$text;
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+
+    > .match-editor__cost-total {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(t.$text, 0.08);
+      color: t.$text;
+    }
 
     > p {
       display: flex;
@@ -622,6 +749,32 @@
 
   &__cost > &__budget-error {
     color: t.$error;
+    strong { color: inherit; }
+  }
+
+  &__cost > &__budget-remaining {
+    color: var(--match-ink);
+    strong { color: inherit; }
+  }
+
+  &__readiness {
+    margin-top: 20px;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    line-height: 1.7;
+
+    > p {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      color: t.$text;
+      font-weight: 600;
+      svg { flex-shrink: 0; color: var(--match-ink); }
+    }
+
+    ul { margin: 8px 0 0; padding-left: 24px; }
+    &--ready > p { color: var(--match-ink); }
   }
 
   &__actions {
@@ -668,12 +821,14 @@
   }
 }
 
+@container (min-width: 440px) {
+  .match-editor__stipulation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @container (min-width: 560px) {
   .match-editor {
-    &__stipulation-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
     &__configuration,
     &__teams,
     &__roster-options {

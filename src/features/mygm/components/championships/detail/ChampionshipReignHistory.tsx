@@ -135,6 +135,7 @@ export default function ChampionshipReignHistory({
                   return (
                     <li
                       className="championship-reign-history__card"
+                      data-current={reign.is_current}
                       key={reign.id}
                     >
                       <header className="championship-reign-history__card-header">

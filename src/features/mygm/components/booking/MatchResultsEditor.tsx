@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { Check, Star, Trophy, UserRound } from "lucide-react";
+import { Check, CircleAlert, Star, Trophy, UserRound } from "lucide-react";
 
 import type { BookingSegmentSummary } from "../../types/booking.types";
 import type {
@@ -257,6 +257,23 @@ function MatchResultCard({
           )}
         </div>
       </fieldset>
+      <p
+        className={`match-results__readiness${isComplete ? " match-results__readiness--complete" : ""}`}
+        role="status"
+      >
+        {isComplete ? (
+          <Check size={16} aria-hidden="true" />
+        ) : (
+          <CircleAlert size={16} aria-hidden="true" />
+        )}
+        {isComplete
+          ? "Winner and rating recorded. Complete any rivalry settings below to continue."
+          : !hasValidWinner && !selectedRating
+            ? "Select a winner and match rating."
+            : !hasValidWinner
+              ? "Select the winning team to complete this result."
+              : "Choose a match rating to complete this result."}
+      </p>
     </article>
   );
 }

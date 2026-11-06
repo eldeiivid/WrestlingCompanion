@@ -1,15 +1,15 @@
 @use "../../../../../styles/tokens" as t;
+@use "../championshipTheme" as theme;
 
 .championship-overview {
-  --overview-accent: var(--career-accent, #{t.$accent});
+  @include theme.prestige;
+  --overview-accent: var(--championship-gold);
   --overview-ink: color-mix(in srgb, var(--overview-accent) 60%, #{t.$text});
 
   container-type: inline-size;
   min-width: 0;
-  overflow: hidden;
-  background: t.$surface;
-  border: 1px solid rgba(t.$text, 0.09);
-  border-radius: 24px;
+  display: grid;
+  gap: 24px;
 
   &__hero {
     display: grid;
@@ -17,42 +17,43 @@
       "visual"
       "identity";
     min-width: 0;
-    background-color: t.$surface;
+    overflow: hidden;
+    border: 1px solid rgba(#e2c58a, 0.18);
+    border-radius: 24px;
+    background-color: #14171c;
     background-image:
       linear-gradient(
         180deg,
-        rgba(#101216, 0.15),
-        rgba(t.$surface, 0.75) 45%,
-        t.$surface 85%
+        rgba(#101216, 0.25),
+        rgba(#14171c, 0.6) 45%,
+        #14171c 85%
       ),
-      url("../../../../../assets/backgrounds/news-arena.png");
+      var(--championship-stage);
     background-position: center top;
     background-size: cover;
   }
 
   &__visual {
     position: relative;
+    display: grid;
+    grid-template-rows: 120px 190px;
+    gap: 24px;
+    padding: 24px;
     grid-area: visual;
     min-width: 0;
-    height: 240px;
+    height: auto;
     overflow: hidden;
   }
 
   &__belt {
-    position: absolute;
-    z-index: 1;
-    top: 90px;
-    left: 16px;
+    position: relative;
     display: grid;
     place-items: center;
     box-sizing: border-box;
-    width: calc(44% - 8px);
-    max-width: 240px;
-    height: 110px;
-    padding: 12px;
-    background: rgba(t.$background, 0.82);
-    border: 1px solid rgba(t.$text, 0.12);
-    border-radius: 18px;
+    width: 100%;
+    max-width: 440px;
+    height: 100%;
+    margin-inline: auto;
     color: var(--overview-ink);
 
     img {
@@ -60,19 +61,20 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 8px 12px rgba(#000, 0.3));
+      filter: drop-shadow(0 18px 24px rgba(#000, 0.6));
     }
   }
 
   &__portraits {
-    position: absolute;
-    right: 0;
-    bottom: 0;
+    position: relative;
+    grid-row: 2;
     display: flex;
-    justify-content: flex-end;
-    width: 58%;
-    max-width: 340px;
-    height: 230px;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(#000 75%, transparent);
+    mask-image: linear-gradient(#000 75%, transparent);
   }
 
   &__portrait {
@@ -84,17 +86,15 @@
     color: t.$text-muted;
 
     + .championship-overview__portrait {
-      margin-left: -24px;
+      margin-left: 0;
     }
 
     img {
       display: block;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      -webkit-mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
-      mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
+      object-fit: contain;
+      object-position: center bottom;
     }
   }
 
@@ -147,7 +147,6 @@
       letter-spacing: -0.04em;
       line-height: 1.15;
       overflow-wrap: anywhere;
-      text-transform: uppercase !important;
     }
   }
 
@@ -335,7 +334,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px 12px;
     margin: 0;
-    padding: 20px;
+    padding: 20px 0;
     border-top: 1px solid rgba(t.$text, 0.08);
 
     &:has(> div:nth-child(3)) {
@@ -368,16 +367,16 @@
 @container (min-width: 760px) {
   .championship-overview {
     &__hero {
-      grid-template-areas: "identity visual";
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      grid-template-areas: "visual identity";
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
       background-image:
         linear-gradient(
           90deg,
-          rgba(t.$surface, 0.98),
-          rgba(t.$surface, 0.9) 42%,
-          rgba(#101216, 0.3)
+          rgba(#14171c, 0.25),
+          rgba(#14171c, 0.65) 42%,
+          #14171c
         ),
-        url("../../../../../assets/backgrounds/news-arena.png");
+        var(--championship-stage);
       background-position: center;
     }
 
@@ -386,22 +385,19 @@
     }
 
     &__visual {
-      align-self: stretch;
+      align-self: center;
       height: auto;
-      min-height: 360px;
+      grid-template-rows: 140px 260px;
     }
 
     &__belt {
-      top: 45%;
-      left: 0;
-      transform: translateY(-50%);
-      width: 44%;
-      height: 120px;
+      width: 100%;
+      height: 100%;
     }
 
     &__portraits {
-      width: 65%;
-      height: calc(100% - 36px);
+      width: 100%;
+      height: 100%;
     }
 
     &__placeholder {
@@ -411,7 +407,7 @@
 
     &__history-stats {
       gap: 24px;
-      padding: 24px 32px;
+      padding: 20px 0;
     }
   }
 }

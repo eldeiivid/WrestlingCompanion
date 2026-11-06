@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { X } from "lucide-react";
+import { CalendarPlus, Check, CircleAlert, LoaderCircle, X } from "lucide-react";
 
 import { useExtendContract } from "../../hooks/market/useExtendContract";
 
@@ -63,6 +63,10 @@ export default function ExtendContractModal({
 }: ExtendContractModalProps) {
   const headingId = useId();
   const descriptionId = useId();
+  const readinessId = useId();
+  const weeksErrorId = useId();
+  const costErrorId = useId();
+  const budgetErrorId = useId();
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const submittingRef = useRef(false);
@@ -258,6 +262,7 @@ export default function ExtendContractModal({
         </p>
 
         <div className="extend-contract-modal__summary">
+          <h3>Current contract</h3>
           <p>
             Current last contracted week:
             <strong>{formatPeriod(contractEndTick)}</strong>
@@ -292,6 +297,8 @@ export default function ExtendContractModal({
               required
               autoFocus
               placeholder="Enter the weeks to add"
+              aria-invalid={weeks !== "" && !hasValidWeeks}
+              aria-describedby={weeks !== "" && !hasValidWeeks ? weeksErrorId : undefined}
               onChange={(event) => {
                 setWeeks(event.target.value);
                 clearError();
@@ -311,6 +318,9 @@ export default function ExtendContractModal({
                 value={cost}
                 required
                 placeholder="Enter the cost from your game"
+                aria-invalid={cost !== "" && (!hasValidCost || exceedsBudget)}
+                aria-describedby={cost !== "" && !hasValidCost
+                  ? costErrorId : exceedsBudget ? budgetErrorId : undefined}
                 onChange={(event) => {
                   setCost(event.target.value);
                   clearError();
@@ -332,31 +342,50 @@ export default function ExtendContractModal({
         )}
 
         {weeks !== "" && !hasValidWeeks && (
-          <p className="extend-contract-modal__error" role="alert">
+          <p className="extend-contract-modal__error" role="alert" id={weeksErrorId}>
             Enter a valid extension of at least one week within the supported
             calendar.
           </p>
         )}
 
         {financesEnabled && cost !== "" && !hasValidCost && (
-          <p className="extend-contract-modal__error" role="alert">
+          <p className="extend-contract-modal__error" role="alert" id={costErrorId}>
             Enter a whole extension cost between 0 and{" "}
             9,223,372,036,854,775,807.
           </p>
         )}
 
         {exceedsBudget && (
-          <p className="extend-contract-modal__error" role="alert">
+          <p className="extend-contract-modal__error" role="alert" id={budgetErrorId}>
             The extension cost exceeds the available budget.
           </p>
         )}
 
         {newEndTick !== null && (
           <div className="extend-contract-modal__summary" aria-live="polite">
+            <h3>After extension</h3>
             <p>
               New last contracted week:
               <strong>{formatPeriod(newEndTick)}</strong>
             </p>
+            <p>
+              Additional time
+              <strong>{addedWeeks} {addedWeeks === 1 ? "week" : "weeks"}</strong>
+            </p>
+            {financesEnabled && hasValidCost && (
+              <>
+                <p>
+                  Extension cost
+                  <strong>{currencyFormatter.format(BigInt(cost))}</strong>
+                </p>
+                <p className={exceedsBudget ? "extend-contract-modal__over-budget" : undefined}>
+                  {exceedsBudget ? "Over budget" : "Budget after extension"}
+                  <strong>{currencyFormatter.format(exceedsBudget
+                    ? BigInt(cost) - BigInt(budgetAvailable)
+                    : BigInt(budgetAvailable) - BigInt(cost))}</strong>
+                </p>
+              </>
+            )}
           </div>
         )}
 
@@ -365,6 +394,16 @@ export default function ExtendContractModal({
             {errorMessage}
           </p>
         )}
+
+        <p className={`extend-contract-modal__readiness${canSubmit ? " extend-contract-modal__readiness--ready" : ""}`} id={readinessId}>
+          {canSubmit ? <Check size={16} aria-hidden="true" /> : <CircleAlert size={16} aria-hidden="true" />}
+          {isExtending ? "Extending this contract…"
+            : !hasActiveContract ? "This contract has expired and cannot be extended."
+              : !hasValidWeeks ? "Enter the additional weeks to continue."
+                : financesEnabled && !hasValidCost ? "Enter the extension cost. Use 0 if it is free."
+                  : exceedsBudget ? "Reduce the extension cost to fit your available budget."
+                    : "Extension details are ready to confirm."}
+        </p>
 
         <footer className="extend-contract-modal__actions">
           <button
@@ -380,7 +419,10 @@ export default function ExtendContractModal({
             className="extend-contract-modal__button extend-contract-modal__button--primary"
             type="submit"
             disabled={!canSubmit || isExtending}
+            aria-describedby={readinessId}
           >
+            {isExtending ? <LoaderCircle className="extend-contract-modal__spinner" size={17} aria-hidden="true" />
+              : <CalendarPlus size={17} aria-hidden="true" />}
             {isExtending ? "Extending…" : "Extend contract"}
           </button>
         </footer>

@@ -8,12 +8,12 @@ import {
   Search,
   Swords,
   Trophy,
-  UserRound,
   Plus,
 } from "lucide-react";
 
 import RivalryDetailModal from "../../components/dashboard/rivalries/RivalryDetailModal";
 import RivalryLevel from "../../components/dashboard/rivalries/RivalryLevel";
+import RivalryParticipants from "../../components/dashboard/rivalries/RivalryParticipants";
 import RivalryEditorModal from "../../components/dashboard/rivalries/RivalryEditorModal";
 import RivalryActionsMenu from "../../components/dashboard/rivalries/RivalryActionsMenu";
 import RivalryActionModal from "../../components/dashboard/rivalries/RivalryActionModal";
@@ -87,26 +87,6 @@ function formatTick(tick: number): string {
   return `Season ${season} · Week ${week}`;
 }
 
-function MemberPortrait({ src }: { src: string | null }) {
-  const [failedUrl, setFailedUrl] = useState<string | null>(null);
-
-  return (
-    <span className="rivalries-screen__portrait" aria-hidden="true">
-      {src && src !== failedUrl ? (
-        <img
-          src={src}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          onError={() => setFailedUrl(src)}
-        />
-      ) : (
-        <UserRound size={48} strokeWidth={1.25} />
-      )}
-    </span>
-  );
-}
-
 function RivalryCard({
   rivalry,
   onOpen,
@@ -123,11 +103,6 @@ function RivalryCard({
   const headingId = useId();
   const name = getRivalryName(rivalry);
 
-  const sides = ([1, 2] as const).map((side) => ({
-    side,
-    members: rivalry.members.filter((member) => member.side === side),
-  }));
-
   const winnerNames =
     rivalry.winning_side === null
       ? ""
@@ -137,7 +112,7 @@ function RivalryCard({
           .join(" & ");
 
   return (
-    <article className="rivalries-screen__card" aria-labelledby={headingId}>
+    <article className="rivalries-screen__card" data-level={rivalry.level} aria-labelledby={headingId}>
       <div className="rivalries-screen__visual">
         <div className="rivalries-screen__card-meta">
           <span className="rivalries-screen__kind">
@@ -152,38 +127,7 @@ function RivalryCard({
           <RivalryActionsMenu rivalry={rivalry} name={name} onEdit={onEdit} onResolve={onResolve} onDelete={onDelete} />
         </div>
 
-        <div className="rivalries-screen__sides">
-          {sides.map((side) => (
-            <div
-              className="rivalries-screen__side"
-              key={side.side}
-              role="group"
-              aria-label={`Side ${side.side}`}
-            >
-              <div className="rivalries-screen__members">
-                {side.members.length > 0 ? (
-                  side.members.map((member) => (
-                    <figure
-                      className="rivalries-screen__member"
-                      key={member.wrestler_id}
-                    >
-                      <MemberPortrait src={member.image_url} />
-                      <figcaption>{member.name}</figcaption>
-                    </figure>
-                  ))
-                ) : (
-                  <p className="rivalries-screen__missing">
-                    Participants unavailable
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
-
-          <span className="rivalries-screen__versus" aria-hidden="true">
-            VS
-          </span>
-        </div>
+        <RivalryParticipants members={rivalry.members} variant="showcase" />
       </div>
 
       <div className="rivalries-screen__card-content">

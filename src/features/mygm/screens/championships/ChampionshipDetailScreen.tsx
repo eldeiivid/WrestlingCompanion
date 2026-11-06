@@ -52,6 +52,7 @@ function ChampionshipDetailContent({ data }: ChampionshipDetailContentProps) {
           careerId={data.career_id}
           titleId={data.championship.id}
           reign={selectedReign}
+          championship={data.championship}
           onClose={() => setSelectedReign(null)}
         />
       )}
@@ -96,10 +97,10 @@ export default function ChampionshipDetailScreen() {
         </div>
 
         <div className="championship-detail-screen__heading">
-          <p className="championship-detail-screen__eyebrow">Title history</p>
+          <p className="championship-detail-screen__eyebrow">Championship archives</p>
 
           <h1 id={headingId}>
-            {isBriefcase ? "Briefcase details" : "Championship details"}
+            {isBriefcase ? "Briefcase legacy" : "Championship legacy"}
           </h1>
 
           <p className="championship-detail-screen__description">

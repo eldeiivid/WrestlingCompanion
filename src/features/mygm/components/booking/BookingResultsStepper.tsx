@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, LockKeyhole } from "lucide-react";
 
 import type {
   BookingResultsStep,
@@ -83,6 +83,8 @@ export default function BookingResultsStepper({
                 >
                   {step.isComplete && !isCurrent ? (
                     <Check size={16} />
+                  ) : isLocked ? (
+                    <LockKeyhole size={14} />
                   ) : (
                     index + 1
                   )}

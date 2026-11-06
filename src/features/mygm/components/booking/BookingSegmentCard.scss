@@ -7,16 +7,21 @@
   container-type: inline-size;
   min-width: 0;
   overflow: hidden;
-  background: t.$surface;
-  border: 1px solid rgba(t.$text, 0.1);
-  border-radius: 20px;
+  background:
+    linear-gradient(180deg,
+      rgba(t.$background, 0.82),
+      rgba(t.$background, 0.35) 40%,
+      rgba(t.$background, 0.88)),
+    url("../../../../assets/backgrounds/news-arena.png") center / cover,
+    t.$surface;
+  border: 1px solid rgba(t.$text, 0.08);
+  border-radius: 24px;
 
   &__header {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
+    gap: 10px 16px;
     padding: 16px;
   }
 
@@ -32,13 +37,13 @@
     display: grid;
     flex-shrink: 0;
     place-items: center;
-    width: 28px;
-    height: 28px;
-    background: rgba(t.$text, 0.04);
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 7px;
-    color: t.$text-muted;
-    font-size: 0.6875rem;
+    width: 32px;
+    height: 32px;
+    background: color-mix(in srgb, var(--segment-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--segment-accent) 20%, transparent);
+    border-radius: 10px;
+    color: var(--segment-ink);
+    font-size: 0.75rem;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
@@ -53,11 +58,21 @@
   }
 
   &__position-label {
+    padding: 4px 8px;
+    background: rgba(t.$text, 0.04);
+    border: 1px solid rgba(t.$text, 0.07);
+    border-radius: 7px;
     color: t.$text-muted;
     font-size: 0.625rem;
+    line-height: 1.5;
   }
 
   &__cost {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 100%;
     margin-left: auto;
     color: t.$text-muted;
     font-size: 0.6875rem;
@@ -65,56 +80,76 @@
     overflow-wrap: anywhere;
   }
 
+  &__cost-label {
+    color: t.$text-muted;
+    font-size: 0.625rem;
+  }
+
+  &__stipulation {
+    display: inline-block;
+    margin-top: 0;
+    max-width: 100%;
+    padding: 4px 8px;
+    background: rgba(t.$text, 0.035);
+    border: 1px solid rgba(t.$text, 0.08);
+    border-radius: 7px;
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
   &__format {
-    flex-basis: 100%;
     min-width: 0;
     margin: 0;
     color: t.$text;
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.5;
     overflow-wrap: anywhere;
   }
 
+  &__match-info {
+    display: flex;
+    align-items: center;
+    grid-column: 1 / -1;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  &__match-copy {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    min-width: 0;
+  }
+
+  &__stipulation-image {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 56px;
+    height: 40px;
+    overflow: hidden;
+    background: t.$background;
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 10px;
+    color: var(--segment-ink);
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
   &__visual {
     position: relative;
     isolation: isolate;
     min-width: 0;
-    background-color: t.$background;
-    background-image: url("../../../../assets/backgrounds/news-arena.png");
-    background-position: center;
-    background-size: cover;
-
-    &::after {
-      position: absolute;
-      z-index: -1;
-      inset: 0;
-      background: linear-gradient(
-        180deg,
-        rgba(t.$background, 0.3),
-        rgba(t.$background, 0.55) 55%,
-        t.$surface
-      );
-      content: "";
-      pointer-events: none;
-    }
-  }
-
-  &__backdrop {
-    position: absolute;
-    z-index: -2;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      opacity: 0.65;
-    }
   }
 
   &__teams {
@@ -131,8 +166,8 @@
     }
 
     &--multi {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 20px 8px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px 12px;
     }
   }
 
@@ -159,9 +194,9 @@
 
     figcaption {
       position: relative;
-      margin-top: -6px;
+      margin-top: 2px;
       color: t.$text;
-      font-size: 0.6875rem;
+      font-size: 0.75rem;
       font-weight: 600;
       line-height: 1.5;
       overflow-wrap: anywhere;
@@ -175,21 +210,39 @@
     height: 150px;
     min-width: 0;
     color: t.$text-muted;
+    // Fade the shared portrait frame so every cutout meets the same baseline.
+    // Masking each contained image left short portraits with a visible hard edge.
+    -webkit-mask-image: linear-gradient(#000 0%, #000 76%, transparent 100%);
+    mask-image: linear-gradient(#000 0%, #000 76%, transparent 100%);
 
     img {
       display: block;
       width: 100%;
       max-width: 230px;
       height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      -webkit-mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
-      mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
+      object-fit: contain;
+      object-position: center bottom;
     }
   }
 
   &__teams--multi &__portrait {
-    height: 108px;
+    height: 130px;
+  }
+
+  &__group-label {
+    margin: 0 0 12px;
+    color: t.$text-muted;
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  &--promo &__versus {
+    top: 92px;
+    font-style: normal;
   }
 
   &__versus {
@@ -198,8 +251,11 @@
     right: -25px;
     display: grid;
     place-items: center;
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(t.$background, 0.8);
+    border: 1px solid color-mix(in srgb, var(--segment-accent) 25%, transparent);
     color: var(--segment-ink);
     font-size: 0.75rem;
     font-weight: 750;
@@ -221,7 +277,11 @@
     align-items: center;
     gap: 14px;
     min-width: 0;
-    padding: 12px 16px 16px;
+    margin: 12px 16px;
+    padding: 12px;
+    background: color-mix(in srgb, var(--segment-accent) 6%, #{rgba(t.$background, 0.8)});
+    border: 1px solid color-mix(in srgb, var(--segment-accent) 16%, transparent);
+    border-radius: 14px;
 
     > div:last-child {
       min-width: 0;
@@ -286,8 +346,9 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
-    margin: 0 16px;
-    padding: 12px 0;
+    margin: 0;
+    padding: 12px 16px;
+    background: rgba(t.$background, 0.25);
     border-top: 1px solid rgba(t.$text, 0.08);
   }
 
@@ -296,6 +357,17 @@
     display: flex;
     align-items: center;
     gap: 6px;
+  }
+
+  &__reorder-label {
+    display: none;
+    margin-right: 6px;
+    color: t.$text-muted;
+    font-size: 0.6875rem;
+  }
+
+  &__reorder {
+    gap: 2px;
   }
 
   &__icon-button,
@@ -343,6 +415,12 @@
     }
   }
 
+  &__edit {
+    background: color-mix(in srgb, var(--segment-accent) 8%, transparent);
+    border-color: color-mix(in srgb, var(--segment-accent) 22%, transparent);
+    border-radius: 12px;
+  }
+
   &__sr-only {
     position: absolute;
     width: 1px;
@@ -358,12 +436,17 @@
 
 @container (min-width: 600px) {
   .booking-segment-card {
+    &__stipulation-image {
+      width: 64px;
+      height: 44px;
+    }
+
     &__header {
-      padding: 18px 24px;
+      padding: 16px 24px;
     }
 
     &__format {
-      font-size: 1rem;
+      font-size: 1.125rem;
     }
 
     &__teams {
@@ -388,6 +471,7 @@
     }
 
     &__teams--multi {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 20px;
     }
 
@@ -397,7 +481,8 @@
 
     &__championship {
       gap: 20px;
-      padding: 12px 24px 20px;
+      margin: 12px 24px 20px;
+      padding: 12px 16px;
     }
 
     &__belt {
@@ -410,13 +495,41 @@
     }
 
     &__actions {
-      margin-inline: 24px;
+      padding-inline: 24px;
+    }
+
+    &__reorder-label {
+      display: inline;
+    }
+
+    &--promo &__versus {
+      top: 117px;
     }
   }
 }
 
 @container (min-width: 900px) {
   .booking-segment-card {
+    &__header {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 20px;
+    }
+
+    &__meta {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    &__match-info {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    &__cost {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
     &__teams:not(&__teams--multi):not(&__teams--single) {
       max-width: 800px;
       margin-inline: auto;

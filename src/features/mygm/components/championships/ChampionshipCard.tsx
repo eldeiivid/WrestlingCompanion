@@ -134,7 +134,7 @@ export default function ChampionshipCard({
           />
         </div>
 
-        {visibleHolders.length > 0 ? (
+        {visibleHolders.length > 0 && (
           <div className="championship-card__portraits" aria-hidden="true">
             {visibleHolders.map((holder) => (
               <span className="championship-card__portrait" key={holder.id}>
@@ -148,35 +148,26 @@ export default function ChampionshipCard({
               </span>
             )}
           </div>
-        ) : (
+        )}
+        {visibleHolders.length === 0 && (
           <div className="championship-card__placeholder" aria-hidden="true">
-            {hasCurrentReign ? (
-              <UserRound size={76} strokeWidth={1} />
-            ) : isBriefcase ? (
-              <Briefcase size={72} strokeWidth={1} />
-            ) : (
-              <Trophy size={76} strokeWidth={1} />
-            )}
+            {isBriefcase ? <Briefcase size={64} strokeWidth={1} /> : <Trophy size={64} strokeWidth={1} />}
           </div>
         )}
+
       </div>
 
       <div className="championship-card__content">
         <header className="championship-card__heading">
           <p className="championship-card__classification">
             {genderLabels[championship.gender]}
-            {!isBriefcase && (
-              <>
-                {" · "}
-                {divisionLabels[championship.division]}
-              </>
-            )}
+            {!isBriefcase && <> · {divisionLabels[championship.division]}</>}
           </p>
-
           <h2 id={headingId}>{championship.name}</h2>
         </header>
 
         <div className="championship-card__holder-information">
+        <div className="championship-card__holder-copy">
           {hasCurrentReign ? (
             championship.holders.length > 0 ? (
               <>
@@ -207,6 +198,7 @@ export default function ChampionshipCard({
                 : "This championship is currently vacant."}
             </p>
           )}
+        </div>
         </div>
 
         {hasCurrentReign && championship.won_tick !== null && (

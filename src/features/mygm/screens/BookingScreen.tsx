@@ -6,6 +6,7 @@ import {
   ChevronDown,
   CircleAlert,
   LoaderCircle,
+  Mic2,
   Plus,
   RefreshCw,
   ShieldCheck,
@@ -105,6 +106,8 @@ export default function BookingScreen() {
 
   const headingId = useId();
   const readinessId = useId();
+  const matchAvailabilityId = useId();
+  const promoAvailabilityId = useId();
 
   const {
     data,
@@ -157,6 +160,7 @@ export default function BookingScreen() {
     BigInt(data.total_cost) > BigInt(data.budget_available);
 
   const cardIssues = data ? getBookingCardIssues(data) : [];
+  const pendingRequirementCount = cardIssues.length + (exceedsBudget ? 1 : 0);
 
   const isBookingBusy =
     isMoving ||
@@ -297,10 +301,8 @@ export default function BookingScreen() {
   return (
     <section className="booking-screen" aria-labelledby={headingId}>
       <header className="booking-screen__header">
-        <div>
-          <p className="booking-screen__eyebrow">
-            {data ? showTypeLabels[data.show_type] : "Your next show"}
-          </p>
+        <div className="booking-screen__heading-copy">
+          <p className="booking-screen__eyebrow">Show management</p>
 
           <h1 id={headingId}>Booking</h1>
 
@@ -315,9 +317,14 @@ export default function BookingScreen() {
             type="button"
             disabled={isBookingBusy || isLoading}
             aria-label="Refresh booking"
+            aria-busy={isRefreshing}
             onClick={refreshBooking}
           >
-            <RefreshCw size={17} aria-hidden="true" />
+            <RefreshCw
+              className={isRefreshing ? "booking-screen__spinner" : undefined}
+              size={17}
+              aria-hidden="true"
+            />
             <span>Refresh</span>
           </button>
         )}
@@ -358,11 +365,14 @@ export default function BookingScreen() {
             aria-label="Show overview"
           >
             <div className="booking-screen__show-heading">
-              <div>
+              <div className="booking-screen__show-copy">
+                <p className="booking-screen__show-type">
+                  {showTypeLabels[data.show_type]}
+                </p>
+                <h2>{data.event.name}</h2>
                 <p className="booking-screen__period">
                   {formatPeriod(data.event.tick)}
                 </p>
-                <h2>{data.event.name}</h2>
               </div>
 
               <span
@@ -372,7 +382,7 @@ export default function BookingScreen() {
               </span>
             </div>
 
-            <dl className="booking-screen__metrics">
+            <dl className={`booking-screen__metrics${data.finances_enabled ? " booking-screen__metrics--finances" : ""}`}>
               <div>
                 <dt>Matches</dt>
                 <dd>
@@ -456,11 +466,17 @@ export default function BookingScreen() {
           >
             <header className="booking-screen__card-heading">
               <div>
-                <h2>Match card</h2>
+                <div className="booking-screen__card-title">
+                  <h2>Match card</h2>
+                  <span className="booking-screen__segment-count">
+                    {data.segments.length}{" "}
+                    {data.segments.length === 1 ? "segment" : "segments"}
+                  </span>
+                </div>
                 <p>
-                  {data.segments.length}{" "}
-                  {data.segments.length === 1 ? "segment" : "segments"}
-                  {data.event.status === "draft" && " · Shown in running order"}
+                  {data.event.status === "draft"
+                    ? "Arrange your matches and promos in running order."
+                    : "Your show, in running order."}
                 </p>
               </div>
             </header>
@@ -469,18 +485,30 @@ export default function BookingScreen() {
               <div className="booking-screen__add-controls">
                 <div>
                   <button
-                    className="booking-screen__button booking-screen__button--accent"
+                    className="booking-screen__add-segment booking-screen__add-segment--match"
                     type="button"
+                    aria-describedby={matchAvailabilityId}
                     disabled={
                       isBookingBusy || matchCount >= data.limits.max_matches
                     }
                     onClick={() => openNewSegment("match")}
                   >
-                    <Plus size={17} aria-hidden="true" />
-                    Add match
+                    <span className="booking-screen__add-icon">
+                      <Swords size={20} strokeWidth={1.6} aria-hidden="true" />
+                    </span>
+                    <span className="booking-screen__add-copy">
+                      <span className="booking-screen__add-title">Add match</span>
+                      <span className="booking-screen__add-description">
+                        Build the in-ring action
+                      </span>
+                    </span>
+                    <Plus size={18} aria-hidden="true" />
                   </button>
 
-                  <span>
+                  <span
+                    className="booking-screen__availability"
+                    id={matchAvailabilityId}
+                  >
                     {matchCount >= data.limits.max_matches
                       ? "Match limit reached"
                       : `${data.limits.max_matches - matchCount} available`}
@@ -489,18 +517,30 @@ export default function BookingScreen() {
 
                 <div>
                   <button
-                    className="booking-screen__button"
+                    className="booking-screen__add-segment"
                     type="button"
+                    aria-describedby={promoAvailabilityId}
                     disabled={
                       isBookingBusy || promoCount >= data.limits.max_promos
                     }
                     onClick={() => openNewSegment("promo")}
                   >
-                    <Plus size={17} aria-hidden="true" />
-                    Add promo
+                    <span className="booking-screen__add-icon">
+                      <Mic2 size={20} strokeWidth={1.6} aria-hidden="true" />
+                    </span>
+                    <span className="booking-screen__add-copy">
+                      <span className="booking-screen__add-title">Add promo</span>
+                      <span className="booking-screen__add-description">
+                        Move the story forward
+                      </span>
+                    </span>
+                    <Plus size={18} aria-hidden="true" />
                   </button>
 
-                  <span>
+                  <span
+                    className="booking-screen__availability"
+                    id={promoAvailabilityId}
+                  >
                     {promoCount >= data.limits.max_promos
                       ? "Promo limit reached"
                       : `${data.limits.max_promos - promoCount} available`}
@@ -548,8 +588,14 @@ export default function BookingScreen() {
 
             {data.segments.length === 0 ? (
               <div className="booking-screen__empty">
-                <Swords size={32} strokeWidth={1.25} aria-hidden="true" />
-                <h3>Your show starts here</h3>
+                <span className="booking-screen__empty-icon">
+                  <Swords size={28} strokeWidth={1.25} aria-hidden="true" />
+                </span>
+                <h3>
+                  {data.event.status === "draft"
+                    ? "Every great show starts with a match"
+                    : "No segments recorded"}
+                </h3>
                 <p>
                   {data.event.status === "draft"
                     ? "Add your opening match, then build the rest of the card."
@@ -587,6 +633,12 @@ export default function BookingScreen() {
 
             {data.event.status === "draft" && (
               <footer className="booking-screen__review">
+                <header className="booking-screen__review-heading">
+                  <h2>Review your show</h2>
+                  <p>
+                    Check the running order and requirements before locking your card.
+                  </p>
+                </header>
                 <div
                   className={`booking-screen__readiness${
                     cardIssues.length === 0 && !exceedsBudget
@@ -606,6 +658,11 @@ export default function BookingScreen() {
                         ? "Ready for your show"
                         : "Before you confirm"}
                     </h3>
+                    {pendingRequirementCount > 0 && (
+                      <span className="booking-screen__pending-count">
+                        {pendingRequirementCount} pending
+                      </span>
+                    )}
                   </div>
 
                   <p id={readinessId}>{readinessMessage}</p>
@@ -625,8 +682,8 @@ export default function BookingScreen() {
 
                 <div className="booking-screen__finish">
                   <p>
-                    Confirming locks editing until you reopen the card. It does
-                    not charge the card cost or advance the week.
+                    Review the final summary next. You can reopen a confirmed
+                    card to make changes.
                   </p>
 
                   <button
@@ -636,7 +693,7 @@ export default function BookingScreen() {
                     aria-describedby={readinessId}
                     onClick={openCardConfirmation}
                   >
-                    Confirm card
+                    Review & confirm
                     <ArrowRight size={17} aria-hidden="true" />
                   </button>
                 </div>
@@ -651,6 +708,7 @@ export default function BookingScreen() {
                   disabled={isBookingBusy}
                   onClick={handleReopenCard}
                 >
+                  <RefreshCw size={16} aria-hidden="true" />
                   {pendingAction === "reopen" ? "Reopening…" : "Reopen card"}
                 </button>
 
@@ -783,16 +841,16 @@ export default function BookingScreen() {
               onRequestClose={closeCardConfirmation}
             >
               <div className="booking-screen__confirmation-content">
+                <div className="booking-screen__confirmation-show">
+                  <p>{formatPeriod(data.event.tick)}</p>
+                  <h3>{data.event.name}</h3>
+                </div>
                 <p className="booking-screen__hint">
                   Review your card before confirming. Editing will be locked
                   until you reopen it.
                 </p>
 
                 <dl className="booking-screen__overview">
-                  <div>
-                    <dt>Show</dt>
-                    <dd>{data.event.name}</dd>
-                  </div>
                   <div>
                     <dt>Show type</dt>
                     <dd>{showTypeLabels[data.show_type]}</dd>
@@ -807,15 +865,63 @@ export default function BookingScreen() {
                   </div>
 
                   {data.finances_enabled && (
-                    <div>
-                      <dt>Card cost</dt>
-                      <dd>{formatSegmentCost(data.total_cost)}</dd>
-                    </div>
+                    <>
+                      <div>
+                        <dt>Card cost</dt>
+                        <dd>{formatSegmentCost(data.total_cost)}</dd>
+                      </div>
+                      <div>
+                        <dt>Available budget</dt>
+                        <dd>{formatSegmentCost(data.budget_available)}</dd>
+                      </div>
+                    </>
                   )}
                 </dl>
 
-                <p className="booking-screen__hint">
-                  Confirming does not charge the card cost or advance the week.
+                <section
+                  className="booking-screen__final-card"
+                  aria-label="Final running order"
+                >
+                  <h3>Running order</h3>
+                  <ol tabIndex={0} aria-label="Scroll through the final card">
+                    {data.segments.map((segment) => (
+                      <li key={segment.id}>
+                        <span
+                          className="booking-screen__final-position"
+                          aria-label={`Segment ${segment.position}`}
+                        >
+                          {segment.position}
+                        </span>
+                        <div>
+                          <p>
+                            {segment.kind === "match" ? "Match" : "Promo"} · {segment.label}
+                            {segment.kind === "match" && segment.stipulation_name
+                              ? ` · ${segment.stipulation_name}`
+                              : ""}
+                          </p>
+                          <strong>{getSegmentParticipantsLabel(segment)}</strong>
+                          {segment.kind === "match" && segment.title && (
+                            <p className="booking-screen__final-detail">
+                              Championship: {segment.title.name}
+                            </p>
+                          )}
+                          {segment.kind === "match" && segment.interference && (
+                            <p>
+                              Interference: {segment.interference.wrestler_name}
+                              {" → "}{segment.interference.target_wrestler_name}
+                            </p>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+
+                <p className="booking-screen__confirmation-note">
+                  <ShieldCheck size={18} aria-hidden="true" />
+                  <span>
+                    Confirming does not charge the card cost or advance the week.
+                  </span>
                 </p>
 
                 {confirmationError && (
@@ -831,7 +937,7 @@ export default function BookingScreen() {
                     disabled={isUpdatingStatus}
                     onClick={closeCardConfirmation}
                   >
-                    Cancel
+                    Back to editing
                   </button>
 
                   <button
@@ -843,6 +949,15 @@ export default function BookingScreen() {
                     {pendingAction === "confirm"
                       ? "Confirming…"
                       : "Confirm card"}
+                    {pendingAction === "confirm" ? (
+                      <LoaderCircle
+                        className="booking-screen__spinner"
+                        size={17}
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <Check size={17} aria-hidden="true" />
+                    )}
                   </button>
                 </div>
               </div>

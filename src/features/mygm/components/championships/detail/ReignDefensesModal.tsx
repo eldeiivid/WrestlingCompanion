@@ -4,6 +4,7 @@ import {
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
+  LoaderCircle,
   Star,
   Trophy,
   UserRound,
@@ -14,6 +15,7 @@ import { useReignDefenses } from "../../../hooks/championships/useReignDefenses"
 
 import type {
   ChampionshipDefenseParticipant,
+  ChampionshipDetails,
   ChampionshipReign,
 } from "../../../types/championships/championshipDetail.types";
 
@@ -23,6 +25,7 @@ interface ReignDefensesModalProps {
   careerId: string;
   titleId: string;
   reign: ChampionshipReign;
+  championship: ChampionshipDetails;
   onClose: () => void;
 }
 
@@ -42,6 +45,10 @@ function getMatchLabel(participants: ChampionshipDefenseParticipant[]): string {
       .map(([, names]) => names.join(" & "))
       .join(" vs ") || "Participants not recorded"
   );
+}
+
+function formatPeriod(tick: number): string {
+  return `Season ${Math.floor((tick - 1) / 50) + 1} · Week ${((tick - 1) % 50) + 1}`;
 }
 
 function WinnerPortrait({ src }: { src: string | null }) {
@@ -83,10 +90,12 @@ export default function ReignDefensesModal({
   careerId,
   titleId,
   reign,
+  championship,
   onClose,
 }: ReignDefensesModalProps) {
   const headingId = useId();
   const descriptionId = useId();
+  const [failedBeltUrl, setFailedBeltUrl] = useState<string | null>(null);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -267,7 +276,7 @@ export default function ReignDefensesModal({
 
           <div>
             <h2 id={headingId}>Successful defenses</h2>
-            <p id={descriptionId}>{holderNames}</p>
+            <p id={descriptionId}>{championship.name}</p>
           </div>
         </div>
 
@@ -287,8 +296,37 @@ export default function ReignDefensesModal({
         className="reign-defenses-modal__content"
         aria-busy={isLoading}
       >
+        <section className="reign-defenses-modal__summary" aria-label="Selected championship reign">
+          <div className="reign-defenses-modal__belt" aria-hidden="true">
+            {championship.image_url && championship.image_url !== failedBeltUrl ? (
+              <img src={championship.image_url} alt="" decoding="async" onError={() => setFailedBeltUrl(championship.image_url)} />
+            ) : <Trophy size={48} strokeWidth={1.25} />}
+          </div>
+          <div className="reign-defenses-modal__reign-copy">
+            <p>{reign.is_current ? "Current reign" : "Previous reign"}</p>
+            <div className="reign-defenses-modal__champion-row">
+              {reign.holders.length > 0 && (
+                <div className="reign-defenses-modal__portraits" aria-hidden="true">
+                  {reign.holders.slice(0, 2).map(holder => (
+                    <WinnerPortrait key={holder.id} src={holder.image_url} />
+                  ))}
+                  {reign.holders.length > 2 && <span className="reign-defenses-modal__more">+{reign.holders.length - 2}</span>}
+                </div>
+              )}
+            <h3>{holderNames}</h3>
+            </div>
+            <p>Started {formatPeriod(reign.won_tick)}</p>
+            {reign.lost_tick !== null && <p>Ended {formatPeriod(reign.lost_tick)}</p>}
+          </div>
+          <dl className="reign-defenses-modal__reign-stats">
+            <div><dt>Reign length</dt><dd>{reign.duration_weeks} <span>{reign.duration_weeks === 1 ? "week" : "weeks"}</span></dd></div>
+            <div><dt>Successful defenses</dt><dd>{reign.defenses}</dd></div>
+          </dl>
+        </section>
+
         {isLoading ? (
           <p className="reign-defenses-modal__state" role="status">
+            <LoaderCircle className="reign-defenses-modal__spinner" size={20} aria-hidden="true" />
             Loading defenses…
           </p>
         ) : errorMessage ? (
@@ -311,7 +349,7 @@ export default function ReignDefensesModal({
           ) : (
             <>
               <p className="reign-defenses-modal__count" role="status">
-                {data.total_count}{" "}
+                Showing {(data.page - 1) * data.page_size + 1}–{(data.page - 1) * data.page_size + data.items.length} of {data.total_count}{" "}
                 {data.total_count === 1
                   ? "successful defense"
                   : "successful defenses"}
@@ -337,6 +375,9 @@ export default function ReignDefensesModal({
                         {" · "}
                         Segment {defense.position}
                       </p>
+                      <span className="reign-defenses-modal__event-kind">
+                        {defense.event_kind === "ple" ? "PLE" : defense.event_kind === "special" ? "Special event" : "Weekly show"}
+                      </span>
 
                       <h3>{getMatchLabel(defense.participants)}</h3>
 

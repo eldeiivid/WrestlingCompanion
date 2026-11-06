@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { Star, Users, Wallet } from "lucide-react";
+import { Check, CircleAlert, Star, Users, Wallet } from "lucide-react";
 
 import { getShowFinalBalance } from "../../rules/showResultsRules";
 import type { BookingShowResultDraft } from "../../types/bookingResults.types";
@@ -57,6 +57,10 @@ export default function ShowResultsEditor({
   const invalidFans = result.fansChange !== "" && finalFans === null;
 
   const hasBalanceFields = financesEnabled || fansEnabled;
+  const isComplete =
+    showRating !== null &&
+    (!financesEnabled || finalMoney !== null) &&
+    (!fansEnabled || finalFans !== null);
 
   function handleChange(field: "moneyChange" | "fansChange", value: string) {
     if (disabled || !/^-?\d*$/.test(value)) {
@@ -135,9 +139,19 @@ export default function ShowResultsEditor({
                   </p>
 
                   <div className="show-results__field">
+                    <div className="show-results__field-heading">
                     <label htmlFor={`${fieldId}-money`}>
                       Net money gained or lost
                     </label>
+                    <button
+                      className="show-results__zero"
+                      type="button"
+                      aria-label="Set money change to zero"
+                      onClick={() => handleChange("moneyChange", "0")}
+                    >
+                      No change (0)
+                    </button>
+                    </div>
 
                     <input
                       id={`${fieldId}-money`}
@@ -147,7 +161,9 @@ export default function ShowResultsEditor({
                       spellCheck={false}
                       placeholder="e.g. 50000 or -20000"
                       value={result.moneyChange}
-                      aria-describedby={`${fieldId}-money-help`}
+                      aria-describedby={invalidMoney
+                        ? `${fieldId}-money-help ${fieldId}-money-error`
+                        : `${fieldId}-money-help`}
                       aria-invalid={invalidMoney}
                       onChange={(event) =>
                         handleChange("moneyChange", event.target.value)
@@ -158,6 +174,11 @@ export default function ShowResultsEditor({
                       Include all show income and expenses, including promos.
                       Costs will not be deducted again.
                     </p>
+                    {invalidMoney && (
+                      <p className="show-results__field-error" id={`${fieldId}-money-error`}>
+                        Enter a whole number that keeps the final balance at zero or above and within the supported range.
+                      </p>
+                    )}
                   </div>
 
                   <output
@@ -174,6 +195,12 @@ export default function ShowResultsEditor({
                         ? "Check the amount"
                         : formatBalance(finalMoney, true)}
                     </strong>
+                    {finalMoney !== null && (
+                      <small className="show-results__delta">
+                        Net change: {BigInt(result.moneyChange) > 0n ? "+" : ""}
+                        {formatBalance(result.moneyChange, true)}
+                      </small>
+                    )}
                   </output>
                 </section>
               )}
@@ -194,9 +221,19 @@ export default function ShowResultsEditor({
                   </p>
 
                   <div className="show-results__field">
+                    <div className="show-results__field-heading">
                     <label htmlFor={`${fieldId}-fans`}>
                       Fans gained or lost
                     </label>
+                    <button
+                      className="show-results__zero"
+                      type="button"
+                      aria-label="Set fan change to zero"
+                      onClick={() => handleChange("fansChange", "0")}
+                    >
+                      No change (0)
+                    </button>
+                    </div>
 
                     <input
                       id={`${fieldId}-fans`}
@@ -206,7 +243,9 @@ export default function ShowResultsEditor({
                       spellCheck={false}
                       placeholder="e.g. 1500 or -500"
                       value={result.fansChange}
-                      aria-describedby={`${fieldId}-fans-help`}
+                      aria-describedby={invalidFans
+                        ? `${fieldId}-fans-help ${fieldId}-fans-error`
+                        : `${fieldId}-fans-help`}
                       aria-invalid={invalidFans}
                       onChange={(event) =>
                         handleChange("fansChange", event.target.value)
@@ -217,6 +256,11 @@ export default function ShowResultsEditor({
                       Include the overall fan change, including Charity and
                       Invasion. Promo effects will not be added again.
                     </p>
+                    {invalidFans && (
+                      <p className="show-results__field-error" id={`${fieldId}-fans-error`}>
+                        Enter a whole number that keeps the final fan total at zero or above and within the supported range.
+                      </p>
+                    )}
                   </div>
 
                   <output
@@ -233,6 +277,12 @@ export default function ShowResultsEditor({
                         ? "Check the amount"
                         : formatBalance(finalFans)}
                     </strong>
+                    {finalFans !== null && (
+                      <small className="show-results__delta">
+                        Net change: {BigInt(result.fansChange) > 0n ? "+" : ""}
+                        {formatBalance(result.fansChange)}
+                      </small>
+                    )}
                   </output>
                 </section>
               )}
@@ -240,6 +290,21 @@ export default function ShowResultsEditor({
           </>
         )}
       </fieldset>
+      <p
+        className={`show-results__readiness${isComplete ? " show-results__readiness--complete" : ""}`}
+        role="status"
+      >
+        {isComplete ? (
+          <Check size={16} aria-hidden="true" />
+        ) : (
+          <CircleAlert size={16} aria-hidden="true" />
+        )}
+        {isComplete
+          ? "Show results are ready to review. Changes apply when you close the show."
+          : showRating === null
+            ? "Complete the match ratings to calculate the show rating."
+            : "Enter a valid change for each enabled total. Use 0 for no change."}
+      </p>
     </section>
   );
 }
