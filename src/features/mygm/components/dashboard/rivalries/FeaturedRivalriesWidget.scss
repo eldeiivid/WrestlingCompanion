@@ -340,7 +340,6 @@
   a:focus-visible,
   button:focus-visible,
   &__list:focus-visible {
-    outline: 2px solid var(--rivalry-ink);
     outline-offset: 3px;
   }
 }

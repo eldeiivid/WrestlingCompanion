@@ -93,7 +93,11 @@ export default function RecordRanking({
               <p>Tied records share the same rank.</p>
             </div>
 
-            <ol className="record-ranking__list" role="list">
+            <ol
+              className="record-ranking__list"
+              data-first-page={page === 1}
+              role="list"
+            >
               {children}
             </ol>
 

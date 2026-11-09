@@ -123,15 +123,17 @@
   }
 
   &__selection {
+    z-index: 3;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 8px 16px;
     min-width: 0;
-    padding-block: 12px;
-    border-top: 1px solid rgba(t.$text, 0.08);
-    border-bottom: 1px solid rgba(t.$text, 0.08);
+    padding: 8px 12px;
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 14px;
+    background: t.$surface;
 
     p {
       margin: 0;
@@ -321,6 +323,13 @@
   @container (min-width: 1100px) {
     &__grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 768px) and (min-height: 600px) {
+    &__selection {
+      position: sticky;
+      top: 8px;
     }
   }
 

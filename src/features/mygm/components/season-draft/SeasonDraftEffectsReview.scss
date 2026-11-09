@@ -37,10 +37,6 @@
 
   &__group {
     min-width: 0;
-    padding: 20px;
-    background: t.$surface;
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 20px;
 
     > h3 {
       margin: 0 0 20px;
@@ -189,10 +185,6 @@
   }
 
   @container (min-width: 560px) {
-    &__group {
-      padding: 24px;
-    }
-
     &__title-image {
       width: 100px;
       height: 80px;

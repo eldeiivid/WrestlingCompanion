@@ -38,6 +38,7 @@ interface SelectedRivalry {
 export default function NewsScreen() {
   const { career } = useOutletContext<MyGmOutletContext>();
   const headingId = useId();
+  const resultsHeadingId = useId();
 
   const [selectedRivalry, setSelectedRivalry] =
     useState<SelectedRivalry | null>(null);
@@ -71,7 +72,7 @@ export default function NewsScreen() {
     <section className="news-screen" aria-labelledby={headingId}>
       <header className="news-screen__header">
         <div>
-          <p className="news-screen__eyebrow">The stories behind your brand</p>
+          <p className="news-screen__eyebrow">Career news desk</p>
 
           <h1 id={headingId}>News</h1>
 
@@ -138,16 +139,18 @@ export default function NewsScreen() {
 
       <section
         className="news-screen__results"
-        aria-label="News results"
+        aria-labelledby={resultsHeadingId}
         aria-busy={isLoading}
       >
         <div className="news-screen__results-header">
           <div>
+            <h2 id={resultsHeadingId}>
+              {hasFilters ? "Search results" : "News feed"}
+            </h2>
             {!isLoading && !errorMessage && data && (
               <p className="news-screen__count" role="status">
-                <strong>{data.total_count}</strong>{" "}
-                {data.total_count === 1 ? "story" : "stories"} found
-                <span>{data.available_count} in your career</span>
+                {data.total_count} {data.total_count === 1 ? "story" : "stories"}
+                {hasFilters && ` · ${data.available_count} in your career`}
               </p>
             )}
           </div>
@@ -218,15 +221,20 @@ export default function NewsScreen() {
               </div>
             ) : (
               <ul className="news-screen__list">
-                {data.items.map((item) => (
-                  <li key={item.id}>
-                    <NewsHistoryCard
-                      careerId={career.id}
-                      item={item}
-                      onViewRivalry={handleViewRivalry}
-                    />
-                  </li>
-                ))}
+                {data.items.map((item, index) => {
+                  const featured = !hasFilters && page === 1 && index === 0;
+
+                  return (
+                    <li key={item.id} data-featured={featured}>
+                      <NewsHistoryCard
+                        careerId={career.id}
+                        item={item}
+                        featured={featured}
+                        onViewRivalry={handleViewRivalry}
+                      />
+                    </li>
+                  );
+                })}
               </ul>
             )}
 

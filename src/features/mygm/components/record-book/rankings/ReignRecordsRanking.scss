@@ -1,137 +1,46 @@
 @use "../../../../../styles/tokens" as t;
 
 .reign-records-ranking {
-  &__row {
-    --reign-accent: var(--career-accent, #{t.$accent});
-    --reign-ink: color-mix(in srgb, var(--reign-accent) 60%, #{t.$text});
-
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    min-width: 0;
-    overflow: hidden;
-    background: t.$surface;
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 20px;
-
-    a:focus-visible {
-      outline: 2px solid var(--reign-ink);
-      outline-offset: 3px;
-      border-radius: 8px;
-    }
-
-    &--leader {
-      border-color: color-mix(in srgb, var(--reign-accent) 35%, #{t.$border});
-
-      .reign-records-ranking__position {
-        color: var(--reign-ink);
-      }
-
-      .reign-records-ranking__value strong {
-        color: var(--reign-ink);
-      }
-    }
-  }
-
-  &__visual {
-    position: relative;
-    display: grid;
-    place-items: center;
-    min-width: 0;
-    min-height: 140px;
-    padding: 20px 64px;
-    background-color: #101216;
-    background-image:
-      linear-gradient(180deg, rgba(#101216, 0.55), rgba(#101216, 0.8)),
-      url("../../../../../assets/backgrounds/news-arena.png");
-    background-position: center;
-    background-size: cover;
-  }
-
-  &__position {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    color: t.$text-muted;
-    font-size: 0.875rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.5;
-  }
-
   &__thumbnail {
     display: grid;
-    flex-shrink: 0;
+    grid-template: 100% / 100%;
     place-items: center;
-    min-width: 0;
     color: t.$text-muted;
 
     img {
       display: block;
       width: 100%;
       height: 100%;
+      object-fit: contain;
     }
 
     &--title {
       width: 100%;
-      max-width: 220px;
-      height: 100px;
+      height: 100%;
+      color: var(--ranking-highlight);
 
-      img {
-        object-fit: contain;
+      svg {
+        width: min(60%, 64px);
       }
     }
 
     &--holder {
-      width: 44px;
-      height: 52px;
-      overflow: hidden;
-      background: rgba(t.$text, 0.035);
-      border-radius: 9px;
+      flex: 0 0 auto;
+      width: 28px;
+      height: 32px;
 
-      img {
-        object-fit: cover;
-        object-position: center top;
+      svg {
+        width: 20px;
       }
     }
-  }
-
-  &__content {
-    display: grid;
-    align-content: start;
-    gap: 16px;
-    min-width: 0;
-    padding: 20px;
   }
 
   &__heading {
-    display: grid;
-    justify-items: start;
-    gap: 8px;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 3px 10px;
     min-width: 0;
-
-    h3 {
-      min-width: 0;
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 650;
-      line-height: 1.4;
-      letter-spacing: -0.02em;
-      overflow-wrap: anywhere;
-    }
-
-    a {
-      color: t.$text;
-      text-decoration: none;
-
-      &:hover {
-        color: var(--reign-ink);
-        text-decoration: underline;
-        text-underline-offset: 4px;
-      }
-    }
   }
 
   &__current {
@@ -140,8 +49,7 @@
     gap: 6px;
     color: t.$success;
     font-size: 0.6875rem;
-    font-weight: 500;
-    line-height: 1.5;
+    font-weight: 600;
 
     > span {
       width: 5px;
@@ -154,7 +62,7 @@
   &__holders {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px 20px;
+    gap: 0 12px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -167,83 +75,35 @@
     a {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      min-height: 52px;
-      max-width: 100%;
+      gap: 6px;
+      min-height: 44px;
       color: t.$text;
-      font-size: 0.8125rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      line-height: 1.5;
-      text-decoration: none;
-
-      > span:last-child {
-        min-width: 0;
-        overflow-wrap: anywhere;
-      }
-
-      &:hover {
-        color: var(--reign-ink);
-      }
     }
   }
 
   &__period {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
     margin: 0;
 
     > div {
-      min-width: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px 5px;
     }
 
-    dt {
-      margin: 0 0 4px;
-      color: t.$text-muted;
+    dt,
+    dd {
+      margin: 0;
       font-size: 0.6875rem;
       line-height: 1.5;
     }
 
-    dd {
-      margin: 0;
-      color: t.$text;
-      font-size: 0.75rem;
-      line-height: 1.6;
-      overflow-wrap: anywhere;
-    }
-  }
-
-  &__result {
-    display: grid;
-    align-content: center;
-    gap: 6px;
-    min-width: 0;
-    margin: 0 20px;
-    padding: 16px 0 20px;
-    border-top: 1px solid rgba(t.$text, 0.08);
-  }
-
-  &__value {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 0;
-
-    strong {
-      color: t.$text;
-      font-size: 2rem;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      line-height: 1.1;
-      letter-spacing: -0.045em;
-      overflow-wrap: anywhere;
-    }
-
-    > span {
+    dt {
       color: t.$text-muted;
-      font-size: 0.8125rem;
-      line-height: 1.5;
     }
   }
 
@@ -252,67 +112,6 @@
     margin: 0;
     color: t.$text-muted;
     font-size: 0.75rem;
-    line-height: 1.6;
-    overflow-wrap: anywhere;
-  }
-
-  @container (min-width: 640px) {
-    &__row {
-      grid-template-columns: 160px minmax(0, 1fr);
-    }
-
-    &__visual {
-      grid-row: span 2;
-      align-content: center;
-      padding: 48px 16px 24px;
-    }
-
-    &__thumbnail--title {
-      height: 110px;
-    }
-
-    &__content {
-      padding: 24px 24px 16px;
-    }
-
-    &__result {
-      margin-inline: 24px;
-      padding-bottom: 24px;
-    }
-  }
-
-  @container (min-width: 960px) {
-    &__row {
-      grid-template-columns:
-        180px
-        minmax(0, 1fr)
-        minmax(140px, 180px);
-      align-items: stretch;
-    }
-
-    &__visual {
-      grid-row: auto;
-    }
-
-    &__content {
-      padding: 24px;
-    }
-
-    &__result {
-      align-self: center;
-      margin: 24px 24px 24px 0;
-      padding: 8px 0 8px 24px;
-      border-top: 0;
-      border-left: 1px solid rgba(t.$text, 0.08);
-      text-align: right;
-    }
-
-    &__value {
-      justify-content: flex-end;
-
-      strong {
-        font-size: 2.5rem;
-      }
-    }
+    line-height: 1.5;
   }
 }

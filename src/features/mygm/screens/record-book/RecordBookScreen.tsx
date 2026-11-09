@@ -1,6 +1,6 @@
 import { useId } from "react";
 import { useOutletContext, useSearchParams } from "react-router-dom";
-import { Medal, Sparkles, Star, Swords, Trophy } from "lucide-react";
+import { Sparkles, Star, Swords, Trophy } from "lucide-react";
 
 import RatingRecordsRanking from "../../components/record-book/rankings/RatingRecordsRanking";
 import ReignRecordsRanking from "../../components/record-book/rankings/ReignRecordsRanking";
@@ -161,9 +161,6 @@ export default function RecordBookScreen() {
           </p>
         </div>
 
-        <span className="record-book-screen__emblem" aria-hidden="true">
-          <Medal size={30} strokeWidth={1.5} />
-        </span>
       </header>
 
       <nav
@@ -192,31 +189,21 @@ export default function RecordBookScreen() {
         })}
       </nav>
 
-      <div className="record-book-screen__filters">
-        <label className="record-book-screen__field">
-          <span>Explore records</span>
-
-          <select
-            value={selectedRecord}
-            aria-controls={contentId}
-            onChange={(event) => {
-              const option = availableRecords.find(
-                (item) => item.value === event.target.value,
-              );
-
-              if (option) {
-                handleRecordChange(option.value);
-              }
-            }}
-          >
-            {availableRecords.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+      {availableRecords.length > 1 && (
+        <div className="record-book-screen__records" role="group" aria-label="Record type">
+          {availableRecords.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              aria-pressed={selectedRecord === option.value}
+              aria-controls={contentId}
+              onClick={() => handleRecordChange(option.value)}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div
         key={`ranking:${career.id}:${selectedRecord}`}

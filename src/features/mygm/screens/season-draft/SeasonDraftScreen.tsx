@@ -6,7 +6,7 @@ import SeasonRetentionStep from "../../components/season-draft/SeasonRetentionSt
 import SeasonDraftStep from "../../components/season-draft/SeasonDraftStep";
 import SeasonBalancesStep from "../../components/season-draft/SeasonBalancesStep";
 import SeasonDraftReviewStep from "../../components/season-draft/SeasonDraftReviewStep";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Bookmark } from "lucide-react";
 import { useSeasonTransition } from "../../hooks/season-draft/useSeasonTransition";
 
 import type {
@@ -106,18 +106,19 @@ function SeasonDraftScreenContent({
           Back to careers
         </Link>
 
-        <p className="season-draft-screen__eyebrow">Season transition</p>
+        <div className="season-draft-screen__hero">
+          <p className="season-draft-screen__eyebrow">Season draft</p>
+          <h1 id={headingId}>
+            {data
+              ? `Build your Season ${data.transition.to_season} roster`
+              : "Prepare your next season"}
+          </h1>
 
-        <h1 id={headingId}>
-          {data
-            ? `Prepare season ${data.transition.to_season}`
-            : "Prepare your next season"}
-        </h1>
-
-        <p className="season-draft-screen__description">
-          Choose who stays, draft your roster and review the changes before
-          starting your next season.
-        </p>
+          <p className="season-draft-screen__description">
+            Choose who stays, add your draft picks and review your roster before
+            the new season starts.
+          </p>
+        </div>
       </header>
 
       <div className="season-draft-screen__body" aria-busy={isLoading}>
@@ -148,8 +149,11 @@ function SeasonDraftScreenContent({
             <SeasonDraftStepper steps={steps} currentStep={activeStep} />
 
             <p className="season-draft-screen__notice">
-              Saved selections can be resumed later. Your new roster and
-              starting balances are applied when you confirm the draft.
+              <Bookmark size={16} aria-hidden="true" />
+              <span>
+                Save your progress and come back anytime. Changes take effect
+                when you confirm the draft.
+              </span>
             </p>
 
             {activeStep === "retention" && (

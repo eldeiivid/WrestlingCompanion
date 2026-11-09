@@ -78,7 +78,7 @@ export default function ShowHistoryScreen() {
     <section className="show-history" aria-labelledby={headingId}>
       <header className="show-history__header">
         <div>
-          <p className="show-history__eyebrow">Your career, recorded</p>
+          <p className="show-history__eyebrow">Event archive</p>
 
           <h1 id={headingId}>Show history</h1>
 
@@ -143,28 +143,31 @@ export default function ShowHistoryScreen() {
 
         {!isLoading && !errorMessage && data && data.shows.length > 0 && (
           <>
-            <p className="show-history__results" role="status">
-              Showing {firstResult}–{lastResult} of {data.total_count} completed{" "}
-              {data.total_count === 1 ? "show" : "shows"}
-            </p>
+            <div className="show-history__archive-header">
+              <h2>Completed shows</h2>
+              <p className="show-history__results" role="status">
+                {firstResult}–{lastResult} of {data.total_count}
+              </p>
+            </div>
 
             <ul className="show-history__list">
-              {data.shows.map((show) => {
+              {data.shows.map((show, index) => {
                 const completedDate = formatCompletedDate(show.completed_at);
 
                 const isWeekly =
                   show.show_type === "weekly" || show.show_type === "go_home";
 
                 const isPle = show.show_type === "ple";
+                const isFeatured = data.page === 1 && index === 0;
                 const ratingId = `${headingId}-${show.id}-rating`;
                 const cardHeadingId = `${headingId}-${show.id}-title`;
 
                 return (
                   <li key={show.id}>
                     <article
-                      className={`show-history__card${
-                        isPle ? " show-history__card--ple" : ""
-                      }`}
+                      className="show-history__card"
+                      data-featured={isFeatured}
+                      data-show-type={show.show_type}
                       aria-labelledby={cardHeadingId}
                     >
                       <Link
@@ -173,56 +176,23 @@ export default function ShowHistoryScreen() {
                         aria-label={`View ${show.name}, season ${show.season}, week ${show.week}`}
                         aria-describedby={ratingId}
                       >
-                        <div className="show-history__visual">
-                          <span className="show-history__badge">
-                            {showTypeLabels[show.show_type]}
-                          </span>
-
-                          <div className="show-history__art">
-                            <ShowMark
-                              src={isWeekly ? career.brand_logo_url : null}
-                              isPle={isPle}
-                            />
-
-                            <span
-                              className="show-history__week-number"
-                              aria-hidden="true"
-                            >
-                              {String(show.week).padStart(2, "0")}
-                            </span>
-                          </div>
-                        </div>
+                        <ShowMark
+                          src={
+                            show.logo_url ??
+                            (isWeekly ? career.brand_logo_url : null)
+                          }
+                          isPle={isPle}
+                        />
 
                         <div className="show-history__content">
-                          <p className="show-history__week">
-                            Season {show.season} · Week {show.week}
+                          <p className="show-history__metadata">
+                            <span className="show-history__type">
+                              {showTypeLabels[show.show_type]}
+                            </span>
+                            <span>Season {show.season} · Week {show.week}</span>
                           </p>
 
-                          <div className="show-history__title-row">
-                            <h2 id={cardHeadingId}>{show.name}</h2>
-
-                            <p className="show-history__rating" id={ratingId}>
-                              <span className="show-history__sr-only">
-                                Show rating:{" "}
-                              </span>
-                              <Star size={16} aria-hidden="true" />
-
-                              {show.rating === null ? (
-                                <span>Not rated</span>
-                              ) : (
-                                <>
-                                  <strong>{show.rating.toFixed(2)}</strong>
-                                  <span>
-                                    / 5
-                                    <span className="show-history__sr-only">
-                                      {" "}
-                                      stars
-                                    </span>
-                                  </span>
-                                </>
-                              )}
-                            </p>
-                          </div>
+                          <h3 id={cardHeadingId}>{show.name}</h3>
 
                           <p className="show-history__segments">
                             {show.match_count}{" "}
@@ -233,16 +203,39 @@ export default function ShowHistoryScreen() {
                           </p>
 
                           {completedDate && show.completed_at && (
-                            <p className="show-history__completed">
-                              Recorded{" "}
-                              <time dateTime={show.completed_at}>
-                                {completedDate}
-                              </time>
-                            </p>
+                            <time
+                              className="show-history__completed"
+                              dateTime={show.completed_at}
+                            >
+                              {completedDate}
+                            </time>
                           )}
+                        </div>
 
-                          <span className="show-history__open">
-                            View show
+                        <div className="show-history__result">
+                          <p className="show-history__rating" id={ratingId}>
+                            <span className="show-history__sr-only">
+                              Show rating:{" "}
+                            </span>
+                            <Star size={16} aria-hidden="true" />
+
+                            {show.rating === null ? (
+                              <span>Not rated</span>
+                            ) : (
+                              <>
+                                <strong>{show.rating.toFixed(2)}</strong>
+                                <span>
+                                  / 5
+                                  <span className="show-history__sr-only">
+                                    {" "}
+                                    stars
+                                  </span>
+                                </span>
+                              </>
+                            )}
+                          </p>
+                          <span className="show-history__open" aria-hidden="true">
+                            <span>View results</span>
                             <ArrowUpRight size={17} aria-hidden="true" />
                           </span>
                         </div>

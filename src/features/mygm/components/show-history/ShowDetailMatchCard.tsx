@@ -16,6 +16,7 @@ interface ShowDetailMatchCardProps {
   match: ShowDetailMatch;
   financesRecorded: boolean;
   positionLabel?: string;
+  isMainEvent: boolean;
 }
 
 interface MatchTeam {
@@ -86,6 +87,7 @@ export default function ShowDetailMatchCard({
   match,
   financesRecorded,
   positionLabel,
+  isMainEvent,
 }: ShowDetailMatchCardProps) {
   const headingId = useId();
   const teams = getTeams(match);
@@ -101,7 +103,11 @@ export default function ShowDetailMatchCard({
   const rivalries = match.rivalries?.length ? match.rivalries : [match.rivalry];
 
   return (
-    <article className="show-match-card" aria-labelledby={headingId}>
+    <article
+      className="show-match-card"
+      data-main-event={isMainEvent}
+      aria-labelledby={headingId}
+    >
       <div className="show-match-card__hero">
         <header className="show-match-card__header">
           <div className="show-match-card__identity">

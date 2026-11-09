@@ -91,7 +91,7 @@ export default function ShowDetailPromoCard({
 
   return (
     <article className="show-promo-card" aria-labelledby={headingId}>
-      <div className="show-promo-card__hero">
+      <div>
         <header className="show-promo-card__header">
           <div className="show-promo-card__identity">
             <p className="show-promo-card__position">
@@ -109,11 +109,7 @@ export default function ShowDetailPromoCard({
           </div>
         </header>
 
-        <div
-          className={`show-promo-card__participants${
-            groups.length === 1 ? " show-promo-card__participants--single" : ""
-          }`}
-        >
+        <div className="show-promo-card__participants">
           {groups.map((group) => (
             <section
               className="show-promo-card__group"

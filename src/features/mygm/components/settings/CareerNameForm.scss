@@ -4,14 +4,6 @@
   --name-accent: var(--career-accent, #{t.$accent});
   --name-ink: color-mix(in srgb, var(--name-accent) 60%, #{t.$text});
 
-  display: grid;
-  gap: 24px;
-  min-width: 0;
-  padding: 20px;
-  background: t.$surface;
-  border: 1px solid rgba(t.$text, 0.08);
-  border-radius: 20px;
-
   > form {
     min-width: 0;
   }
@@ -75,7 +67,7 @@
       min-width: 0;
       min-height: 48px;
       padding: 12px 14px;
-      background: t.$background;
+      background: t.$surface;
       border: 1px solid rgba(t.$text, 0.12);
       border-radius: 10px;
       color: t.$text;
@@ -133,9 +125,6 @@
     justify-content: flex-end;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 8px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(t.$text, 0.08);
   }
 
   &__button {
@@ -146,8 +135,8 @@
     box-sizing: border-box;
     min-height: 44px;
     padding: 10px 16px;
-    background: rgba(t.$text, 0.025);
-    border: 1px solid rgba(t.$text, 0.1);
+    background: transparent;
+    border: 1px solid transparent;
     border-radius: 10px;
     color: t.$text;
     font: inherit;
@@ -184,20 +173,9 @@
   }
 
   @container (min-width: 560px) {
-    padding: 28px;
-
     &__button {
       flex: 0 0 auto;
       min-width: 110px;
-    }
-  }
-
-  @container (min-width: 900px) {
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-    gap: 40px;
-
-    &__header {
-      padding-top: 4px;
     }
   }
 

@@ -5,6 +5,7 @@ export type ShowHistoryType = "weekly" | "go_home" | "ple" | "special";
 export interface ShowHistoryItem {
   id: string;
   name: string;
+  logo_url?: string | null;
   kind: ShowHistoryKind;
   tick: number;
   season: number;

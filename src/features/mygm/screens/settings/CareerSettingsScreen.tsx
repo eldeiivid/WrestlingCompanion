@@ -5,7 +5,7 @@ import CareerDangerZone from "../../components/settings/CareerDangerZone";
 import CareerNameForm from "../../components/settings/CareerNameForm";
 import CareerRulesOverview from "../../components/settings/CareerRulesOverview";
 import { useCareerSettings } from "../../hooks/settings/useCareerSettings";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Settings2 } from "lucide-react";
 import type { MyGmOutletContext } from "../../types/mygm.types";
 import type {
   CareerSettingsData,
@@ -57,6 +57,8 @@ export default function CareerSettingsScreen() {
 
   const navigate = useNavigate();
   const headingId = useId();
+  const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null);
+  const brandLogoUrl = career.brand_logo_url;
 
   const { data, isLoading, errorMessage, retry } = useCareerSettings(career.id);
 
@@ -87,20 +89,28 @@ export default function CareerSettingsScreen() {
   return (
     <section className="career-settings-screen" aria-labelledby={headingId}>
       <header className="career-settings-screen__header">
-        <div>
-          <p className="career-settings-screen__eyebrow">Your career</p>
+        <div className="career-settings-screen__intro">
+          <span className="career-settings-screen__brand" aria-hidden="true">
+            {brandLogoUrl && brandLogoUrl !== failedLogoUrl ? (
+              <img
+                src={brandLogoUrl}
+                alt=""
+                onError={() => setFailedLogoUrl(brandLogoUrl)}
+              />
+            ) : (
+              <Settings2 size={25} />
+            )}
+          </span>
 
-          <h1 id={headingId}>Career settings</h1>
+          <div className="career-settings-screen__title">
+            <p className="career-settings-screen__eyebrow">MyGM</p>
 
-          <p className="career-settings-screen__description">
-            Manage your career and review its configuration.
-          </p>
+            <h1 id={headingId}>Career settings</h1>
 
-          <p className="career-settings-screen__identity">
-            {career.brand_name}
-            {" · "}
-            {career.manager_name}
-          </p>
+            <p className="career-settings-screen__identity">
+              {career.brand_name} · {career.manager_name}
+            </p>
+          </div>
         </div>
 
         <button

@@ -1,11 +1,17 @@
 @use "../../../styles/tokens" as t;
 
-body:has(.mygm-layout) { min-width: 0; }
+body:has(.mygm-layout) {
+  min-width: 0;
+}
 
 .mygm-layout {
-  --shell-ink: color-mix(in srgb, var(--career-accent, #{t.$brand}) 50%, #{t.$text});
-  --career-sidebar-expanded: 240px;
-  --career-sidebar-rail: 76px;
+  --shell-ink: color-mix(
+    in srgb,
+    var(--career-accent, #{t.$brand}) 50%,
+    #{t.$text}
+  );
+  --career-sidebar-expanded: 224px;
+  --career-sidebar-rail: 68px;
   --career-sidebar-width: var(--career-sidebar-expanded);
   --career-bottom-space: calc(104px + env(safe-area-inset-bottom, 0px));
 
@@ -34,7 +40,11 @@ body:has(.mygm-layout) { min-width: 0; }
     font-size: 0.875rem;
     font-weight: 600;
 
-    &:focus { transform: translateY(0); outline: 2px solid var(--shell-ink); outline-offset: 3px; }
+    &:focus {
+      transform: translateY(0);
+      outline: 2px solid var(--shell-ink);
+      outline-offset: 3px;
+    }
   }
 
   > .career-header {
@@ -55,7 +65,10 @@ body:has(.mygm-layout) { min-width: 0; }
     overflow-y: auto;
     margin: 0 auto;
     padding: 24px 16px var(--career-bottom-space);
-    background: t.$background;
+    background:
+      linear-gradient(180deg, rgba(t.$background, 0.83), rgba(t.$background, 0.92)),
+      url("../../../assets/backgrounds/news-arena.png")
+        center / cover no-repeat scroll t.$background;
 
     overscroll-behavior-y: contain;
     scrollbar-gutter: stable;
@@ -63,7 +76,9 @@ body:has(.mygm-layout) { min-width: 0; }
     scroll-padding-top: 24px;
     scroll-padding-bottom: var(--career-bottom-space);
 
-    > * { margin-inline: auto; }
+    > * {
+      margin-inline: auto;
+    }
   }
 
   &__notice {
@@ -268,36 +283,4 @@ body:has(.mygm-layout) { min-width: 0; }
   .mygm-layout__content {
     padding-top: calc(var(--career-header-expanded-height, 180px) + 28px);
   }
-}
-
-.mygm-layout__atmosphere {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  background: linear-gradient(rgba(14, 16, 21, .92), rgba(14, 16, 21, .98)), url("https://raw.githubusercontent.com/eldeiivid/wwe-mymg-assets/60a70c8407b19fe178e7b4661c17ec1fdd5a1607/wwe-logo/stk-bg-1.webp") center top / cover;
-
-  &::before, &::after {
-    position: absolute;
-    content: "";
-    width: min(65vw, 640px);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(circle, color-mix(in srgb, var(--career-accent) 12%, transparent), transparent 68%);
-  }
-  &::before { top: -160px; right: -120px; }
-  &::after { bottom: -160px; left: -180px; opacity: .65; }
-}
-
-@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
-  .mygm-layout__atmosphere {
-    &::before { animation: career-orb-drift 26s ease-in-out infinite alternate; }
-    &::after { animation: career-orb-drift 32s ease-in-out -12s infinite alternate-reverse; }
-  }
-}
-
-@keyframes career-orb-drift {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-60px, 70px, 0); }
 }

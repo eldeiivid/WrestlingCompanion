@@ -108,13 +108,13 @@ export default function WrestlerRecordsRanking({
     >
       {data?.items.map((item) => (
         <li
-          className={`wrestler-records-ranking__row${
-            item.rank === 1 ? " wrestler-records-ranking__row--leader" : ""
-          }`}
+          className="record-ranking__row"
+          data-rank={item.rank}
           key={item.wrestler.id}
+          value={item.rank}
         >
           <span
-            className="wrestler-records-ranking__position"
+            className="record-ranking__position"
             aria-label={`Rank ${item.rank}`}
           >
             {item.rank === 1 && <Crown size={15} aria-hidden="true" />}
@@ -122,14 +122,14 @@ export default function WrestlerRecordsRanking({
             <span>#{item.rank}</span>
           </span>
 
-          <div className="wrestler-records-ranking__visual">
+          <div className="record-ranking__visual">
             <WrestlerPortrait
               key={`portrait:${item.wrestler.id}:${item.wrestler.image_url}`}
               src={item.wrestler.image_url}
             />
           </div>
 
-          <div className="wrestler-records-ranking__content">
+          <div className="record-ranking__entry">
             <h3>
               <Link to={`/mygm/${careerId}/roster/${item.wrestler.id}`}>
                 {item.wrestler.name}
@@ -137,10 +137,9 @@ export default function WrestlerRecordsRanking({
               </Link>
             </h3>
 
-            <p>All-time career record</p>
           </div>
 
-          <p className="wrestler-records-ranking__value">
+          <p className="record-ranking__metric">
             <strong>{item.record_value.toLocaleString("en-US")}</strong>
 
             <span>

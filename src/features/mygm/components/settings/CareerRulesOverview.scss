@@ -1,14 +1,6 @@
 @use "../../../../styles/tokens" as t;
 
 .career-rules-overview {
-  display: grid;
-  gap: 24px;
-  min-width: 0;
-  padding: 20px;
-  background: t.$surface;
-  border: 1px solid rgba(t.$text, 0.08);
-  border-radius: 20px;
-
   &__header {
     min-width: 0;
 
@@ -30,23 +22,40 @@
     }
   }
 
-  &__details {
+  &__groups {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 16px;
+    gap: 20px;
     min-width: 0;
+  }
+
+  &__group {
+    min-width: 0;
+
+    h3 {
+      margin: 0 0 8px;
+      color: var(--settings-ink);
+      font-size: 0.8125rem;
+      font-weight: 650;
+    }
+  }
+
+  &__details {
     margin: 0;
 
     > div {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 2px 12px;
       min-width: 0;
-      padding-top: 12px;
+      padding-block: 10px;
       border-top: 1px solid rgba(t.$text, 0.08);
     }
 
     dt {
-      margin-bottom: 7px;
       color: t.$text-muted;
-      font-size: 0.6875rem;
+      font-size: 0.75rem;
       line-height: 1.5;
       overflow-wrap: anywhere;
     }
@@ -95,20 +104,17 @@
   }
 
   &__hint {
-    margin: 0;
-    padding-top: 16px;
-    border-top: 1px solid rgba(t.$text, 0.08);
+    display: inline-block;
+    margin-top: 10px;
     color: t.$text-muted;
     font-size: 0.6875rem;
     line-height: 1.65;
     overflow-wrap: anywhere;
   }
 
-  @container (min-width: 560px) {
-    padding: 28px;
-
-    &__details {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+  @container (min-width: 640px) {
+    &__groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 24px;
     }
   }

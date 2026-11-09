@@ -83,11 +83,14 @@ export default function CareerNameForm({
   }
 
   return (
-    <section className="career-name-form" aria-labelledby={headingId}>
+    <section
+      className="career-name-form career-settings-screen__section"
+      aria-labelledby={headingId}
+    >
       <header className="career-name-form__header">
-        <h2 id={headingId}>Career name</h2>
+        <h2 id={headingId}>General</h2>
 
-        <p>Choose a name to identify this career.</p>
+        <p>Change how this save appears in your career list.</p>
       </header>
 
       <form onSubmit={handleSubmit} aria-busy={isSaving}>
@@ -95,7 +98,7 @@ export default function CareerNameForm({
           <legend className="career-name-form__legend">Edit career name</legend>
 
           <label className="career-name-form__field">
-            <span>Name</span>
+            <span>Career name</span>
 
             <input
               type="text"
@@ -140,7 +143,7 @@ export default function CareerNameForm({
               disabled={isSaving || name === savedName}
               onClick={handleReset}
             >
-              Reset
+              Discard changes
             </button>
 
             <button

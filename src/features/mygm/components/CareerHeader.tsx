@@ -214,7 +214,7 @@ export default function CareerHeader({ career }: CareerHeaderProps) {
           <Link
             className="career-header__brand"
             to={`/mygm/${career.id}`}
-            aria-label={`${career.brand_name} career dashboard`}
+            aria-label={`Open dashboard for ${career.name} (${career.brand_name})`}
           >
             {showLogo && career.brand_logo_url ? (
               <img
@@ -223,45 +223,40 @@ export default function CareerHeader({ career }: CareerHeaderProps) {
                 onError={() => setFailedLogoUrl(career.brand_logo_url)}
               />
             ) : (
-              <>
-                <Gamepad2 size={24} aria-hidden="true" />
-                <span>{career.brand_name}</span>
-              </>
+              <Gamepad2 size={24} aria-hidden="true" />
             )}
           </Link>
 
           <div className="career-header__copy">
-            <p className="career-header__eyebrow">MyGM <span aria-hidden="true">·</span> {career.brand_name}</p>
             <p className="career-header__career-name" title={career.name}>
               {career.name}
             </p>
 
-            <div
-              className="career-header__manager"
-              role="group"
-              aria-label={`General Manager: ${career.manager_name}`}
-            >
-              <span className="career-header__avatar" aria-hidden="true">
-                {showManager && career.manager_image_url ? (
-                  <img
-                    src={career.manager_image_url}
-                    alt=""
-                    onError={() =>
-                      setFailedManagerUrl(career.manager_image_url)
-                    }
-                  />
-                ) : (
-                  <UserRound size={15} />
-                )}
+            <div className="career-header__meta">
+              <span className="career-header__brand-name" title={career.brand_name}>
+                {career.brand_name}
               </span>
-
-              <span className="career-header__manager-label">GM</span>
-
-              <span
-                className="career-header__manager-name"
-                title={career.manager_name}
-              >
-                {career.manager_name}
+              <span className="career-header__manager">
+                <span className="career-header__avatar" aria-hidden="true">
+                  {showManager && career.manager_image_url ? (
+                    <img
+                      src={career.manager_image_url}
+                      alt=""
+                      onError={() =>
+                        setFailedManagerUrl(career.manager_image_url)
+                      }
+                    />
+                  ) : (
+                    <UserRound size={14} />
+                  )}
+                </span>
+                <span className="career-header__sr-only">General Manager: </span>
+                <span
+                  className="career-header__manager-name"
+                  title={career.manager_name}
+                >
+                  {career.manager_name}
+                </span>
               </span>
             </div>
           </div>
@@ -276,20 +271,15 @@ export default function CareerHeader({ career }: CareerHeaderProps) {
 
           <strong>
             Week {week}
-            {!isCompact && <span> / 50</span>}
+            <span> / 50</span>
           </strong>
-          <span className="career-header__season-track" aria-hidden="true"><span style={{ width: `${((week - 1) / 50) * 100}%` }} /></span>
+          <span className="career-header__season-track" aria-hidden="true">
+            <span style={{ width: `${((week - 1) / 50) * 100}%` }} />
+          </span>
         </div>
 
         {metricCount > 0 && (
-          <dl
-            className={[
-              "career-header__metrics",
-              metricCount === 1 ? "career-header__metrics--single" : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
-          >
+          <dl className="career-header__metrics" aria-label="Career metrics">
             {career.finances_enabled && (
               <div className="career-header__metric">
                 <dt>
@@ -297,10 +287,13 @@ export default function CareerHeader({ career }: CareerHeaderProps) {
                   Budget
                 </dt>
 
-                <dd title={fullBudget} aria-label={fullBudget}>
-                  {isCompact
-                    ? compactMoneyFormatter.format(BigInt(career.budget_total))
-                    : fullBudget}
+                <dd title={fullBudget}>
+                  <span className="career-header__sr-only">{fullBudget}</span>
+                  <span aria-hidden="true">
+                    {isCompact
+                      ? compactMoneyFormatter.format(BigInt(career.budget_total))
+                      : fullBudget}
+                  </span>
                 </dd>
               </div>
             )}
@@ -312,10 +305,13 @@ export default function CareerHeader({ career }: CareerHeaderProps) {
                   Fans
                 </dt>
 
-                <dd title={fullFans} aria-label={fullFans}>
-                  {isCompact
-                    ? compactFansFormatter.format(BigInt(career.fans_total))
-                    : fullFans}
+                <dd title={fullFans}>
+                  <span className="career-header__sr-only">{fullFans}</span>
+                  <span aria-hidden="true">
+                    {isCompact
+                      ? compactFansFormatter.format(BigInt(career.fans_total))
+                      : fullFans}
+                  </span>
                 </dd>
               </div>
             )}

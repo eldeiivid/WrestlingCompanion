@@ -5,7 +5,7 @@
   --step-ink: color-mix(in srgb, var(--step-accent) 60%, #{t.$text});
 
   display: grid;
-  gap: 14px;
+  gap: 8px;
   min-width: 0;
 
   &__list {
@@ -25,16 +25,13 @@
     box-sizing: border-box;
     gap: 8px;
     min-width: 0;
-    padding: 12px 4px;
-    background: rgba(t.$text, 0.025);
-    border: 1px solid rgba(t.$text, 0.07);
-    border-radius: 12px;
+    padding: 8px 4px 12px;
+    border-bottom: 2px solid rgba(t.$text, 0.1);
     color: t.$text-muted;
 
     &.is-current {
-      background: color-mix(in srgb, var(--step-accent) 12%, #{t.$background});
-      border-color: color-mix(in srgb, var(--step-accent) 45%, #{t.$border});
-      color: t.$text;
+      border-color: var(--step-ink);
+      color: var(--step-ink);
     }
   }
 
@@ -121,7 +118,7 @@
       flex-direction: row;
       justify-content: flex-start;
       gap: 12px;
-      padding: 16px;
+      padding: 8px 4px 12px;
     }
 
     &__short-label {

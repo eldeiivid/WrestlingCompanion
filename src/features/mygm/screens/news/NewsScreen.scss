@@ -25,7 +25,7 @@
     h1 {
       margin: 0;
       color: t.$text;
-      font-size: clamp(1.75rem, 5vw, 2.25rem);
+      font-size: clamp(1.875rem, 4vw, 2.625rem);
       font-weight: 700;
       letter-spacing: -0.045em;
       line-height: 1.2;
@@ -120,33 +120,28 @@
 
   &__results-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 8px 16px;
     margin-bottom: 16px;
 
-    &:has(> div:empty):not(:has(> button)) {
-      display: none;
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1.0625rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
     }
   }
 
   &__count {
-    margin: 0;
+    margin: 4px 0 0;
     color: t.$text-muted;
     font-size: 0.75rem;
     line-height: 1.6;
 
-    strong {
-      color: t.$text;
-      font-weight: 600;
-    }
-
-    > span {
-      display: block;
-      margin-top: 3px;
-      font-size: 0.6875rem;
-    }
+    font-variant-numeric: tabular-nums;
   }
 
   &__reset {
@@ -171,13 +166,18 @@
   &__list {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
+    gap: 4px 32px;
     margin: 0;
     padding: 0;
     list-style: none;
 
     > li {
       min-width: 0;
+    }
+
+    > li[data-featured="true"] {
+      grid-column: 1 / -1;
+      margin-bottom: 20px;
     }
   }
 
@@ -335,10 +335,12 @@
       grid-template-columns: minmax(0, 1fr) 240px;
     }
 
-    &__count > span {
-      display: inline;
-      margin: 0 0 0 12px;
-    }
+  }
+}
+
+@container (min-width: 760px) {
+  .news-screen__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

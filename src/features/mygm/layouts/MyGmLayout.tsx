@@ -134,7 +134,6 @@ export default function MyGmLayout() {
       <CareerNavigation careerId={career.id} />
 
       <main ref={contentRef} id="career-content" className="mygm-layout__content" tabIndex={-1}>
-        <div className="mygm-layout__atmosphere" aria-hidden="true" />
         {errorMessage && (
           <div className="mygm-layout__notice">
             <p role="alert">{errorMessage}</p>

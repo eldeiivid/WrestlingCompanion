@@ -85,20 +85,20 @@ export default function RatingRecordsRanking({
     >
       {data?.items.map((item) => (
         <li
-          className={`rating-records-ranking__row${
-            item.rank === 1 ? " rating-records-ranking__row--leader" : ""
-          }`}
+          className="record-ranking__row"
+          data-rank={item.rank}
           key={`${item.kind}:${item.id}`}
+          value={item.rank}
         >
           <span
-            className="rating-records-ranking__position"
+            className="record-ranking__position"
             aria-label={`Rank ${item.rank}`}
           >
             {item.rank === 1 && <Crown size={15} aria-hidden="true" />}
             <span>#{item.rank}</span>
           </span>
 
-          <span className="rating-records-ranking__icon" aria-hidden="true">
+          <span className="record-ranking__visual rating-records-ranking__icon" aria-hidden="true">
             {item.kind === "show" ? (
               <CalendarDays size={28} />
             ) : (
@@ -106,7 +106,7 @@ export default function RatingRecordsRanking({
             )}
           </span>
 
-          <div className="rating-records-ranking__content">
+          <div className="record-ranking__entry">
             <p className="rating-records-ranking__period">
               Season {item.event.season}
               {" · "}
@@ -147,7 +147,7 @@ export default function RatingRecordsRanking({
             </Link>
           </div>
 
-          <p className="rating-records-ranking__value">
+          <p className="record-ranking__metric">
             <span className="rating-records-ranking__score">
               <Star size={20} aria-hidden="true" />
 

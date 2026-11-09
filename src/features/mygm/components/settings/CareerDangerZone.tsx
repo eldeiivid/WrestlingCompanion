@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import { Trash2 } from "lucide-react";
 
 import DeleteCareerModal from "./DeleteCareerModal";
 
@@ -26,7 +27,10 @@ export default function CareerDangerZone({
   }
 
   return (
-    <section className="career-danger-zone" aria-labelledby={headingId}>
+    <section
+      className="career-danger-zone career-settings-screen__section"
+      aria-labelledby={headingId}
+    >
       <header className="career-danger-zone__header">
         <h2 id={headingId}>Danger zone</h2>
 
@@ -39,8 +43,10 @@ export default function CareerDangerZone({
       <button
         className="career-danger-zone__button"
         type="button"
+        aria-haspopup="dialog"
         onClick={() => setIsOpen(true)}
       >
+        <Trash2 size={16} aria-hidden="true" />
         Delete career
       </button>
 

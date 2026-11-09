@@ -1,20 +1,12 @@
 @use "../../../../styles/tokens" as t;
 
 .career-danger-zone {
-  display: grid;
-  gap: 20px;
-  min-width: 0;
-  padding: 20px;
-  background: t.$surface;
-  border: 1px solid rgba(t.$error, 0.18);
-  border-radius: 20px;
-
   &__header {
     min-width: 0;
 
     h2 {
       margin: 0;
-      color: t.$text;
+      color: t.$error;
       font-size: 1.0625rem;
       font-weight: 650;
       line-height: 1.4;
@@ -35,8 +27,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    justify-self: start;
+    gap: 8px;
     box-sizing: border-box;
-    width: 100%;
     min-height: 44px;
     padding: 10px 16px;
     background: rgba(t.$error, 0.06);
@@ -62,18 +55,9 @@
   }
 
   @container (min-width: 560px) {
-    padding: 28px;
-
     &__button {
-      justify-self: start;
-      width: auto;
+      min-width: 132px;
     }
-  }
-
-  @container (min-width: 800px) {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 32px;
   }
 
   @media (prefers-reduced-motion: no-preference) {

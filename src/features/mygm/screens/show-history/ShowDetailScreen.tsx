@@ -59,13 +59,9 @@ export default function ShowDetailScreen() {
           <span>Back to show history</span>
         </Link>
 
-        <p className="show-detail__eyebrow">Completed show</p>
-
-        <h1 id={headingId}>{data?.event.name ?? "Show details"}</h1>
-
-        <p className="show-detail__description">
-          Review the recorded results and outcomes of this show.
-        </p>
+        {(isLoading || errorMessage || !data) && (
+          <h1 id={headingId}>Show details</h1>
+        )}
       </header>
 
       <div className="show-detail__body" aria-busy={isLoading}>
@@ -96,6 +92,7 @@ export default function ShowDetailScreen() {
         {!isLoading && !errorMessage && data && (
           <>
             <ShowDetailOverview
+              headingId={headingId}
               event={data.event}
               summary={data.summary}
               brandLogoUrl={career.brand_logo_url}
@@ -108,7 +105,9 @@ export default function ShowDetailScreen() {
               <header className="show-detail__section-header">
                 <h2 id={segmentsHeadingId}>Show card</h2>
 
-                <p>Segments are displayed in their original order.</p>
+                <p>
+                  {segments.length} {segments.length === 1 ? "segment" : "segments"}
+                </p>
               </header>
 
               {segments.length === 0 ? (
@@ -123,6 +122,7 @@ export default function ShowDetailScreen() {
                         <ShowDetailMatchCard
                           match={segment}
                           financesRecorded={data.summary.finances_recorded}
+                          isMainEvent={segment.id === lastMatchId}
                           positionLabel={getMatchPositionLabel(
                             segment.id,
                             firstMatchId,

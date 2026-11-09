@@ -203,6 +203,9 @@ export default function SeasonRetentionStep({
                 maxLength={200}
                 placeholder="Search by wrestler name"
                 onChange={(event) => setSearch(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") event.preventDefault();
+                }}
               />
             </label>
 

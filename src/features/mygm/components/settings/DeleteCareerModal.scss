@@ -36,7 +36,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 20px;
+    padding: 16px 20px;
     border-bottom: 1px solid rgba(t.$text, 0.08);
   }
 
@@ -96,9 +96,9 @@
 
   &__content {
     display: grid;
-    gap: 20px;
+    gap: 14px;
     min-height: 0;
-    padding: 24px 20px;
+    padding: 20px;
     overflow-y: auto;
     overscroll-behavior-y: contain;
   }
@@ -113,12 +113,10 @@
 
   &__confirmation {
     display: grid;
-    gap: 8px;
+    gap: 4px;
     min-width: 0;
-    padding: 16px;
-    background: t.$background;
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 12px;
+    padding-block: 12px;
+    border-block: 1px solid rgba(t.$text, 0.08);
 
     p {
       margin: 0;
@@ -268,11 +266,11 @@
     border-radius: 24px;
 
     &__header {
-      padding: 20px 28px;
+      padding: 16px 24px;
     }
 
     &__content {
-      padding: 24px 28px;
+      padding: 20px 24px;
     }
 
     &__actions {

@@ -38,77 +38,77 @@ export default function CareerRulesOverview({
   const { career, rules } = data;
 
   return (
-    <section className="career-rules-overview" aria-labelledby={headingId}>
+    <section
+      className="career-rules-overview career-settings-screen__section"
+      aria-labelledby={headingId}
+    >
       <header className="career-rules-overview__header">
-        <h2 id={headingId}>Career configuration</h2>
-
-        <p>Review your progress and the rules selected for this career.</p>
+        <h2 id={headingId}>Progress & rules</h2>
+        <p>See where you are in the season and which rules apply to this save.</p>
+        <span className="career-rules-overview__hint">Read only</span>
       </header>
 
-      <dl className="career-rules-overview__details">
-        <div>
-          <dt>Game</dt>
-          <dd>{formatGameVersion(career.game_version)}</dd>
+      <div className="career-rules-overview__groups">
+        <div className="career-rules-overview__group">
+          <h3>Career progress</h3>
+          <dl className="career-rules-overview__details">
+            <div>
+              <dt>Game</dt>
+              <dd>{formatGameVersion(career.game_version)}</dd>
+            </div>
+            <div>
+              <dt>Current season</dt>
+              <dd>{career.season}</dd>
+            </div>
+            <div>
+              <dt>Current week</dt>
+              <dd>{career.week} / {rules.weeks_per_season}</dd>
+            </div>
+            <div>
+              <dt>Created</dt>
+              <dd>
+                <time dateTime={career.created_at}>
+                  {new Intl.DateTimeFormat("en-US", {
+                    dateStyle: "medium",
+                  }).format(new Date(career.created_at))}
+                </time>
+              </dd>
+            </div>
+          </dl>
         </div>
 
-        <div>
-          <dt>Current season</dt>
-          <dd>{career.season}</dd>
+        <div className="career-rules-overview__group">
+          <h3>Game rules</h3>
+          <dl className="career-rules-overview__details">
+            <div>
+              <dt>Difficulty</dt>
+              <dd>{formatDifficulty(rules.difficulty)}</dd>
+            </div>
+            <div>
+              <dt>Season length</dt>
+              <dd>{rules.weeks_per_season} weeks</dd>
+            </div>
+            <div>
+              <dt>Finances</dt>
+              <dd>
+                <OptionStatus enabled={rules.finances_enabled} />
+              </dd>
+            </div>
+            <div>
+              <dt>Fans</dt>
+              <dd>
+                <OptionStatus enabled={rules.fans_enabled} />
+              </dd>
+            </div>
+            <div>
+              <dt>Money in the Bank</dt>
+              <dd>
+                <OptionStatus enabled={rules.mitb_enabled} />
+              </dd>
+            </div>
+          </dl>
         </div>
-
-        <div>
-          <dt>Current week</dt>
-          <dd>
-            {career.week} / {rules.weeks_per_season}
-          </dd>
-        </div>
-
-        <div>
-          <dt>Difficulty</dt>
-          <dd>{formatDifficulty(rules.difficulty)}</dd>
-        </div>
-
-        <div>
-          <dt>Season length</dt>
-          <dd>{rules.weeks_per_season} weeks</dd>
-        </div>
-
-        <div>
-          <dt>Finances</dt>
-          <dd>
-            <OptionStatus enabled={rules.finances_enabled} />
-          </dd>
-        </div>
-
-        <div>
-          <dt>Fans</dt>
-          <dd>
-            <OptionStatus enabled={rules.fans_enabled} />
-          </dd>
-        </div>
-
-        <div>
-          <dt>Money in the Bank</dt>
-          <dd>
-            <OptionStatus enabled={rules.mitb_enabled} />
-          </dd>
-        </div>
-
-        <div>
-          <dt>Created</dt>
-          <dd>
-            <time dateTime={career.created_at}>
-              {new Intl.DateTimeFormat("en-US", {
-                dateStyle: "medium",
-              }).format(new Date(career.created_at))}
-            </time>
-          </dd>
-        </div>
-      </dl>
-
-      <p className="career-rules-overview__hint">
-        Career rules are shown for reference and cannot be edited here.
-      </p>
+      </div>
     </section>
   );
 }

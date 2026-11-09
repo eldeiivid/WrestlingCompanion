@@ -55,20 +55,32 @@
   }
 
   &__summary {
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    min-width: 0;
+    padding: 8px 12px;
+    border: 1px solid rgba(t.$text, 0.1);
+    border-radius: 14px;
+    background: t.$surface;
+  }
+
+  &__totals {
     display: grid;
+    flex: 1 1 200px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     min-width: 0;
-    padding-block: 16px;
-    border-top: 1px solid rgba(t.$text, 0.08);
-    border-bottom: 1px solid rgba(t.$text, 0.08);
 
     p {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 2px;
       min-width: 0;
       margin: 0;
-      padding-inline: 12px;
+      padding-inline: 8px;
       color: t.$text-muted;
       font-size: 0.6875rem;
       line-height: 1.5;
@@ -89,7 +101,7 @@
 
     strong {
       color: t.$text;
-      font-size: 1.75rem;
+      font-size: 1.375rem;
       font-weight: 700;
       font-variant-numeric: tabular-nums;
       line-height: 1.1;
@@ -101,6 +113,7 @@
   &__filters {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
     gap: 12px;
     min-width: 0;
   }
@@ -153,30 +166,78 @@
     }
 
     &--search {
+      position: relative;
       grid-column: 1 / -1;
+
+      > svg {
+        position: absolute;
+        inset: 50% auto auto 13px;
+        transform: translateY(-50%);
+        color: var(--selection-ink);
+        pointer-events: none;
+      }
+
+      input {
+        padding-inline-start: 39px;
+      }
     }
   }
 
-  &__filter-actions {
-    display: flex;
-    grid-column: 1 / -1;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px 16px;
+  &__advanced {
+    min-width: 0;
 
-    .season-draft-step__button {
-      padding-inline: 8px;
-      background: transparent;
-      border-color: transparent;
-      color: t.$text-muted;
+    &[open] {
+      grid-column: 1 / -1;
+    }
 
-      &:hover:not(:disabled) {
-        background: rgba(t.$text, 0.035);
-        border-color: transparent;
+    summary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 48px;
+      width: fit-content;
+      padding-inline: 10px;
+      border-radius: 9px;
+      color: var(--selection-ink);
+      font-size: 0.8125rem;
+      font-weight: 650;
+      cursor: pointer;
+
+      &::after {
+        width: 6px;
+        height: 6px;
+        margin: -3px 2px 0;
+        transform: rotate(45deg);
+        border: solid currentColor;
+        border-width: 0 1px 1px 0;
+        content: "";
+      }
+
+      &:hover {
         color: t.$text;
       }
+
+      &:focus-visible {
+        outline: 2px solid var(--selection-ink);
+        outline-offset: 2px;
+      }
     }
+
+    &[open] summary::after {
+      transform: rotate(225deg);
+      margin-top: 3px;
+    }
+  }
+
+  &__advanced-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding-block: 8px 4px;
+  }
+
+  &__reset {
+    justify-self: start;
   }
 
   &__results {
@@ -339,12 +400,32 @@
         );
       }
     }
+
+    &--quiet {
+      padding-inline: 8px;
+      border-color: transparent;
+      background: transparent;
+      color: t.$text-muted;
+    }
   }
 
   @container (min-width: 560px) {
-    &__summary p {
-      padding-inline: 24px;
+    &__totals p {
+      padding-inline: 16px;
       font-size: 0.75rem;
+    }
+
+    &__filters {
+      grid-template-columns: minmax(0, 1fr) minmax(150px, 220px);
+    }
+
+    &__field--search {
+      grid-column: auto;
+    }
+
+    &__reset {
+      justify-self: end;
+      grid-column: 2;
     }
 
     &__grid {
@@ -363,12 +444,19 @@
   }
 
   @container (min-width: 800px) {
-    &__filters {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    &__advanced-fields {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     &__grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 768px) and (min-height: 600px) {
+    &__summary {
+      position: sticky;
+      top: 8px;
     }
   }
 

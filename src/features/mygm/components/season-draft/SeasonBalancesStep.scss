@@ -75,10 +75,8 @@
     align-content: start;
     gap: 12px;
     min-width: 0;
-    padding: 20px;
-    background: t.$surface;
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 20px;
+    padding-block: 16px;
+    border-top: 1px solid rgba(t.$text, 0.1);
   }
 
   &__field {
@@ -224,10 +222,6 @@
   }
 
   @container (min-width: 560px) {
-    &__input-group {
-      padding: 28px;
-    }
-
     &__actions {
       justify-content: flex-end;
 

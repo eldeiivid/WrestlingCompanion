@@ -24,7 +24,7 @@
     h1 {
       margin: 0;
       color: t.$text;
-      font-size: clamp(1.75rem, 5vw, 2.25rem);
+      font-size: clamp(1.875rem, 4vw, 2.625rem);
       font-weight: 700;
       letter-spacing: -0.045em;
       line-height: 1.2;
@@ -55,113 +55,57 @@
     min-height: 180px;
   }
 
-  &__results {
-    margin: 0 0 16px;
-    color: t.$text-muted;
-    font-size: 0.75rem;
-    line-height: 1.6;
-  }
+  &__archive-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin-bottom: 16px;
 
-  &__list {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-
-    > li {
-      min-width: 0;
+    h2 {
+      margin: 0;
+      color: t.$text;
+      font-size: 1.0625rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
     }
   }
 
-  &__card {
-    height: 100%;
-    min-width: 0;
+  &__results {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   &__card-link {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    height: 100%;
-    min-width: 0;
-    overflow: hidden;
-    background: t.$surface;
-    border: 1px solid rgba(t.$text, 0.09);
-    border-radius: 22px;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px 14px;
+    padding: 16px 8px;
+    border-bottom: 1px solid rgba(t.$text, 0.1);
     color: t.$text;
     text-decoration: none;
 
     &:focus-visible {
-      outline: 2px solid var(--archive-accent);
-      outline-offset: 4px;
+      outline: 2px solid var(--archive-ink);
+      outline-offset: 3px;
     }
-  }
-
-  &__visual {
-    position: relative;
-    min-width: 0;
-    height: 146px;
-    overflow: hidden;
-    padding: 16px;
-    background-color: #101216;
-    background-image:
-      linear-gradient(
-        100deg,
-        rgba(#101216, 0.75),
-        rgba(#101216, 0.25) 65%,
-        rgba(t.$surface, 0.7)
-      ),
-      url("../../../../assets/backgrounds/news-arena.png");
-    background-position: center;
-    background-size: cover;
-
-    &::after {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      height: 40px;
-      background: linear-gradient(transparent, t.$surface);
-      content: "";
-      pointer-events: none;
-    }
-  }
-
-  &__badge {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    max-width: 100%;
-    padding: 4px 7px;
-    background: rgba(t.$background, 0.82);
-    border: 1px solid rgba(t.$text, 0.1);
-    border-radius: 6px;
-    color: var(--archive-ink);
-    font-size: 0.625rem;
-    font-weight: 500;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-  }
-
-  &__art {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    min-width: 0;
-    margin-top: 10px;
   }
 
   &__mark {
-    position: relative;
-    z-index: 1;
     display: grid;
-    flex-shrink: 0;
     place-items: center;
-    width: 130px;
-    height: 66px;
+    width: 100%;
+    height: 44px;
     color: var(--archive-ink);
 
     img {
@@ -169,121 +113,146 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 4px 10px rgba(#000, 0.35));
+    }
+
+    svg {
+      width: 26px;
+      height: 26px;
     }
   }
 
-  &__week-number {
-    margin-top: -8px;
-    color: rgba(t.$text, 0.12);
-    font-size: 5rem;
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.08em;
-    line-height: 1;
-    user-select: none;
-  }
-
-  &__card--ple &__card-link {
-    border-color: color-mix(in srgb, var(--archive-accent) 22%, #{t.$border});
-  }
-
-  &__card--ple &__mark {
-    color: var(--archive-ink);
-  }
-
   &__content {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
+    display: grid;
+    gap: 4px;
     min-width: 0;
-    padding: 16px 20px 20px;
-  }
 
-  &__week {
-    margin: 0 0 8px;
-    color: t.$text-muted;
-    font-size: 0.6875rem;
-    line-height: 1.5;
-  }
-
-  &__title-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-
-    h2 {
-      flex: 1 1 120px;
-      min-width: 0;
+    h3 {
       margin: 0;
-      color: t.$text;
-      font-size: 1rem;
-      font-weight: 650;
+      font-size: 1.0625rem;
+      font-weight: 680;
       letter-spacing: -0.025em;
-      line-height: 1.5;
+      line-height: 1.25;
       overflow-wrap: anywhere;
     }
   }
 
-  &__rating {
+  &__metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px 10px;
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  &__type {
+    color: var(--archive-ink);
+    font-weight: 600;
+  }
+
+  &__card[data-show-type="ple"] {
+    --archive-ink: #e2c58a;
+  }
+
+  &__segments,
+  &__completed {
+    margin: 0;
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  &__result {
+    display: flex;
+    grid-column: 2;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+  }
+
+  &__rating,
+  &__open {
     display: inline-flex;
     align-items: center;
-    flex-shrink: 0;
     gap: 5px;
     margin: 0;
     color: var(--archive-ink);
-    font-variant-numeric: tabular-nums;
     line-height: 1.5;
 
     svg {
       flex-shrink: 0;
     }
+  }
+
+  &__rating {
+    color: t.$text-muted;
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
 
     strong {
       color: t.$text;
-      font-size: 1.125rem;
-      font-weight: 650;
+      font-size: 1rem;
+      font-weight: 700;
     }
 
-    > span:not(.show-history__sr-only) {
-      color: t.$text-muted;
-      font-size: 0.6875rem;
+    svg {
+      color: var(--archive-ink);
     }
-  }
-
-  &__segments {
-    margin: 12px 0 0;
-    color: t.$text-muted;
-    font-size: 0.75rem;
-    line-height: 1.6;
-  }
-
-  &__completed {
-    margin: 12px 0 16px;
-    color: t.$text-muted;
-    font-size: 0.625rem;
-    line-height: 1.7;
-    overflow-wrap: anywhere;
   }
 
   &__open {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    min-height: 44px;
-    margin-top: auto;
-    padding-top: 12px;
-    border-top: 1px solid rgba(t.$text, 0.08);
-    color: t.$text;
+    color: t.$text-muted;
     font-size: 0.75rem;
-    font-weight: 600;
-    line-height: 1.5;
+    font-weight: 650;
 
-    svg {
-      flex-shrink: 0;
+    > span {
+      display: none;
+    }
+  }
+
+  &__card[data-featured="true"] {
+    margin-bottom: 12px;
+
+    .show-history__card-link {
+      grid-template-columns: 52px minmax(0, 1fr);
+      min-height: 168px;
+      padding: clamp(16px, 4cqi, 36px);
+      border: 1px solid rgba(t.$text, 0.14);
+      border-radius: 22px;
+      background:
+        linear-gradient(90deg, rgba(#101319, 0.97) 12%, rgba(#101319, 0.8) 65%, rgba(#101319, 0.5)),
+        url("../../../../assets/backgrounds/news-arena.png") center 55% / cover
+          #101319;
+    }
+
+    .show-history__mark {
+      height: 64px;
+
+      svg {
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    .show-history__content {
+      gap: 7px;
+
+      h3 {
+        font-size: clamp(1.375rem, 4cqi, 2.375rem);
+      }
+    }
+
+    .show-history__rating strong {
+      font-size: clamp(1.25rem, 3cqi, 2rem);
+    }
+
+    .show-history__open > span {
+      display: inline;
+    }
+
+    .show-history__open {
       color: var(--archive-ink);
     }
   }
@@ -423,28 +392,39 @@
   }
 }
 
-@container (min-width: 700px) {
-  .show-history__list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
+@container (min-width: 640px) {
+  .show-history {
+    &__card-link {
+      grid-template-columns: 64px minmax(0, 1fr) auto;
+      column-gap: 20px;
+      padding-inline: 16px;
+    }
 
-@container (min-width: 1100px) {
-  .show-history__list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
+    &__result {
+      grid-column: auto;
+    }
 
-@container (min-width: 1500px) {
-  .show-history__list {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    &__card[data-featured="true"] {
+      .show-history__card-link {
+        grid-template-columns: minmax(80px, 120px) minmax(0, 1fr) auto;
+      }
+
+      .show-history__mark {
+        height: 100px;
+      }
+
+      .show-history__result {
+        flex-direction: column;
+        align-items: flex-end;
+      }
+    }
   }
 }
 
 @media (hover: hover) {
   .show-history {
     &__card-link:hover {
-      border-color: var(--archive-ink);
+      background-color: rgba(t.$text, 0.035);
 
       .show-history__open {
         color: var(--archive-ink);
@@ -453,6 +433,10 @@
       .show-history__open svg {
         transform: translate(2px, -2px);
       }
+    }
+
+    &__card[data-featured="true"] &__card-link:hover {
+      border-color: var(--archive-ink);
     }
 
     &__button:hover:not(:disabled) {

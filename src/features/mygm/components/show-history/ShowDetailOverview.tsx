@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useState } from "react";
 import { CalendarDays, Star, Trophy } from "lucide-react";
 
 import type {
@@ -10,6 +10,7 @@ import type { ShowHistoryType } from "../../types/show-history/showHistory.types
 import "./ShowDetailOverview.scss";
 
 interface ShowDetailOverviewProps {
+  headingId: string;
   event: ShowDetailEvent;
   summary: ShowDetailSummary;
   brandLogoUrl?: string | null;
@@ -87,11 +88,11 @@ function ShowMark({ src, isPle }: { src: string | null; isPle: boolean }) {
 }
 
 export default function ShowDetailOverview({
+  headingId,
   event,
   summary,
   brandLogoUrl = null,
 }: ShowDetailOverviewProps) {
-  const headingId = useId();
   const completedDate = formatDate(event.completed_at);
 
   const isWeekly =
@@ -100,23 +101,18 @@ export default function ShowDetailOverview({
   const logoUrl = event.logo_url?.trim() || (isWeekly ? brandLogoUrl : null);
 
   return (
-    <section className="show-overview" aria-labelledby={headingId}>
-      <h2 id={headingId} className="show-overview__sr-only">
-        Recorded show summary
-      </h2>
-
+    <div className="show-overview" data-show-type={event.show_type}>
       <header className="show-overview__hero">
         <div className="show-overview__identity">
           <ShowMark src={logoUrl} isPle={event.show_type === "ple"} />
 
           <div className="show-overview__show">
-            <p className="show-overview__badge">
-              {showTypeLabels[event.show_type]}
+            <p className="show-overview__metadata">
+              <span>{showTypeLabels[event.show_type]}</span>
+              <span>Season {event.season} · Week {event.week}</span>
             </p>
 
-            <p className="show-overview__week">
-              Season {event.season} · Week {event.week}
-            </p>
+            <h1 id={headingId}>{event.name}</h1>
 
             <p className="show-overview__segments">
               {summary.match_count}{" "}
@@ -125,6 +121,13 @@ export default function ShowDetailOverview({
               {summary.promo_count}{" "}
               {summary.promo_count === 1 ? "promo" : "promos"}
             </p>
+
+            {completedDate && event.completed_at && (
+              <p className="show-overview__recorded">
+                Recorded{" "}
+                <time dateTime={event.completed_at}>{completedDate}</time>
+              </p>
+            )}
           </div>
         </div>
 
@@ -133,11 +136,14 @@ export default function ShowDetailOverview({
           <dd>
             <Star size={22} aria-hidden="true" />
 
-            <strong>
-              {event.rating === null ? "Not recorded" : event.rating.toFixed(2)}
-            </strong>
-
-            {event.rating !== null && <span>/ 5</span>}
+            {event.rating === null ? (
+              <span>Not recorded</span>
+            ) : (
+              <>
+                <strong>{event.rating.toFixed(2)}</strong>
+                <span>/ 5</span>
+              </>
+            )}
           </dd>
         </dl>
       </header>
@@ -146,7 +152,7 @@ export default function ShowDetailOverview({
         <div className="show-overview__balances">
           {summary.finances_recorded && (
             <section className="show-overview__balance">
-              <h3>Money</h3>
+              <h2>Money</h2>
 
               <dl>
                 <div className="show-overview__final">
@@ -176,7 +182,7 @@ export default function ShowDetailOverview({
 
           {summary.fans_recorded && (
             <section className="show-overview__balance">
-              <h3>Fans</h3>
+              <h2>Fans</h2>
 
               <dl>
                 <div className="show-overview__final">
@@ -200,16 +206,6 @@ export default function ShowDetailOverview({
           )}
         </div>
       )}
-
-      <footer className="show-overview__recorded">
-        <span>Recorded</span>
-
-        {completedDate && event.completed_at ? (
-          <time dateTime={event.completed_at}>{completedDate}</time>
-        ) : (
-          <span>Not recorded</span>
-        )}
-      </footer>
-    </section>
+    </div>
   );
 }

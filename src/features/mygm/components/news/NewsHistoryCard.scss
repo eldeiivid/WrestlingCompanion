@@ -1,194 +1,158 @@
 @use "../../../../styles/tokens" as t;
 
 .news-history-card {
-  --news-accent: var(--career-accent, #{t.$accent});
-  --news-ink: color-mix(in srgb, var(--news-accent) 60%, #{t.$text});
+  --story-ink: var(--news-page-ink);
 
-  position: relative;
   display: grid;
-  grid-template-areas:
-    "visual"
-    "content";
   min-width: 0;
-  overflow: hidden;
-  background-color: #101216;
-  background-image:
-    linear-gradient(
-      180deg,
-      rgba(#101216, 0.3),
-      rgba(#101216, 0.65) 45%,
-      #101216 100%
-    ),
-    url("../../../../assets/backgrounds/news-arena.png");
-  background-position: center top;
-  background-size: cover;
-  border: 1px solid rgba(t.$text, 0.08);
-  border-radius: 22px;
-  isolation: isolate;
+  height: 100%;
+  border-top: 1px solid rgba(t.$text, 0.1);
+
+  &[data-topic="championship"] {
+    --story-ink: #e2c58a;
+  }
+
+  &[data-featured="true"] {
+    grid-template-areas: "visual" "content";
+    border: 1px solid rgba(t.$text, 0.14);
+    border-radius: 22px;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(#101319, 0.08),
+        rgba(#101319, 0.28) 30%,
+        #101319 70%
+      ),
+      url("../../../../assets/backgrounds/news-arena.png") right top / cover
+        #101319;
+  }
 
   &__visual {
     position: relative;
     grid-area: visual;
+    display: grid;
+    align-content: end;
+    gap: 8px;
     min-width: 0;
-    height: 240px;
-
-    &::after {
-      position: absolute;
-      z-index: 1;
-      inset: 0;
-      background: linear-gradient(
-        180deg,
-        transparent 50%,
-        rgba(#101216, 0.25) 75%,
-        #101216 100%
-      );
-      pointer-events: none;
-      content: "";
-    }
+    padding: 20px 16px 10px;
   }
 
   &__portraits {
-    position: absolute;
-    inset: 12px 10px 0;
     display: grid;
     align-items: end;
+    gap: 5px;
     min-width: 0;
-
-    &--solo {
-      inset-inline: 14%;
-    }
   }
 
   &__thumbnail {
     display: grid;
+    grid-template: 100% / 100%;
     place-items: center;
     min-width: 0;
-    color: rgba(t.$text-muted, 0.65);
+    color: var(--story-ink);
 
     img {
       display: block;
-      width: 100%;
-      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
     }
 
     &--person {
-      width: 100%;
-      height: 228px;
-      overflow: hidden;
-      -webkit-mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
-      mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
+      height: clamp(110px, 43cqi, 210px);
 
       img {
-        object-fit: cover;
-        object-position: center top;
+        align-self: end;
+        mask-image: linear-gradient(#000 80%, transparent);
+      }
+
+      svg {
+        width: min(65%, 44px);
       }
     }
 
     &--title {
-      width: 100%;
+      justify-self: center;
+      width: min(100%, 200px);
       height: 54px;
-
-      img {
-        object-fit: contain;
-      }
     }
   }
 
   &__visual-fallback {
     display: grid;
     place-items: center;
-    height: 100%;
-    color: var(--news-ink);
-    opacity: 0.6;
+    min-height: 100px;
+    color: var(--story-ink);
   }
 
   &__more {
     position: absolute;
-    z-index: 2;
-    top: 16px;
-    right: 16px;
-    display: grid;
-    place-items: center;
-    min-width: 36px;
-    min-height: 32px;
-    padding: 0 8px;
-    background: rgba(#101216, 0.85);
-    border: 1px solid rgba(t.$text, 0.12);
-    border-radius: 10px;
+    top: 12px;
+    right: 12px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(#101319, 0.9);
     color: t.$text;
     font-size: 0.75rem;
     font-weight: 650;
   }
 
-  &__championship {
-    position: absolute;
-    z-index: 2;
-    right: 14px;
-    bottom: 10px;
-    display: grid;
-    box-sizing: border-box;
-    gap: 6px;
-    width: 148px;
-    min-height: 92px;
-    padding: 10px;
-    background: rgba(#101216, 0.9);
-    border: 1px solid rgba(t.$text, 0.12);
-    border-radius: 14px;
-    color: t.$text;
-    text-align: center;
-    text-decoration: none;
-    backdrop-filter: blur(8px);
-
-    > span:last-child {
-      min-width: 0;
-      font-size: 0.625rem;
-      font-weight: 600;
-      line-height: 1.4;
-      overflow-wrap: anywhere;
-    }
-
-    &:hover {
-      border-color: var(--news-ink);
-    }
-  }
-
   &__content {
-    position: relative;
-    z-index: 2;
-    grid-area: content;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: 8px;
     min-width: 0;
-    padding: 12px 20px 24px;
+    padding-block: 16px;
 
-    h2 {
+    h3 {
       margin: 0;
       color: t.$text;
-      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      font-size: 1.125rem;
       font-weight: 700;
-      line-height: 1.2;
-      letter-spacing: -0.035em;
+      line-height: 1.25;
+      letter-spacing: -0.025em;
       overflow-wrap: anywhere;
     }
   }
 
-  &__header {
+  &[data-featured="true"] &__content {
+    grid-area: content;
+    gap: 12px;
+    padding: clamp(16px, 3.5cqi, 36px);
+
+    h3 {
+      font-size: clamp(1.625rem, 4.4cqi, 2.875rem);
+      line-height: 1.12;
+      letter-spacing: -0.045em;
+    }
+  }
+
+  &__lead {
+    margin: 0;
+    color: t.$text;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  &__header,
+  &__people,
+  &__actions {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px 16px;
-    width: 100%;
+    gap: 0 14px;
     min-width: 0;
   }
 
   &__category {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    color: var(--news-ink);
-    font-size: 0.6875rem;
+    gap: 6px;
+    color: var(--story-ink);
+    font-size: 0.75rem;
     font-weight: 650;
     line-height: 1.5;
 
@@ -197,27 +161,24 @@
     }
   }
 
-  &__period {
+  &__period,
+  &__description {
     margin: 0;
     color: t.$text-muted;
-    font-size: 0.6875rem;
-    line-height: 1.5;
+    line-height: 1.6;
+  }
+
+  &__period {
+    font-size: 0.75rem;
   }
 
   &__description {
     max-width: 56ch;
-    margin: 0;
-    color: t.$text-muted;
     font-size: 0.875rem;
-    line-height: 1.65;
     overflow-wrap: anywhere;
   }
 
   &__people {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0 16px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -230,164 +191,101 @@
     a {
       display: inline-flex;
       align-items: center;
-      box-sizing: border-box;
       min-height: 44px;
       max-width: 100%;
-      padding-block: 8px;
-      color: t.$text;
-      font-size: 0.8125rem;
-      font-weight: 600;
+      color: t.$text-muted;
+      font-size: 0.75rem;
       line-height: 1.5;
-      text-decoration: none;
+      text-decoration-color: rgba(t.$text, 0.35);
+      text-underline-offset: 3px;
       overflow-wrap: anywhere;
 
       &:hover {
-        color: var(--news-ink);
-        text-decoration: underline;
-        text-underline-offset: 4px;
+        color: var(--story-ink);
       }
     }
   }
 
   &__actions {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px 12px;
-    width: 100%;
     margin-top: auto;
-    padding-top: 4px;
   }
 
   &__button {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    gap: 8px;
+    gap: 7px;
     min-height: 44px;
-    max-width: 100%;
-    padding: 10px 14px;
-    background: rgba(t.$text, 0.035);
-    border: 1px solid rgba(t.$text, 0.12);
-    border-radius: 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
     color: t.$text;
     font: inherit;
-    font-size: 0.75rem;
-    font-weight: 600;
-    line-height: 1.5;
-    text-align: center;
+    font-size: 0.8125rem;
+    font-weight: 650;
+    text-align: start;
     text-decoration: none;
     cursor: pointer;
 
     svg {
       flex-shrink: 0;
+      color: var(--story-ink);
     }
 
     &:hover {
-      background: rgba(t.$text, 0.07);
-      border-color: var(--news-ink);
+      text-decoration: underline;
+      text-underline-offset: 4px;
     }
 
-    &--rivalry {
-      color: var(--news-ink);
-    }
-  }
-
-  a,
-  button {
-    &:focus-visible {
-      outline: 2px solid var(--news-ink);
-      outline-offset: 3px;
-      border-radius: 10px;
+    &--primary {
+      color: var(--story-ink);
     }
   }
 
-  @container (min-width: 640px) {
-    &__visual {
-      height: 280px;
-    }
-
-    &__thumbnail--person {
-      height: 268px;
-    }
-
-    &__content {
-      padding: 16px 28px 28px;
-    }
-
-    &__championship {
-      right: 24px;
-      bottom: 14px;
-      width: 168px;
-      padding: 12px;
-    }
-
-    &__thumbnail--title {
-      height: 64px;
-    }
+  &[data-featured="true"] &__button--primary {
+    padding-inline: 12px;
+    border: 1px solid color-mix(in srgb, var(--story-ink) 35%, transparent);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--story-ink) 9%, transparent);
   }
 
-  @container (min-width: 850px) {
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--story-ink);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+@container (min-width: 760px) {
+  .news-history-card[data-featured="true"] {
     grid-template-areas: "content visual";
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    min-height: 340px;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    min-height: 320px;
     background-image:
       linear-gradient(
         90deg,
-        #101216 0%,
-        rgba(#101216, 0.94) 35%,
-        rgba(#101216, 0.35) 75%,
-        rgba(#101216, 0.2) 100%
+        rgba(#101319, 0.96) 5%,
+        rgba(#101319, 0.78) 40%,
+        rgba(#101319, 0.08) 76%
       ),
       url("../../../../assets/backgrounds/news-arena.png");
+    background-position: center 38%;
 
-    &__content {
+    .news-history-card__visual {
+      align-content: center;
+      padding: 24px;
+    }
+
+    .news-history-card__content {
       justify-content: center;
-      padding: 32px;
     }
 
-    &__visual {
-      align-self: stretch;
-      height: auto;
-      min-height: 340px;
-
-      &::after {
-        background:
-          linear-gradient(90deg, #101216, transparent 22%),
-          linear-gradient(180deg, transparent 65%, rgba(#101216, 0.8));
-      }
+    .news-history-card__thumbnail--person {
+      height: clamp(150px, 24cqi, 250px);
     }
 
-    &__portraits {
-      inset: 20px 12px 0;
-
-      &--solo {
-        inset-inline: 16%;
-      }
-    }
-
-    &__thumbnail--person {
-      height: 100%;
-    }
-
-    &__championship {
-      right: 20px;
-      bottom: 20px;
-    }
-
-    &__actions {
+    .news-history-card__actions {
       margin-top: 4px;
-    }
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    &__button,
-    &__championship {
-      transition:
-        background-color 160ms ease,
-        border-color 160ms ease,
-        color 160ms ease;
     }
   }
 }

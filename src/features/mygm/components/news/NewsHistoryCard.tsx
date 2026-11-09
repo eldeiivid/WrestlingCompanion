@@ -11,6 +11,7 @@ import "./NewsHistoryCard.scss";
 interface NewsHistoryCardProps {
   careerId: string;
   item: MyGmNewsItem;
+  featured: boolean;
   onViewRivalry: (feudId: string) => void;
 }
 
@@ -29,7 +30,7 @@ function Thumbnail({
       aria-hidden="true"
     >
       {src && !failed ? (
-        <img src={src} alt="" loading="lazy" onError={() => setFailed(true)} />
+        <img src={src} alt="" decoding="async" onError={() => setFailed(true)} />
       ) : kind === "title" ? (
         <Trophy size={48} strokeWidth={1.25} />
       ) : (
@@ -42,6 +43,7 @@ function Thumbnail({
 export default function NewsHistoryCard({
   careerId,
   item,
+  featured,
   onViewRivalry,
 }: NewsHistoryCardProps) {
   const headingId = useId();
@@ -51,74 +53,62 @@ export default function NewsHistoryCard({
     item.event_type === "rivalry_started" ||
     item.event_type === "rivalry_ended";
 
-  const feudId =
-    item.event_type === "rivalry_started" || item.event_type === "rivalry_ended"
-      ? item.data.feud_id
-      : null;
+  const feudId = isRivalry ? item.data.feud_id : null;
 
   const visiblePeople = presentation.people.slice(0, 4);
   const remainingPeople = presentation.people.length - visiblePeople.length;
 
   return (
-    <article className="news-history-card" aria-labelledby={headingId}>
-      <div className="news-history-card__visual">
-        {visiblePeople.length > 0 ? (
-          <div
-            className={`news-history-card__portraits${
-              visiblePeople.length === 1
-                ? " news-history-card__portraits--solo"
-                : ""
-            }`}
-            style={{
-              gridTemplateColumns: `repeat(${visiblePeople.length}, minmax(0, 1fr))`,
-            }}
-            aria-hidden="true"
-          >
-            {visiblePeople.map((person) => (
-              <Thumbnail
-                key={`portrait:${person.id}:${person.image_url}`}
-                src={person.image_url}
-                kind="person"
-              />
-            ))}
-          </div>
-        ) : (
-          <div
-            className="news-history-card__visual-fallback"
-            aria-hidden="true"
-          >
-            {isRivalry ? (
-              <Swords size={80} strokeWidth={1} />
-            ) : (
-              <Trophy size={80} strokeWidth={1} />
-            )}
-          </div>
-        )}
+    <article
+      className="news-history-card"
+      data-featured={featured}
+      data-topic={isRivalry ? "rivalry" : "championship"}
+      aria-labelledby={headingId}
+    >
+      {featured && (
+        <div className="news-history-card__visual" aria-hidden="true">
+          {visiblePeople.length > 0 ? (
+            <div
+              className="news-history-card__portraits"
+              style={{
+                gridTemplateColumns: `repeat(${visiblePeople.length}, minmax(0, 1fr))`,
+              }}
+            >
+              {visiblePeople.map((person) => (
+                <Thumbnail
+                  key={`portrait:${person.id}:${person.image_url}`}
+                  src={person.image_url}
+                  kind="person"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="news-history-card__visual-fallback">
+              {isRivalry ? (
+                <Swords size={64} strokeWidth={1} />
+              ) : (
+                <Trophy size={64} strokeWidth={1} />
+              )}
+            </div>
+          )}
 
-        {remainingPeople > 0 && (
-          <span className="news-history-card__more" aria-hidden="true">
-            +{remainingPeople}
-          </span>
-        )}
+          {remainingPeople > 0 && (
+            <span className="news-history-card__more">+{remainingPeople}</span>
+          )}
 
-        {presentation.championship && (
-          <Link
-            className="news-history-card__championship"
-            to={`/mygm/${careerId}/titles/${presentation.championship.id}`}
-            aria-label={`View championship: ${presentation.championship.name}`}
-          >
+          {presentation.championship && (
             <Thumbnail
               key={`title:${presentation.championship.id}:${presentation.championship.image_url}`}
               src={presentation.championship.image_url}
               kind="title"
             />
-
-            <span>{presentation.championship.name}</span>
-          </Link>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       <div className="news-history-card__content">
+        {featured && <p className="news-history-card__lead">Top story</p>}
+
         <header className="news-history-card__header">
           <span className="news-history-card__category">
             {isRivalry ? (
@@ -135,7 +125,7 @@ export default function NewsHistoryCard({
           </p>
         </header>
 
-        <h2 id={headingId}>{presentation.title}</h2>
+        <h3 id={headingId}>{presentation.title}</h3>
 
         <p className="news-history-card__description">
           {presentation.description}
@@ -156,8 +146,18 @@ export default function NewsHistoryCard({
           </ul>
         )}
 
-        {(presentation.eventId || feudId) && (
+        {(presentation.eventId || feudId || presentation.championship) && (
           <footer className="news-history-card__actions">
+            {presentation.championship && (
+              <Link
+                className="news-history-card__button news-history-card__button--primary"
+                to={`/mygm/${careerId}/titles/${presentation.championship.id}`}
+                aria-label={`View championship: ${presentation.championship.name}`}
+              >
+                View title
+                <Trophy size={16} aria-hidden="true" />
+              </Link>
+            )}
             {presentation.eventId && (
               <Link
                 className="news-history-card__button"
@@ -170,7 +170,7 @@ export default function NewsHistoryCard({
 
             {feudId && (
               <button
-                className="news-history-card__button news-history-card__button--rivalry"
+                className="news-history-card__button news-history-card__button--primary"
                 type="button"
                 aria-haspopup="dialog"
                 onClick={() => onViewRivalry(feudId)}

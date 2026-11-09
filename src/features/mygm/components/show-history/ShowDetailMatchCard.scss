@@ -15,6 +15,16 @@
   border: 1px solid rgba(t.$text, 0.09);
   border-radius: 22px;
 
+  &[data-main-event="true"] {
+    --match-card-ink: #e2c58a;
+    border-color: rgba(#e2c58a, 0.28);
+
+    .show-match-card__position-label {
+      color: var(--match-card-ink);
+      font-weight: 650;
+    }
+  }
+
   &__hero {
     min-width: 0;
     background-color: #101216;
@@ -35,8 +45,8 @@
     align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 16px;
-    padding: 20px;
+    gap: 10px 16px;
+    padding: 16px 20px;
   }
 
   &__identity {
@@ -44,7 +54,7 @@
     min-width: 0;
 
     h3 {
-      margin: 12px 0 0;
+      margin: 8px 0 0;
       color: t.$text;
       font-size: 1rem;
       font-weight: 650;
@@ -178,17 +188,20 @@
 
   &__portrait {
     display: grid;
+    grid-template: 100% / 100%;
     place-items: center;
     min-width: 0;
-    height: 160px;
+    height: clamp(100px, 34cqi, 160px);
     color: t.$text-muted;
 
     img {
       display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
+      align-self: end;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
       -webkit-mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
       mask-image: linear-gradient(#000 0%, #000 72%, transparent 100%);
     }
@@ -228,13 +241,13 @@
     gap: 20px 10px;
 
     .show-match-card__portrait {
-      height: 128px;
+      height: clamp(84px, 26cqi, 128px);
     }
   }
 
   &__versus {
     position: absolute;
-    top: 90px;
+    top: clamp(64px, 18cqi, 90px);
     left: 50%;
     transform: translateX(-50%);
     color: var(--match-card-ink);
@@ -257,6 +270,10 @@
   &__content {
     min-width: 0;
     padding: 0 20px 20px;
+
+    &:empty {
+      display: none;
+    }
   }
 
   &__section {
@@ -339,10 +356,7 @@
 
   &__note {
     margin: 0 0 18px;
-    padding: 12px 14px;
-    background: rgba(t.$text, 0.025);
-    border: 1px solid rgba(t.$text, 0.08);
-    border-radius: 10px;
+    padding: 0;
     color: t.$text-muted;
     font-size: 0.75rem;
     line-height: 1.7;
@@ -388,7 +402,7 @@
 @container (min-width: 640px) {
   .show-match-card {
     &__header {
-      padding: 24px;
+      padding: 18px 24px;
     }
 
     &__identity h3 {
@@ -401,7 +415,7 @@
     }
 
     &__portrait {
-      height: 200px;
+      height: 184px;
     }
 
     &__members > :only-child {

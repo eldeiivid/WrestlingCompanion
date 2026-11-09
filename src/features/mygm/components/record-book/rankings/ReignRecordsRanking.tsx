@@ -93,21 +93,21 @@ export default function ReignRecordsRanking({
     >
       {data?.items.map((item) => (
         <li
-          className={`reign-records-ranking__row${
-            item.rank === 1 ? " reign-records-ranking__row--leader" : ""
-          }`}
+          className="record-ranking__row"
+          data-rank={item.rank}
           key={item.reign_id}
+          value={item.rank}
         >
-          <div className="reign-records-ranking__visual">
-            <span
-              className="reign-records-ranking__position"
-              aria-label={`Rank ${item.rank}`}
-            >
-              {item.rank === 1 && <Crown size={15} aria-hidden="true" />}
+          <span
+            className="record-ranking__position"
+            aria-label={`Rank ${item.rank}`}
+          >
+            {item.rank === 1 && <Crown size={15} aria-hidden="true" />}
 
-              <span>#{item.rank}</span>
-            </span>
+            <span>#{item.rank}</span>
+          </span>
 
+          <div className="record-ranking__visual">
             <Thumbnail
               key={`title:${item.title.id}:${item.title.image_url}`}
               src={item.title.image_url}
@@ -115,7 +115,7 @@ export default function ReignRecordsRanking({
             />
           </div>
 
-          <div className="reign-records-ranking__content">
+          <div className="record-ranking__entry">
             <div className="reign-records-ranking__heading">
               <h3>
                 <Link to={`/mygm/${careerId}/titles/${item.title.id}`}>
@@ -170,8 +170,8 @@ export default function ReignRecordsRanking({
             </dl>
           </div>
 
-          <div className="reign-records-ranking__result">
-            <p className="reign-records-ranking__value">
+          <div className="record-ranking__result">
+            <p className="record-ranking__metric">
               <strong>{item.record_value.toLocaleString("en-US")}</strong>
 
               <span>

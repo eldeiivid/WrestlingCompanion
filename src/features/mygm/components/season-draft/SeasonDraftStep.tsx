@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { Search, SlidersHorizontal } from "lucide-react";
 
 import SeasonDraftCard from "./SeasonDraftCard";
 import { useSeasonDraftOptions } from "../../hooks/season-draft/useSeasonDraftOptions";
@@ -112,13 +113,14 @@ export default function SeasonDraftStep({
     selectedKeys.size !== savedKeys.size ||
     [...selectedKeys].some((key) => !savedKeys.has(key));
 
+  const activeFilterCount = [
+    filters.gender,
+    filters.primaryClass,
+    filters.role,
+    filters.category,
+  ].filter((value) => value !== "all").length;
   const hasFilters =
-    filters.gender !== "all" ||
-    filters.primaryClass !== "all" ||
-    filters.role !== "all" ||
-    filters.category !== "all" ||
-    filters.search !== "" ||
-    filters.sort !== "name_asc";
+    activeFilterCount > 0 || filters.search !== "" || filters.sort !== "name_asc";
 
   const totalRoster = data.retained_count + selectedKeys.size;
 
@@ -213,23 +215,31 @@ export default function SeasonDraftStep({
           </legend>
 
           <div className="season-draft-step__summary">
-            <p>
-              <strong>{data.retained_count}</strong> retained
-            </p>
-
-            <p>
-              <strong>{selectedKeys.size}</strong> drafted
-            </p>
-
-            <p>
-              <strong>{totalRoster}</strong> total roster
-            </p>
+            <div className="season-draft-step__totals" role="status">
+              <p>
+                <strong>{data.retained_count}</strong> Retained
+              </p>
+              <p>
+                <strong>{selectedKeys.size}</strong> Draft picks
+              </p>
+              <p>
+                <strong>{totalRoster}</strong> Total roster
+              </p>
+            </div>
+            <button
+              className="season-draft-step__button season-draft-step__button--quiet"
+              type="button"
+              disabled={isSaving || selectedKeys.size === 0}
+              onClick={clearSelection}
+            >
+              Clear picks
+            </button>
           </div>
 
           <div className="season-draft-step__filters">
             <label className="season-draft-step__field season-draft-step__field--search">
-              <span>Search</span>
-
+              <span className="season-draft-step__legend">Search wrestlers</span>
+              <Search size={17} aria-hidden="true" />
               <input
                 type="search"
                 value={filters.search}
@@ -238,102 +248,10 @@ export default function SeasonDraftStep({
                 onChange={(event) =>
                   updateFilters({ search: event.target.value })
                 }
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") event.preventDefault();
+                }}
               />
-            </label>
-
-            <label className="season-draft-step__field">
-              <span>Gender</span>
-
-              <select
-                value={filters.gender}
-                onChange={(event) => {
-                  const option = genderOptions.find(
-                    (item) => item.value === event.target.value,
-                  );
-
-                  if (option) {
-                    updateFilters({ gender: option.value });
-                  }
-                }}
-              >
-                {genderOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="season-draft-step__field">
-              <span>Primary class</span>
-
-              <select
-                value={filters.primaryClass}
-                onChange={(event) =>
-                  updateFilters({ primaryClass: event.target.value })
-                }
-              >
-                <option value="all">All classes</option>
-
-                {filters.primaryClass !== "all" &&
-                  !availableClasses.includes(filters.primaryClass) && (
-                    <option value={filters.primaryClass}>
-                      {filters.primaryClass}
-                    </option>
-                  )}
-
-                {availableClasses.map((className) => (
-                  <option key={className} value={className}>
-                    {className}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="season-draft-step__field">
-              <span>Role</span>
-
-              <select
-                value={filters.role}
-                onChange={(event) => {
-                  const option = roleOptions.find(
-                    (item) => item.value === event.target.value,
-                  );
-
-                  if (option) {
-                    updateFilters({ role: option.value });
-                  }
-                }}
-              >
-                {roleOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="season-draft-step__field">
-              <span>Category</span>
-
-              <select
-                value={filters.category}
-                onChange={(event) => {
-                  const option = categoryOptions.find(
-                    (item) => item.value === event.target.value,
-                  );
-
-                  if (option) {
-                    updateFilters({ category: option.value });
-                  }
-                }}
-              >
-                {categoryOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
             </label>
 
             <label className="season-draft-step__field">
@@ -359,25 +277,119 @@ export default function SeasonDraftStep({
               </select>
             </label>
 
-            <div className="season-draft-step__filter-actions">
+            <details className="season-draft-step__advanced">
+              <summary>
+                <SlidersHorizontal size={17} aria-hidden="true" />
+                Filters{activeFilterCount > 0 && ` (${activeFilterCount})`}
+              </summary>
+              <div className="season-draft-step__advanced-fields">
+                <label className="season-draft-step__field">
+                  <span>Gender</span>
+
+                  <select
+                    value={filters.gender}
+                    onChange={(event) => {
+                      const option = genderOptions.find(
+                        (item) => item.value === event.target.value,
+                      );
+
+                      if (option) {
+                        updateFilters({ gender: option.value });
+                      }
+                    }}
+                  >
+                    {genderOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="season-draft-step__field">
+                  <span>Primary class</span>
+
+                  <select
+                    value={filters.primaryClass}
+                    onChange={(event) =>
+                      updateFilters({ primaryClass: event.target.value })
+                    }
+                  >
+                    <option value="all">All classes</option>
+
+                    {filters.primaryClass !== "all" &&
+                      !availableClasses.includes(filters.primaryClass) && (
+                        <option value={filters.primaryClass}>
+                          {filters.primaryClass}
+                        </option>
+                      )}
+
+                    {availableClasses.map((className) => (
+                      <option key={className} value={className}>
+                        {className}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="season-draft-step__field">
+                  <span>Role</span>
+
+                  <select
+                    value={filters.role}
+                    onChange={(event) => {
+                      const option = roleOptions.find(
+                        (item) => item.value === event.target.value,
+                      );
+
+                      if (option) {
+                        updateFilters({ role: option.value });
+                      }
+                    }}
+                  >
+                    {roleOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="season-draft-step__field">
+                  <span>Category</span>
+
+                  <select
+                    value={filters.category}
+                    onChange={(event) => {
+                      const option = categoryOptions.find(
+                        (item) => item.value === event.target.value,
+                      );
+
+                      if (option) {
+                        updateFilters({ category: option.value });
+                      }
+                    }}
+                  >
+                    {categoryOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            </details>
+
+            {hasFilters && (
               <button
-                className="season-draft-step__button"
+                className="season-draft-step__button season-draft-step__button--quiet season-draft-step__reset"
                 type="button"
-                disabled={isSaving || !hasFilters}
+                disabled={isSaving}
                 onClick={resetFilters}
               >
                 Reset filters
               </button>
-
-              <button
-                className="season-draft-step__button"
-                type="button"
-                disabled={isSaving || selectedKeys.size === 0}
-                onClick={clearSelection}
-              >
-                Clear selection
-              </button>
-            </div>
+            )}
           </div>
 
           <div className="season-draft-step__results" aria-busy={isLoading}>

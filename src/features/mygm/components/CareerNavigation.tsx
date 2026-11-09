@@ -169,7 +169,7 @@ export default function CareerNavigation({ careerId }: CareerNavigationProps) {
     return item.path ? `${basePath}/${item.path}` : basePath;
   }
 
-  const isMoreActive = moreItems.some(
+  const activeMoreItem = moreItems.find(
     (item) =>
       pathname === getPath(item) || pathname.startsWith(`${getPath(item)}/`),
   );
@@ -193,7 +193,6 @@ export default function CareerNavigation({ careerId }: CareerNavigationProps) {
       panel.hidePopover();
     }
 
-    setIsControlOpen(false);
   }, []);
 
   function toggleSidebarControl() {
@@ -254,7 +253,6 @@ export default function CareerNavigation({ careerId }: CareerNavigationProps) {
 
     dialog?.classList.remove("is-closing");
     backdropPointerRef.current = false;
-    setIsMoreOpen(false);
   }, []);
 
   const closeMore = useCallback(() => {
@@ -478,7 +476,6 @@ export default function CareerNavigation({ careerId }: CareerNavigationProps) {
         key={item.path}
         to={getPath(item)}
         end={item.path === ""}
-        aria-label={item.label}
         className={({ isActive }) =>
           `career-navigation__mobile-item ${isActive ? "is-active" : ""}`
         }
@@ -508,7 +505,6 @@ export default function CareerNavigation({ careerId }: CareerNavigationProps) {
               aria-label={group.label}
               key={group.label}
             >
-              <h2>{group.label}</h2>
               {group.items.map(renderDesktopItem)}
             </section>
           ))}
@@ -516,19 +512,6 @@ export default function CareerNavigation({ careerId }: CareerNavigationProps) {
 
         <div className="career-navigation__footer">
           {renderDesktopItem(settings)}
-
-          <Link
-            className="career-navigation__desktop-item"
-            to="/mygm"
-            title="Back to careers"
-            aria-label="Back to careers"
-          >
-            <span className="career-navigation__desktop-icon">
-              <ArrowLeft size={19} aria-hidden="true" />
-            </span>
-
-            <span className="career-navigation__text">Back to careers</span>
-          </Link>
 
           <button
             ref={controlButtonRef}
@@ -546,6 +529,19 @@ export default function CareerNavigation({ careerId }: CareerNavigationProps) {
 
             <span className="career-navigation__text">Sidebar control</span>
           </button>
+
+          <Link
+            className="career-navigation__desktop-item"
+            to="/mygm"
+            title="Back to careers"
+            aria-label="Back to careers"
+          >
+            <span className="career-navigation__desktop-icon">
+              <ArrowLeft size={19} aria-hidden="true" />
+            </span>
+
+            <span className="career-navigation__text">Back to careers</span>
+          </Link>
         </div>
       </nav>
 
@@ -591,11 +587,16 @@ export default function CareerNavigation({ careerId }: CareerNavigationProps) {
 
         <button
           className={`career-navigation__mobile-item ${
-            isMoreActive || isMoreOpen ? "is-active" : ""
+            activeMoreItem ? "is-active" : ""
           }`}
           type="button"
           onClick={openMore}
           aria-haspopup="dialog"
+          aria-label={
+            activeMoreItem
+              ? `More, current section: ${activeMoreItem.label}`
+              : undefined
+          }
           aria-expanded={isMoreOpen}
           aria-controls="career-more-menu"
         >
@@ -615,7 +616,7 @@ export default function CareerNavigation({ careerId }: CareerNavigationProps) {
         id="career-more-menu"
         className="career-more"
         aria-labelledby="career-more-title"
-        onClose={finishMoreClose}
+        onClose={() => setIsMoreOpen(dialogRef.current?.open ?? false)}
         onCancel={(event) => {
           event.preventDefault();
           closeMore();
@@ -641,8 +642,7 @@ export default function CareerNavigation({ careerId }: CareerNavigationProps) {
       >
         <header className="career-more__header">
           <div>
-            <p>Your career</p>
-            <h2 id="career-more-title">Where to next?</h2>
+            <h2 id="career-more-title">More sections</h2>
           </div>
 
           <button

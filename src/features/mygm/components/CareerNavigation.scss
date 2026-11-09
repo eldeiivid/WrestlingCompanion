@@ -5,7 +5,8 @@
 .career-sidebar-control,
 .career-more {
   --nav-accent: var(--career-accent, #{t.$text-muted});
-  --nav-ink: color-mix(in srgb, var(--nav-accent) 60%, #{t.$text});
+  --nav-ink: color-mix(in srgb, var(--nav-accent) 45%, #{t.$text});
+  --nav-selected: color-mix(in srgb, var(--nav-accent) 22%, #{t.$surface-raised});
 
   :focus-visible { outline: 2px solid var(--nav-ink); outline-offset: 2px; }
 }
@@ -23,14 +24,20 @@
     left: 12px;
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 4px;
-    padding: 8px;
-    background: rgba(t.$surface, 0.96);
-    border: 1px solid rgba(t.$text, 0.12);
-    border-radius: 22px;
-    box-shadow: 0 8px 32px rgba(#000, 0.3);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    gap: 2px;
+    max-width: 480px;
+    margin-inline: auto;
+    padding: 5px;
+    border: 1px solid rgba(t.$text, 0.18);
+    border-radius: 26px;
+    background: t.$surface;
+    box-shadow: 0 8px 24px rgba(#000, 0.35), inset 0 1px rgba(t.$text, 0.09);
+
+    @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      background: linear-gradient(180deg, rgba(t.$surface-raised, 0.88), rgba(t.$surface, 0.94));
+      -webkit-backdrop-filter: blur(18px) saturate(125%);
+      backdrop-filter: blur(18px) saturate(125%);
+    }
   }
 
   &__mobile-item {
@@ -38,23 +45,26 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 3px;
     min-width: 0;
     min-height: 56px;
     padding: 2px;
     background: transparent;
     border: 0;
-    border-radius: 14px;
+    border-radius: 20px;
     color: t.$text-muted;
     text-decoration: none;
 
-    &.is-active {
-      background: color-mix(in srgb, var(--nav-accent) 10%, transparent);
-      color: t.$text;
+    &:focus-visible {
+      outline-offset: -2px;
+    }
 
-      .career-navigation__mobile-icon {
-        background: color-mix(in srgb, var(--nav-accent) 16%, transparent);
-        color: var(--nav-ink);
+    &.is-active {
+      background: var(--nav-selected);
+      color: var(--nav-ink);
+
+      .career-navigation__mobile-label {
+        font-weight: 750;
       }
     }
   }
@@ -62,15 +72,13 @@
   &__mobile-icon {
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 32px;
-    border-radius: 12px;
   }
 
   &__mobile-label {
     font-size: 0.6875rem;
-    font-weight: 500;
-    line-height: 1.4;
+    font-weight: 600;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
   }
 }
 
@@ -168,17 +176,10 @@
 
   &__header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin-bottom: 20px;
-
-    p {
-      margin: 0 0 7px;
-      color: var(--nav-ink);
-      font-size: 0.6875rem;
-      font-weight: 500;
-    }
+    margin-bottom: 12px;
 
     h2 {
       margin: 0;
@@ -195,7 +196,7 @@
     width: 44px;
     height: 44px;
     padding: 0;
-    background: t.$surface-raised;
+    background: transparent;
     border: 0;
     border-radius: 14px;
     color: t.$text-muted;
@@ -213,11 +214,11 @@
   &__link {
     display: flex;
     align-items: center;
-    gap: 13px;
+    gap: 12px;
     min-width: 0;
-    min-height: 64px;
+    min-height: 56px;
     padding: 10px;
-    border-radius: 15px;
+    border-radius: 12px;
     color: t.$text;
     text-decoration: none;
 
@@ -226,10 +227,10 @@
     }
 
     &.is-active {
-      background: color-mix(in srgb, var(--nav-accent) 9%, transparent);
+      background: var(--nav-selected);
+      color: var(--nav-ink);
 
       .career-more__icon {
-        background: color-mix(in srgb, var(--nav-accent) 16%, transparent);
         color: var(--nav-ink);
       }
     }
@@ -239,10 +240,7 @@
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: 42px;
-    height: 42px;
-    background: t.$background;
-    border-radius: 13px;
+    width: 28px;
     color: t.$text-muted;
   }
 
@@ -291,10 +289,6 @@
 }
 
 @media (min-width: t.$screen-sm-min) {
-  .career-navigation__mobile-label {
-    font-size: 0.6875rem;
-  }
-
   .career-more {
     padding-right: 28px;
     padding-left: 28px;
@@ -315,13 +309,17 @@
       grid-row: 2;
       flex-direction: column;
       justify-self: start;
-      gap: 0px;
       width: 100%;
       height: 100%;
       min-height: 0;
       overflow: hidden;
-      padding: 20px 12px 12px;
-      background: #15181f;
+      padding: 14px 10px 12px;
+      background:
+        linear-gradient(
+          165deg,
+          color-mix(in srgb, var(--nav-accent) 6%, #15181f),
+          #15181f 32%
+        );
       scrollbar-width: thin;
     }
 
@@ -329,7 +327,7 @@
       display: grid;
       flex: 0 1 auto;
       min-height: 0;
-      gap: 18px;
+      gap: 14px;
       padding-bottom: 16px;
       overflow-y: auto;
       overscroll-behavior: contain;
@@ -338,12 +336,12 @@
 
     &__group {
       display: grid;
-      gap: 4px;
+      gap: 2px;
 
       > h2 {
         max-height: 20px;
         overflow: hidden;
-        margin: 0 12px 4px;
+        margin: 0 10px 4px;
         color: t.$text-muted;
         font-size: 0.6875rem;
         font-weight: 500;
@@ -357,15 +355,14 @@
     &__desktop-item,
     &__control-button {
       display: flex;
-      position: relative;
       align-items: center;
-      gap: 9px;
+      gap: 8px;
       min-width: 0;
       min-height: 44px;
       padding: 5px 9px;
       background: transparent;
       border: 0;
-      border-radius: 12px;
+      border-radius: 10px;
       color: t.$text-muted;
       font-size: 0.8125rem;
       font-weight: 500;
@@ -376,27 +373,23 @@
         background: t.$surface;
         color: t.$text;
       }
+
+      &:focus-visible {
+        outline-offset: -2px;
+      }
     }
 
     &__desktop-item.is-active {
-      background: color-mix(in srgb, var(--nav-accent) 14%, transparent);
-      color: t.$text;
-
-      &::before { position: absolute; top: 12px; bottom: 12px; left: 0; width: 3px; background: var(--nav-ink); border-radius: 4px; content: ""; }
-
-      .career-navigation__desktop-icon {
-        background: color-mix(in srgb, var(--nav-accent) 16%, transparent);
-        color: var(--nav-ink);
-      }
+      background: var(--nav-selected);
+      color: var(--nav-ink);
+      font-weight: 700;
     }
 
     &__desktop-icon {
       display: grid;
       place-items: center;
       flex-shrink: 0;
-      width: 32px;
-      height: 34px;
-      border-radius: 10px;
+      width: 26px;
     }
 
     &__text {
@@ -409,15 +402,14 @@
 
     &__footer {
       display: grid;
-      gap: 5px;
+      gap: 2px;
       margin-top: auto;
-      padding-top: 12px;
+      padding-top: 8px;
       border-top: 1px solid rgba(t.$text, 0.06);
     }
 
     &__control-button {
       width: 100%;
-      margin-top: 6px;
 
       &[aria-expanded="true"] {
         background: t.$surface-raised;
@@ -430,14 +422,14 @@
     }
 
     &__desktop[data-sidebar-mode="hover"]:hover,
-    &__desktop[data-sidebar-mode="hover"]:has(:focus-visible) {
+    &__desktop[data-sidebar-mode="hover"]:has(:focus-visible, [aria-expanded="true"]) {
       width: var(--career-sidebar-expanded);
       box-shadow: 16px 0 36px rgba(#000, 0.18);
     }
 
     &__desktop[data-sidebar-mode="collapsed"],
     &__desktop[data-sidebar-mode="hover"]:not(:hover):not(
-        :has(:focus-visible)
+        :has(:focus-visible, [aria-expanded="true"])
       ) {
       .career-navigation__group > h2 {
         max-height: 0;
@@ -457,9 +449,35 @@
         max-width: 0;
         opacity: 0;
       }
-
-      .career-navigation__desktop-item.is-active::before { display: none; }
     }
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active) {
+  .career-navigation__mobile {
+    background: t.$surface;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .career-more::backdrop {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .career-navigation__mobile-item.is-active,
+  .career-navigation__desktop-item.is-active,
+  .career-more__link.is-active {
+    border: 1px solid Highlight;
+  }
+
+  .career-navigation__desktop :focus-visible,
+  .career-navigation__mobile :focus-visible,
+  .career-sidebar-control :focus-visible,
+  .career-more :focus-visible {
+    outline-color: Highlight;
   }
 }
 
@@ -494,10 +512,7 @@
     }
 
     &__mobile-icon {
-      transition:
-        background-color 160ms ease,
-        color 160ms ease,
-        transform 120ms ease;
+      transition: transform 120ms ease;
     }
 
     &__mobile-item:active &__mobile-icon {
@@ -506,7 +521,7 @@
 
     &__desktop {
       transition:
-        width 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        width 220ms ease-out,
         box-shadow 220ms ease;
     }
 
