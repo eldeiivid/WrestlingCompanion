@@ -1,17 +1,17 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
 import "./CareerWelcome.scss";
 
 interface CareerWelcomeProps {
-  careerId: string;
   hasCompletedShows: boolean;
 }
 
 export default function CareerWelcome({
-  careerId,
   hasCompletedShows,
 }: CareerWelcomeProps) {
+  const careerPath = useMyGmCareerPath();
   return (
     <section className="career-welcome" aria-labelledby="career-welcome-title">
       <div>
@@ -28,7 +28,7 @@ export default function CareerWelcome({
         </p>
       </div>
 
-      <Link to={`/mygm/${careerId}/booking`} className="career-welcome__action">
+      <Link to={`${careerPath}/booking`} className="career-welcome__action">
         {hasCompletedShows ? "Prepare show" : "Prepare first show"}
         <ArrowRight size={18} aria-hidden="true" />
       </Link>

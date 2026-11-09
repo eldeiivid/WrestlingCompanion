@@ -1,8 +1,10 @@
 import { supabase } from "../../../../lib/supabase";
+import { getMyGmTitleSlugs } from "../mygmRouteService";
 import type { MyGmNewsFeed, MyGmNewsItem } from "../../types/news/news.types";
 import type {
   GetNewsHistoryInput,
   NewsHistoryPage,
+  NewsHistoryPageWithSlugs,
 } from "../../types/news/newsHistory.types";
 
 const supportedEventTypes = new Set<string>([
@@ -231,7 +233,7 @@ function isNewsHistoryPage(value: unknown): value is NewsHistoryPage {
 export async function getNewsHistory(
   input: GetNewsHistoryInput,
   signal: AbortSignal,
-): Promise<NewsHistoryPage> {
+): Promise<NewsHistoryPageWithSlugs> {
   const { data, error } = await supabase
     .rpc("wc_get_mygm_news_history", {
       p_game_id: input.careerId,
@@ -261,5 +263,9 @@ export async function getNewsHistory(
     throw new Error("The news history contains an unexpected event type.");
   }
 
-  return data;
+  const titleIds = data.items.flatMap(({ data: story }) =>
+    "title" in story ? [story.title.id] : [],
+  );
+  const titleSlugs = await getMyGmTitleSlugs(input.careerId, titleIds, signal);
+  return { ...data, titleSlugs };
 }

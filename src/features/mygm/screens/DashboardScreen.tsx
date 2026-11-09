@@ -82,7 +82,7 @@ export default function DashboardScreen() {
         </div>
 
         <div className="dashboard-screen__block">
-          <CareerShortcuts careerId={career.id} />
+          <CareerShortcuts />
         </div>
 
         <div className="dashboard-screen__block">

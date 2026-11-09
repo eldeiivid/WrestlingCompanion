@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useId } from "react";
 import { Link, useOutletContext, useParams } from "react-router-dom";
 import ShowDetailMatchCard from "../../components/show-history/ShowDetailMatchCard";
@@ -29,6 +30,7 @@ function getMatchPositionLabel(
 }
 
 export default function ShowDetailScreen() {
+  const careerPath = useMyGmCareerPath();
   const { career } = useOutletContext<MyGmOutletContext>();
   const { eventId } = useParams<{ eventId: string }>();
 
@@ -40,7 +42,7 @@ export default function ShowDetailScreen() {
     eventId,
   );
 
-  const historyPath = `/mygm/${career.id}/history`;
+  const historyPath = `${careerPath}/history`;
 
   const segments = [...(data?.segments ?? [])].sort(
     (first, second) => first.position - second.position,

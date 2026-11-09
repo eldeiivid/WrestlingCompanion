@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import {
@@ -94,6 +95,7 @@ const sortOptions: FilterOption<MarketSort>[] = [
 ];
 
 export default function MarketScreen() {
+  const careerPath = useMyGmCareerPath();
   const { career } = useOutletContext<MyGmOutletContext>();
 
   const headingId = useId();
@@ -152,7 +154,7 @@ export default function MarketScreen() {
         <div className="market-screen__header-actions">
           <Link
             className="market-screen__roster"
-            to={`/mygm/${career.id}/roster`}
+            to={`${careerPath}/roster`}
             aria-label="View your roster"
           >
             <UsersRound size={18} aria-hidden="true" />
@@ -331,7 +333,6 @@ export default function MarketScreen() {
                   <li key={wrestler.market_key}>
                     <MarketWrestlerCard
                       wrestler={wrestler}
-                      careerId={career.id}
                     />
                   </li>
                 ))}

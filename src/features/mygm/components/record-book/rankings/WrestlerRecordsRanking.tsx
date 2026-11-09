@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Crown, UserRound } from "lucide-react";
@@ -88,6 +89,7 @@ export default function WrestlerRecordsRanking({
   careerId,
   record,
 }: WrestlerRecordsRankingProps) {
+  const careerPath = useMyGmCareerPath();
   const presentation = recordPresentation[record];
 
   const { data, page, isLoading, errorMessage, goToPage, retry } =
@@ -131,7 +133,7 @@ export default function WrestlerRecordsRanking({
 
           <div className="record-ranking__entry">
             <h3>
-              <Link to={`/mygm/${careerId}/roster/${item.wrestler.id}`}>
+              <Link to={`${careerPath}/roster/${item.wrestler.id}`}>
                 {item.wrestler.name}
                 <ArrowUpRight size={15} aria-hidden="true" />
               </Link>

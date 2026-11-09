@@ -37,7 +37,7 @@ export default function MyGmCareerCard({
     career.brand_primary_color &&
     /^#[0-9a-f]{6}$/i.test(career.brand_primary_color)
       ? career.brand_primary_color
-      : "#B095FF";
+      : "#C99A4E";
 
   const theme: CareerCardTheme = {
     "--card-brand": brandColor,
@@ -60,7 +60,7 @@ export default function MyGmCareerCard({
     <li className="mygm-career-card" style={theme}>
       <Link
         className="mygm-career-card__link"
-        to={`/mygm/${career.id}`}
+        to={myGmCareerPath(career.slug)}
         aria-label={`Continue ${career.name}, season ${season}, week ${week}`}
       >
         <div className="mygm-career-card__visual">
@@ -147,3 +147,4 @@ export default function MyGmCareerCard({
     </li>
   );
 }
+import { myGmCareerPath } from "../../routes/mygmPaths";

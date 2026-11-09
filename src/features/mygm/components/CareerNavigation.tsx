@@ -30,7 +30,7 @@ interface NavigationItem {
 }
 
 interface CareerNavigationProps {
-  careerId: string;
+  careerPath: string;
 }
 
 type SidebarMode = "expanded" | "collapsed" | "hover";
@@ -146,7 +146,7 @@ const navigationGroups = [
 
 const moreItems = [market, rivalries, titles, history, news, settings];
 
-export default function CareerNavigation({ careerId }: CareerNavigationProps) {
+export default function CareerNavigation({ careerPath }: CareerNavigationProps) {
   const { pathname } = useLocation();
 
   const [sidebarMode, setSidebarMode] =
@@ -163,10 +163,8 @@ export default function CareerNavigation({ careerId }: CareerNavigationProps) {
   const backdropPointerRef = useRef(false);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  const basePath = `/mygm/${careerId}`;
-
   function getPath(item: NavigationItem) {
-    return item.path ? `${basePath}/${item.path}` : basePath;
+    return item.path ? `${careerPath}/${item.path}` : careerPath;
   }
 
   const activeMoreItem = moreItems.find(

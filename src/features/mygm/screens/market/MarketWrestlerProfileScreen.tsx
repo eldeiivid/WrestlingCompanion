@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 import WrestlerSigningAction from "../../components/market/WrestlerSigningAction";
@@ -11,6 +12,7 @@ import WrestlerContractActions from "../../components/market/WrestlerContractAct
 import "../roster/WrestlerProfileScreen.scss";
 
 export default function MarketWrestlerProfileScreen() {
+  const careerPath = useMyGmCareerPath();
   const { career, refreshCareer } = useOutletContext<MyGmOutletContext>();
 
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ export default function MarketWrestlerProfileScreen() {
   function handleSigned(result: SignWrestlerResult) {
     refreshCareer();
 
-    navigate(`/mygm/${career.id}/market/wrestlers/${result.wrestler_id}`, {
+    navigate(`${careerPath}/market/wrestlers/${result.wrestler_id}`, {
       replace: true,
     });
   }
@@ -42,7 +44,7 @@ export default function MarketWrestlerProfileScreen() {
   return (
     <WrestlerProfileView
       careerId={career.id}
-      backPath={`/mygm/${career.id}/market`}
+      backPath={`${careerPath}/market`}
       backLabel="Back to market"
       data={profile ?? null}
       isLoading={isLoading}

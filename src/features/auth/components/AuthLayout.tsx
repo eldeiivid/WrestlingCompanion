@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 import { CalendarDays, Trophy, UsersRound } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import brandLogo from "../../../assets/brand/logo-dark-background.svg";
-import brandSymbol from "../../../assets/brand/symbol-violet.svg";
+import brandLogo from "../../../assets/brand/logo-satin-gold.svg";
+import brandSymbol from "../../../assets/brand/symbol-satin-gold.svg";
 
 import "./AuthLayout.scss";
 
@@ -19,7 +19,7 @@ export default function AuthLayout({ children, mode }: AuthLayoutProps) {
         <Link
           className="auth-layout__brand"
           to="/"
-          aria-label="WrestlingBook home"
+          aria-label="Wrestling Book home"
         >
           <img src={brandLogo} alt="" />
         </Link>
@@ -30,7 +30,7 @@ export default function AuthLayout({ children, mode }: AuthLayoutProps) {
       </header>
 
       <main className="auth-layout__main">
-        <aside className="auth-layout__story" aria-label="About WrestlingBook">
+        <aside className="auth-layout__story" aria-label="About Wrestling Book">
           <div className="auth-layout__story-copy">
             <p className="auth-layout__eyebrow"><span aria-hidden="true" /> Your career. Center stage.</p>
 
@@ -44,7 +44,7 @@ export default function AuthLayout({ children, mode }: AuthLayoutProps) {
 
             <p className="auth-layout__description">
               From your first draft to your biggest main event. Keep your
-              wrestling world together in WrestlingBook.
+              wrestling world together in Wrestling Book.
             </p>
           </div>
 

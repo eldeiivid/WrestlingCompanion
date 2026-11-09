@@ -1,8 +1,10 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useId, useRef, useState } from "react";
-import type { CSSProperties, KeyboardEvent } from "react";
+import type { KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
+  Crown,
   Flag,
   LoaderCircle,
   ShieldCheck,
@@ -16,6 +18,7 @@ import { useRecordBookSummary } from "../../../hooks/record-book/useRecordBookSu
 
 import type { RecordBookReign } from "../../../types/record-book/recordBook.types";
 
+import "../../record-book/rankings/RecordRanking.scss";
 import "./RecordBookWidget.scss";
 
 interface RecordBookWidgetProps {
@@ -33,7 +36,7 @@ interface RecordRow {
   rank: number;
   name: string;
   description: string | null;
-  metric: string;
+  metric: { value: number; unit: string };
   imageUrl: string | null;
   imageKind: "title" | "wrestler";
 }
@@ -54,8 +57,8 @@ interface RecordThumbnailProps {
   kind: RecordRow["imageKind"];
 }
 
-function formatCount(value: number, singular: string, plural: string): string {
-  return `${value} ${value === 1 ? singular : plural}`;
+function getMetric(value: number, singular: string, plural: string): RecordRow["metric"] {
+  return { value, unit: value === 1 ? singular : plural };
 }
 
 function getReignRows(
@@ -71,8 +74,8 @@ function getReignRows(
     description: reign.title.name + (reign.is_active ? " · Ongoing reign" : ""),
     metric:
       metric === "duration"
-        ? formatCount(reign.duration_weeks, "week", "weeks")
-        : formatCount(reign.defenses, "defense", "defenses"),
+        ? getMetric(reign.duration_weeks, "week", "weeks")
+        : getMetric(reign.defenses, "defense", "defenses"),
     imageUrl: reign.title.image_url,
     imageKind: "title",
   }));
@@ -83,10 +86,8 @@ function RecordThumbnail({ src, kind }: RecordThumbnailProps) {
 
   return (
     <span
-      className={[
-        "record-book-widget__thumbnail",
-        `record-book-widget__thumbnail--${kind}`,
-      ].join(" ")}
+      className="record-ranking__visual record-book-widget__thumbnail"
+      data-kind={kind}
       aria-hidden="true"
     >
       {src && src !== failedUrl ? (
@@ -106,6 +107,7 @@ function RecordThumbnail({ src, kind }: RecordThumbnailProps) {
 }
 
 export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
   const tabsId = useId();
 
@@ -117,7 +119,7 @@ export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
   const { data, isLoading, errorMessage, retry } =
     useRecordBookSummary(careerId);
 
-  const recordBookPath = `/mygm/${careerId}/record-book`;
+  const recordBookPath = `${careerPath}/record-book`;
 
   const highRatedRows: RecordRow[] =
     data?.high_rated_wrestlers.map((entry) => ({
@@ -125,7 +127,7 @@ export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
       rank: entry.rank,
       name: entry.wrestler.name,
       description: null,
-      metric: formatCount(entry.match_count, "match", "matches"),
+      metric: getMetric(entry.match_count, "match", "matches"),
       imageUrl: entry.wrestler.image_url,
       imageKind: "wrestler",
     })) ?? [];
@@ -136,7 +138,7 @@ export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
       rank: entry.rank,
       name: entry.wrestler.name,
       description: null,
-      metric: formatCount(entry.appearance_count, "appearance", "appearances"),
+      metric: getMetric(entry.appearance_count, "appearance", "appearances"),
       imageUrl: entry.wrestler.image_url,
       imageKind: "wrestler",
     })) ?? [];
@@ -263,7 +265,7 @@ export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
         )}
 
         {!isLoading && !errorMessage && data && (
-          <div className="record-book-widget__frame">
+          <>
             <div
               className="record-book-widget__tabs"
               role="tablist"
@@ -296,7 +298,7 @@ export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
 
               return (
                 <div
-                  className="record-book-widget__panel"
+                  className="record-book-widget__panel record-ranking"
                   key={category.id}
                   id={`${tabsId}-panel-${category.id}`}
                   role="tabpanel"
@@ -305,17 +307,21 @@ export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
                   tabIndex={0}
                 >
                   <header className="record-book-widget__category-header">
-                    <span
-                      className="record-book-widget__category-icon"
-                      aria-hidden="true"
-                    >
-                      <Icon size={20} />
-                    </span>
-
-                    <div>
-                      <h3>{category.title}</h3>
-                      <p>{category.description}</p>
+                    <div className="record-book-widget__category">
+                      <Icon size={19} aria-hidden="true" />
+                      <div>
+                        <h3>{category.title}</h3>
+                        <p>{category.description}</p>
+                      </div>
                     </div>
+                    <Link
+                      className="record-book-widget__ranking-link"
+                      to={category.href}
+                      aria-label={`View full ranking: ${category.title}`}
+                    >
+                      View full ranking
+                      <ArrowUpRight size={16} aria-hidden="true" />
+                    </Link>
                   </header>
 
                   {category.entries.length === 0 ? (
@@ -324,25 +330,22 @@ export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
                     </div>
                   ) : (
                     <ol
-                      className="record-book-widget__list"
-                      style={{ "--record-rows": Math.max(1, category.entries.length - 1) } as CSSProperties}
+                      className="record-ranking__list"
+                      data-first-page="true"
+                      role="list"
                     >
                       {category.entries.map((entry) => (
                         <li
-                          className={[
-                            "record-book-widget__row",
-                            entry.rank === 1 ? "is-leader" : "",
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
+                          className="record-ranking__row"
+                          data-rank={entry.rank}
                           key={entry.id}
                           value={entry.rank}
                         >
                           <span
-                            className="record-book-widget__rank"
-                            aria-label={`Rank ${entry.rank}`}
+                            className="record-ranking__position"
                           >
-                            {entry.rank}
+                            {entry.rank === 1 && <Crown size={15} aria-hidden="true" />}
+                            <span>#{entry.rank}</span>
                           </span>
 
                           <RecordThumbnail
@@ -350,10 +353,8 @@ export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
                             kind={entry.imageKind}
                           />
 
-                          <div className="record-book-widget__entry">
-                            <p className="record-book-widget__name">
-                              {entry.name}
-                            </p>
+                          <div className="record-ranking__entry">
+                            <h4>{entry.name}</h4>
 
                             {entry.description && (
                               <p className="record-book-widget__description">
@@ -362,27 +363,19 @@ export default function RecordBookWidget({ careerId }: RecordBookWidgetProps) {
                             )}
                           </div>
 
-                          <p className="record-book-widget__metric">
-                            {entry.metric}
+                          <p className="record-ranking__metric">
+                            <strong>{entry.metric.value.toLocaleString("en-US")}</strong>
+                            <span>{entry.metric.unit}</span>
                           </p>
                         </li>
                       ))}
                     </ol>
                   )}
 
-                  <footer className="record-book-widget__footer">
-                    <Link
-                      to={category.href}
-                      aria-label={`View full ranking: ${category.title}`}
-                    >
-                      View full ranking
-                      <ArrowUpRight size={17} aria-hidden="true" />
-                    </Link>
-                  </footer>
                 </div>
               );
             })}
-          </div>
+          </>
         )}
       </div>
     </section>

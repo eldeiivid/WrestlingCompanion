@@ -6,7 +6,7 @@ import { useAuth } from "../../auth/hooks/useAuth";
 import { useMyGmCareers } from "../hooks/useMyGmCareers";
 import MyGmCareerCard from "../components/careers/MyGmCareerCard";
 
-import brandLogo from "../../../assets/brand/logo-dark-background.svg";
+import brandLogo from "../../../assets/brand/logo-flat-gold.svg";
 
 import "./MyGmCareersScreen.scss";
 
@@ -30,7 +30,7 @@ export default function MyGmCareersScreen() {
           <Link
             className="mygm-careers__brand"
             to="/"
-            aria-label="WrestlingBook home"
+            aria-label="Wrestling Book home"
           >
             <img src={brandLogo} alt="" />
           </Link>

@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { Link, useOutletContext, useParams } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { ArrowLeft, RefreshCw } from "lucide-react";
 
 import ChampionshipOverview from "../../components/championships/detail/ChampionshipOverview";
@@ -61,13 +61,12 @@ function ChampionshipDetailContent({ data }: ChampionshipDetailContentProps) {
 }
 
 export default function ChampionshipDetailScreen() {
-  const { career } = useOutletContext<MyGmOutletContext>();
-  const { titleId } = useParams<{ titleId: string }>();
+  const { career, careerPath, titleId } = useOutletContext<MyGmOutletContext>();
   const headingId = useId();
 
   const { data, isLoading, errorMessage, retry } = useChampionshipDetail(
     career.id,
-    titleId,
+    titleId ?? undefined,
   );
 
   const isBriefcase = data?.championship.category === "mitb";
@@ -78,7 +77,7 @@ export default function ChampionshipDetailScreen() {
         <div className="championship-detail-screen__toolbar">
           <Link
             className="championship-detail-screen__back-link"
-            to={`/mygm/${career.id}/titles`}
+            to={`${careerPath}/titles`}
           >
             <ArrowLeft size={17} aria-hidden="true" />
             <span>Back to championships</span>

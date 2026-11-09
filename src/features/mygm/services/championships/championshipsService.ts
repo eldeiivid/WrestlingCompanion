@@ -1,4 +1,5 @@
 import { supabase } from "../../../../lib/supabase";
+import { getMyGmTitleSlugs } from "../mygmRouteService";
 
 import type {
   ChampionshipHolder,
@@ -179,5 +180,9 @@ export async function getChampionships(
     throw new Error("The championships response is invalid.");
   }
 
-  return data;
+  const slugs = await getMyGmTitleSlugs(input.careerId, data.items.map(({ id }) => id), signal);
+  return {
+    ...data,
+    items: data.items.map((title) => ({ ...title, slug: slugs.get(title.id) })),
+  };
 }

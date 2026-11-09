@@ -21,8 +21,8 @@ export default defineConfig({
 
       manifest: {
         id: "/",
-        name: "WrestlingBook",
-        short_name: "WrestlingBook",
+        name: "Wrestling Book",
+        short_name: "Wrestling Book",
 
         description:
           "Manage your wrestling careers, shows, roster, rivalries, and championships.",
@@ -32,8 +32,8 @@ export default defineConfig({
         scope: "/",
         display: "standalone",
 
-        background_color: "#101316",
-        theme_color: "#101316",
+        background_color: "#101216",
+        theme_color: "#101216",
 
         icons: [
           {

@@ -328,8 +328,8 @@
       color: t.$brand-ink;
 
       &:hover {
-        background: #c1adff;
-        border-color: #c1adff;
+        background: t.$brand-hover;
+        border-color: t.$brand-hover;
       }
     }
   }

@@ -156,15 +156,15 @@ export default function NewCareerScreen() {
   }
 
   async function handleCreateCareer() {
-    const gameId = await createCareer({
+    const careerSlug = await createCareer({
       requestId: creationId,
       configuration,
       wrestlerIds: selectedWrestlers.map((wrestler) => wrestler.id),
       championships,
     });
 
-    if (gameId) {
-      navigate(`/mygm/${gameId}`, { replace: true });
+    if (careerSlug) {
+      navigate(myGmCareerPath(careerSlug), { replace: true });
     }
   }
 
@@ -273,3 +273,4 @@ export default function NewCareerScreen() {
     </main>
   );
 }
+import { myGmCareerPath } from "../routes/mygmPaths";

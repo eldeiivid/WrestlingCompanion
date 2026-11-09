@@ -165,7 +165,7 @@ export default function LoginScreen() {
         </form>
 
         <p className="auth-form__footer">
-          New to WrestlingBook? <Link to="/register">Create an account</Link>
+          New to Wrestling Book? <Link to="/register">Create an account</Link>
         </p>
       </div>
     </AuthLayout>

@@ -15,8 +15,8 @@ import {
 
 import { useAuth } from "../../auth/hooks/useAuth";
 
-import brandLogo from "../../../assets/brand/logo-dark-background.svg";
-import brandSymbol from "../../../assets/brand/symbol-violet.svg";
+import brandLogo from "../../../assets/brand/logo-flat-gold.svg";
+import brandSymbol from "../../../assets/brand/symbol-satin-gold.svg";
 
 import "./LobbyScreen.scss";
 
@@ -55,7 +55,7 @@ export default function LobbyScreen() {
     <div className="lobby">
       <header className="lobby__header">
         <div className="lobby__header-inner">
-          <Link className="lobby__brand" to="/" aria-label="WrestlingBook home">
+          <Link className="lobby__brand" to="/" aria-label="Wrestling Book home">
             <img src={brandLogo} alt="" />
           </Link>
 

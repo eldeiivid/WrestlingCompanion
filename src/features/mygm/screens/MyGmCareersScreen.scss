@@ -375,7 +375,7 @@ body:has(.mygm-careers) {
       color: t.$text;
     }
     &__button--primary:hover {
-      background: #c1adff;
+      background: t.$brand-hover;
     }
     &__button--secondary:hover,
     &__search input:hover,

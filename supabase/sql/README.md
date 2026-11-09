@@ -1,3 +1,32 @@
+# MyGM URL slugs
+
+Run [mygm_slugs.sql](mygm_slugs.sql) once in the Supabase SQL Editor. It backfills existing MyGM careers and game titles in the same transaction that installs slug generation. Career slugs are unique across MyGM. Title slugs are unique within their career. Collisions append `-2`, `-3`, and so on. Renaming keeps the stored slug. `/mygm/new` remains reserved.
+
+Use the authenticated Supabase REST API for links:
+
+| Purpose | Request | Fields |
+| --- | --- | --- |
+| List careers | `GET /rest/v1/wc_games?mode=eq.mygm&owner_id=eq.<user-uuid>&select=id,name,slug` | `id`, `name`, `slug` |
+| List title slugs for a career | `GET /rest/v1/wc_game_titles?game_id=eq.<career-uuid>&select=id,name,slug` | `id`, `name`, `slug` |
+| Resolve a career or nested title | `POST /rest/v1/rpc/wc_resolve_mygm_route` | `career_id`, `career_slug`, `title_id`, `title_slug` |
+
+Add `slug` to the existing career list projection. For an existing paginated title list, restrict the title query to the UUIDs on the page and join by `id`. These table reads use the existing grants and RLS.
+
+Pass the route segments as `p_career_ref` and, for a title route, `p_title_ref`. Both accept either a stored slug or a canonical UUID, including mixed slug/UUID pairs. A successful lookup returns one row. The title fields are null for a career-only request. Missing or inaccessible careers and titles return zero rows. With supabase-js:
+
+```ts
+const { data, error } = await supabase
+  .rpc("wc_resolve_mygm_route", {
+    p_career_ref: careerSegment,
+    p_title_ref: titleSegment ?? null,
+  })
+  .maybeSingle();
+```
+
+Build `/mygm/${career_slug}` or `/mygm/${career_slug}/titles/${title_slug}` from the result. Use the same canonical path to redirect old UUID URLs, preserving any query string and hash. Pass `career_id` and `title_id` to existing MyGM detail and mutation RPCs.
+
+Run [verify_mygm_slugs.sql](verify_mygm_slugs.sql) after installation to check collisions, renames, UUID resolution, title scoping, and ownership. It rolls back its fixtures.
+
 # Manual rivalry editing
 
 ## Finishing and deleting

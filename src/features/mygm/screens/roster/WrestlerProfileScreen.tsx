@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useOutletContext, useParams } from "react-router-dom";
 
 import WrestlerSigningAction from "../../components/market/WrestlerSigningAction";
@@ -15,6 +16,7 @@ interface WrestlerProfileScreenProps {
 export default function WrestlerProfileScreen({
   origin = "roster",
 }: WrestlerProfileScreenProps) {
+  const careerPath = useMyGmCareerPath();
   const { career, refreshCareer } = useOutletContext<MyGmOutletContext>();
 
   const { wrestlerId } = useParams<{ wrestlerId: string }>();
@@ -32,7 +34,7 @@ export default function WrestlerProfileScreen({
   return (
     <WrestlerProfileView
       careerId={career.id}
-      backPath={`/mygm/${career.id}/${origin}`}
+      backPath={`${careerPath}/${origin}`}
       backLabel={origin === "market" ? "Back to market" : "Back to roster"}
       data={data}
       championshipHistory={data?.championship_history}

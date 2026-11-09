@@ -25,3 +25,7 @@ export interface NewsHistoryPage {
 
   items: MyGmNewsItem[];
 }
+
+export interface NewsHistoryPageWithSlugs extends NewsHistoryPage {
+  titleSlugs: ReadonlyMap<string, string>;
+}

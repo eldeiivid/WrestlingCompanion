@@ -6,6 +6,7 @@ export interface MyGmCareer {
 }
 
 export interface MyGmCareerSummary extends MyGmCareer {
+  slug: string;
   brand_name: string | null;
   brand_logo_url: string | null;
   brand_background_url: string | null;
@@ -31,5 +32,7 @@ export interface MyGmCareerDetails extends MyGmCareer {
 
 export interface MyGmOutletContext {
   career: MyGmCareerDetails;
+  careerPath: string;
+  titleId: string | null;
   refreshCareer: () => void;
 }

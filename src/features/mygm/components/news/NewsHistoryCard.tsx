@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Swords, Trophy, UserRound } from "lucide-react";
@@ -9,7 +10,7 @@ import type { MyGmNewsItem } from "../../types/news/news.types";
 import "./NewsHistoryCard.scss";
 
 interface NewsHistoryCardProps {
-  careerId: string;
+  titleSlug?: string;
   item: MyGmNewsItem;
   featured: boolean;
   onViewRivalry: (feudId: string) => void;
@@ -41,11 +42,12 @@ function Thumbnail({
 }
 
 export default function NewsHistoryCard({
-  careerId,
+  titleSlug,
   item,
   featured,
   onViewRivalry,
 }: NewsHistoryCardProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
   const presentation = getNewsPresentation(item);
 
@@ -138,7 +140,7 @@ export default function NewsHistoryCard({
           >
             {presentation.people.map((person) => (
               <li key={person.id}>
-                <Link to={`/mygm/${careerId}/roster/${person.id}`}>
+                <Link to={`${careerPath}/roster/${person.id}`}>
                   {person.name}
                 </Link>
               </li>
@@ -146,12 +148,12 @@ export default function NewsHistoryCard({
           </ul>
         )}
 
-        {(presentation.eventId || feudId || presentation.championship) && (
+        {(presentation.eventId || feudId || titleSlug) && (
           <footer className="news-history-card__actions">
-            {presentation.championship && (
+            {presentation.championship && titleSlug && (
               <Link
                 className="news-history-card__button news-history-card__button--primary"
-                to={`/mygm/${careerId}/titles/${presentation.championship.id}`}
+                to={myGmTitlePath(careerPath, titleSlug)}
                 aria-label={`View championship: ${presentation.championship.name}`}
               >
                 View title
@@ -161,7 +163,7 @@ export default function NewsHistoryCard({
             {presentation.eventId && (
               <Link
                 className="news-history-card__button"
-                to={`/mygm/${careerId}/history/${presentation.eventId}`}
+                to={`${careerPath}/history/${presentation.eventId}`}
               >
                 View show
                 <ArrowUpRight size={16} aria-hidden="true" />
@@ -185,3 +187,4 @@ export default function NewsHistoryCard({
     </article>
   );
 }
+import { myGmTitlePath } from "../../routes/mygmPaths";

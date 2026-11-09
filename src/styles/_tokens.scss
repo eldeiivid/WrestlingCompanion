@@ -8,11 +8,14 @@ $border-hover: #505566;
 $text: #f5f4fa;
 $text-muted: #adb2c2;
 
-$brand: #b095ff;
-$brand-ink: #171022;
+$brand: #c99a4e;
+$brand-hover: #e7c583;
+$brand-ink: #101216;
+$brand-ivory: #f4eee3;
+$brand-muted: #d1cabd;
 
-$accent: #7650ce;
-$accent-hover: #6541b8;
+$accent: $brand;
+$accent-hover: $brand-hover;
 
 $success: #a0e0c0;
 $error: #ffb4ab;

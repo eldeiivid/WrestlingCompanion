@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
@@ -159,7 +160,8 @@ interface NewsCarouselFeedProps extends NewsCarouselProps {
   onAutoplayChange: (enabled: boolean) => void;
 }
 
-function NewsCarouselFeed({ careerId, items, autoplayRequested, onAutoplayChange }: NewsCarouselFeedProps) {
+function NewsCarouselFeed({ items, autoplayRequested, onAutoplayChange }: NewsCarouselFeedProps) {
+  const careerPath = useMyGmCareerPath();
   const instructionsId = useId();
   const trackId = useId();
 
@@ -437,7 +439,7 @@ function NewsCarouselFeed({ careerId, items, autoplayRequested, onAutoplayChange
                   {news.eventId && (
                     <Link
                       className="news-carousel__link"
-                      to={`/mygm/${careerId}/history/${news.eventId}`}
+                      to={`${careerPath}/history/${news.eventId}`}
                     >
                       View show
                       <ArrowUpRight size={17} aria-hidden="true" />

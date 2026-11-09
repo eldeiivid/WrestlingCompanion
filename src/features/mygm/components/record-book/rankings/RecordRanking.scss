@@ -153,7 +153,7 @@
     gap: 4px;
     min-width: 0;
 
-    h3 {
+    :is(h3, h4) {
       max-width: 100%;
       margin: 0;
       color: t.$text;
@@ -231,7 +231,7 @@
       font-size: 0.9375rem;
     }
 
-    .record-ranking__entry h3 {
+    .record-ranking__entry :is(h3, h4) {
       font-size: clamp(1.25rem, 3.5cqi, 2rem);
     }
 

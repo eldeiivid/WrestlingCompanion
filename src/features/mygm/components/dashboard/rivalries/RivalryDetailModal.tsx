@@ -445,7 +445,6 @@ export default function RivalryDetailModal({
 
             <div className="rivalry-modal__history">
               <RivalryRecentHistory
-                careerId={careerId}
                 history={data.history}
                 onNavigate={requestClose}
               />

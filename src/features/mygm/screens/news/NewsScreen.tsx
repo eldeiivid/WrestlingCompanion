@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import {
@@ -36,6 +37,7 @@ interface SelectedRivalry {
 }
 
 export default function NewsScreen() {
+  const careerPath = useMyGmCareerPath();
   const { career } = useOutletContext<MyGmOutletContext>();
   const headingId = useId();
   const resultsHeadingId = useId();
@@ -212,7 +214,7 @@ export default function NewsScreen() {
                 ) : (
                   <Link
                     className="news-screen__button news-screen__button--primary"
-                    to={`/mygm/${career.id}/booking`}
+                    to={`${careerPath}/booking`}
                   >
                     Go to booking
                     <ArrowUpRight size={16} aria-hidden="true" />
@@ -227,7 +229,7 @@ export default function NewsScreen() {
                   return (
                     <li key={item.id} data-featured={featured}>
                       <NewsHistoryCard
-                        careerId={career.id}
+                        titleSlug={"title" in item.data ? data.titleSlugs.get(item.data.title.id) : undefined}
                         item={item}
                         featured={featured}
                         onViewRivalry={handleViewRivalry}

@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useEffect, useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, CalendarPlus, ClipboardCheck } from "lucide-react";
@@ -9,6 +10,7 @@ import type { MyGmCareerDetails } from "../../../types/mygm.types";
 import "./DashboardWelcome.scss";
 
 export default function DashboardWelcome({ career }: { career: MyGmCareerDetails }) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
   const key = `${career.id}:${career.current_tick}`;
   const [state, setState] = useState<{ key: string; show: DashboardCurrentShow | null }>({ key, show: null });
@@ -45,7 +47,7 @@ export default function DashboardWelcome({ career }: { career: MyGmCareerDetails
             : "Build the card, shape your rivalries and set the stage for a show worth remembering."}
         </p>
         <div className="dashboard-welcome__actions">
-          <Link className="dashboard-welcome__cta" to={`/mygm/${career.id}/booking${confirmed ? "/results" : ""}`}>
+          <Link className="dashboard-welcome__cta" to={`${careerPath}/booking${confirmed ? "/results" : ""}`}>
             <ActionIcon size={18} aria-hidden="true" />
             {confirmed ? "Record results" : show ? "Continue booking" : "Open booking"}
             <ArrowRight size={18} aria-hidden="true" />

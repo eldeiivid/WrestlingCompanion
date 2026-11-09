@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -93,6 +94,7 @@ export default function ReignDefensesModal({
   championship,
   onClose,
 }: ReignDefensesModalProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
   const descriptionId = useId();
   const [failedBeltUrl, setFailedBeltUrl] = useState<string | null>(null);
@@ -457,7 +459,7 @@ export default function ReignDefensesModal({
 
                       <Link
                         className="reign-defenses-modal__show-link"
-                        to={`/mygm/${careerId}/history/${defense.event_id}`}
+                        to={`${careerPath}/history/${defense.event_id}`}
                         onClick={requestClose}
                         aria-label={`View ${defense.event_name}, season ${defense.season}, week ${defense.week}`}
                       >

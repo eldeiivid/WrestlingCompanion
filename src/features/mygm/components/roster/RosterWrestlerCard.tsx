@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Clock3, Mic, Sparkles, TriangleAlert, UserRound } from "lucide-react";
@@ -11,7 +12,6 @@ import type {
 import "./RosterWrestlerCard.scss";
 
 interface RosterWrestlerCardProps {
-  careerId: string;
   currentTick: number;
   wrestler: CareerRosterWrestler;
   championships: DashboardChampionship[];
@@ -35,11 +35,11 @@ const categoryLabels: Record<CareerRosterCategory, string> = {
 };
 
 export default function RosterWrestlerCard({
-  careerId,
   currentTick,
   wrestler,
   championships,
 }: RosterWrestlerCardProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
   const contractId = useId();
 
@@ -85,7 +85,7 @@ export default function RosterWrestlerCard({
     <article className="roster-wrestler-card" data-titleholder={championships.length > 0} aria-labelledby={headingId}>
       <Link
         className="roster-wrestler-card__link"
-        to={`/mygm/${careerId}/roster/${wrestler.id}`}
+        to={`${careerPath}/roster/${wrestler.id}`}
         aria-label={`View profile: ${wrestler.name}`}
         aria-describedby={contractId}
       >

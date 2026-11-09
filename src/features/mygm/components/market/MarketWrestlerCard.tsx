@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { ArrowUpRight, Mic, Sparkles, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -11,7 +12,6 @@ import "./MarketWrestlerCard.scss";
 
 interface MarketWrestlerCardProps {
   wrestler: MarketWrestler;
-  careerId: string;
 }
 
 const categoryLabels: Record<MarketCategory, string> = {
@@ -22,17 +22,17 @@ const categoryLabels: Record<MarketCategory, string> = {
 
 export default function MarketWrestlerCard({
   wrestler,
-  careerId,
 }: MarketWrestlerCardProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
 
   const primaryClass = wrestler.primary_class?.trim() ?? "";
   const secondaryClass = wrestler.secondary_class?.trim() ?? "";
   const profilePath = wrestler.career_wrestler_id
-    ? `/mygm/${careerId}/market/wrestlers/${wrestler.career_wrestler_id}`
+    ? `${careerPath}/market/wrestlers/${wrestler.career_wrestler_id}`
     : wrestler.catalog_wrestler_id
-      ? `/mygm/${careerId}/market/catalog/${wrestler.catalog_wrestler_id}`
+      ? `${careerPath}/market/catalog/${wrestler.catalog_wrestler_id}`
       : null;
 
   const hasSecondaryClass =

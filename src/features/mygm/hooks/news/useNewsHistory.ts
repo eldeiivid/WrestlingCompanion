@@ -5,7 +5,7 @@ import { getNewsHistory } from "../../services/news/newsService";
 import type {
   GetNewsHistoryInput,
   NewsHistoryFilters,
-  NewsHistoryPage,
+  NewsHistoryPageWithSlugs,
 } from "../../types/news/newsHistory.types";
 
 const defaultFilters: NewsHistoryFilters = {
@@ -22,7 +22,7 @@ interface NewsHistoryControls {
 
 interface NewsHistoryRequestState {
   key: string;
-  data: NewsHistoryPage | null;
+  data: NewsHistoryPageWithSlugs | null;
   isLoading: boolean;
   errorMessage: string;
 }

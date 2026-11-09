@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Briefcase, Trophy, UserRound } from "lucide-react";
@@ -12,7 +13,6 @@ import type {
 import "./ChampionshipCard.scss";
 
 interface ChampionshipCardProps {
-  careerId: string;
   championship: ChampionshipListItem;
 }
 
@@ -76,9 +76,9 @@ function formatPeriod(tick: number): string {
 }
 
 export default function ChampionshipCard({
-  careerId,
   championship,
 }: ChampionshipCardProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
 
   const isBriefcase = championship.category === "mitb";
@@ -179,7 +179,7 @@ export default function ChampionshipCard({
                 >
                   {championship.holders.map((holder) => (
                     <li key={holder.id}>
-                      <Link to={`/mygm/${careerId}/roster/${holder.id}`}>
+                      <Link to={`${careerPath}/roster/${holder.id}`}>
                         {holder.name}
                       </Link>
                     </li>
@@ -230,17 +230,18 @@ export default function ChampionshipCard({
             </dl>
           )}
 
-        <Link
+        {championship.slug && <Link
           className="championship-card__detail-link"
-          to={`/mygm/${careerId}/titles/${championship.id}`}
+          to={myGmTitlePath(careerPath, championship.slug)}
           aria-label={`View ${
             isBriefcase ? "briefcase" : "championship"
           }: ${championship.name}`}
         >
           {isBriefcase ? "View briefcase" : "View championship"}
           <ArrowUpRight size={17} aria-hidden="true" />
-        </Link>
+        </Link>}
       </div>
     </article>
   );
 }
+import { myGmTitlePath } from "../../routes/mygmPaths";

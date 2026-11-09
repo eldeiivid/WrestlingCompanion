@@ -5,6 +5,7 @@ export interface DashboardHolder {
 }
 
 export interface DashboardChampionship {
+  slug?: string;
   id: string;
   name: string;
   image_url: string | null;

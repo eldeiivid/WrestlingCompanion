@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, CalendarDays, Crown, Star, Swords } from "lucide-react";
 
@@ -65,6 +66,7 @@ export default function RatingRecordsRanking({
   careerId,
   record,
 }: RatingRecordsRankingProps) {
+  const careerPath = useMyGmCareerPath();
   const presentation = recordPresentation[record];
 
   const { data, page, isLoading, errorMessage, goToPage, retry } =
@@ -140,7 +142,7 @@ export default function RatingRecordsRanking({
 
             <Link
               className="rating-records-ranking__show-link"
-              to={`/mygm/${careerId}/history/${item.event.id}`}
+              to={`${careerPath}/history/${item.event.id}`}
             >
               View show results
               <ArrowUpRight size={16} aria-hidden="true" />

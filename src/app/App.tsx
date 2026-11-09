@@ -99,7 +99,7 @@ export default function App() {
       />
 
       <Route
-        path="/mygm/:careerId"
+        path="/mygm/:careerRef"
         element={
           isAuthenticated ? <MyGmLayout /> : <Navigate to="/login" replace />
         }
@@ -136,7 +136,7 @@ export default function App() {
 
         <Route path="titles" element={<ChampionshipsScreen />} />
 
-        <Route path="titles/:titleId" element={<ChampionshipDetailScreen />} />
+        <Route path="titles/:titleRef" element={<ChampionshipDetailScreen />} />
 
         <Route path="history" element={<ShowHistoryScreen />} />
 

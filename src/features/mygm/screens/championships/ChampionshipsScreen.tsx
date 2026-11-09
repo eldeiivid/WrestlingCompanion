@@ -321,7 +321,6 @@ export default function ChampionshipsScreen() {
                 {data.items.map((championship) => (
                   <li key={championship.id}>
                     <ChampionshipCard
-                      careerId={career.id}
                       championship={championship}
                     />
                   </li>

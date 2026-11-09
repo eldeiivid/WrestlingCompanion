@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -55,6 +56,7 @@ export default function ChampionshipReignHistory({
   category,
   onViewDefenses,
 }: ChampionshipReignHistoryProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
   const isBriefcase = category === "mitb";
 
@@ -157,7 +159,7 @@ export default function ChampionshipReignHistory({
                                   <HolderPortrait src={holder.image_url} />
 
                                   <Link
-                                    to={`/mygm/${careerId}/roster/${holder.id}`}
+                                    to={`${careerPath}/roster/${holder.id}`}
                                   >
                                     {holder.name}
                                   </Link>
@@ -223,7 +225,7 @@ export default function ChampionshipReignHistory({
 
                           {reign.won_match ? (
                             <Link
-                              to={`/mygm/${careerId}/history/${reign.won_match.event_id}`}
+                              to={`${careerPath}/history/${reign.won_match.event_id}`}
                               aria-label={`View acquisition show: ${reign.won_match.event_name}`}
                             >
                               <span>{reign.won_match.event_name}</span>
@@ -242,7 +244,7 @@ export default function ChampionshipReignHistory({
 
                             {reign.lost_match ? (
                               <Link
-                                to={`/mygm/${careerId}/history/${reign.lost_match.event_id}`}
+                                to={`${careerPath}/history/${reign.lost_match.event_id}`}
                                 aria-label={`View loss show: ${reign.lost_match.event_name}`}
                               >
                                 <span>{reign.lost_match.event_name}</span>

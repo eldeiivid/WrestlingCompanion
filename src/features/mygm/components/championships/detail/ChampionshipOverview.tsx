@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Briefcase, Trophy, UserRound } from "lucide-react";
@@ -76,10 +77,10 @@ function formatPeriod(tick: number): string {
 export default function ChampionshipOverview({
   data,
 }: ChampionshipOverviewProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
 
   const {
-    career_id: careerId,
     championship,
     current_reign: reign,
     history_summary: summary,
@@ -162,7 +163,7 @@ export default function ChampionshipOverview({
                   <ul className="championship-overview__holders">
                     {reign.holders.map((holder) => (
                       <li key={holder.id}>
-                        <Link to={`/mygm/${careerId}/roster/${holder.id}`}>
+                        <Link to={`${careerPath}/roster/${holder.id}`}>
                           {holder.name}
                         </Link>
                       </li>
@@ -181,7 +182,7 @@ export default function ChampionshipOverview({
                 {reign.won_match ? (
                   <Link
                     className="championship-overview__show-link"
-                    to={`/mygm/${careerId}/history/${reign.won_match.event_id}`}
+                    to={`${careerPath}/history/${reign.won_match.event_id}`}
                   >
                     <span>View show: {reign.won_match.event_name}</span>
                     <ArrowUpRight size={16} aria-hidden="true" />

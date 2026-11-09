@@ -5,6 +5,7 @@ import {
   Navigate,
   Outlet,
   useLocation,
+  useMatch,
   useParams,
 } from "react-router-dom";
 
@@ -12,9 +13,12 @@ import CareerHeader from "../components/CareerHeader";
 import CareerNavigation from "../components/CareerNavigation";
 
 import { useMyGmCareer } from "../hooks/useMyGmCareer";
+import { useMyGmRoute } from "../hooks/useMyGmRoute";
 import { useSeasonTransition } from "../hooks/season-draft/useSeasonTransition";
+import { canonicalMyGmPath, myGmCareerPath } from "../routes/mygmPaths";
 
 import type { MyGmOutletContext } from "../types/mygm.types";
+import type { MyGmRoute } from "../routes/mygmPaths";
 
 import "./MyGmLayout.scss";
 
@@ -34,7 +38,7 @@ function CareerSeasonGate({ context }: CareerSeasonGateProps) {
     career.id,
   );
 
-  const seasonDraftPath = `/mygm/${career.id}/season-draft`;
+  const seasonDraftPath = `${context.careerPath}/season-draft`;
 
   const isSeasonDraftRoute = pathname.replace(/\/+$/, "") === seasonDraftPath;
 
@@ -70,7 +74,41 @@ function CareerSeasonGate({ context }: CareerSeasonGateProps) {
 }
 
 export default function MyGmLayout() {
-  const { careerId } = useParams();
+  const { careerRef = "" } = useParams();
+  const titleRef = useMatch("/mygm/:careerRef/titles/:titleRef")?.params.titleRef ?? null;
+  const { pathname, search, hash, state } = useLocation();
+  const { route, isLoading, hasError, retry } = useMyGmRoute(careerRef, titleRef);
+
+  if (isLoading || !route) {
+    return (
+      <main className="mygm-layout__status">
+        {isLoading ? (
+          <p role="status">Opening your career…</p>
+        ) : (
+          <section>
+            <h1>{hasError ? "Unable to open this link" : titleRef ? "Championship not found" : "Career not found"}</h1>
+            <p role={hasError ? "alert" : undefined}>
+              {hasError
+                ? "We couldn’t resolve this link. Please try again."
+                : "This resource is unavailable or you do not have access to it."}
+            </p>
+            {hasError && <button type="button" onClick={retry}>Try again</button>}
+            <Link to="/mygm">Back to careers</Link>
+          </section>
+        )}
+      </main>
+    );
+  }
+
+  const canonicalPath = canonicalMyGmPath(pathname, route);
+  if (canonicalPath !== pathname) {
+    return <Navigate to={{ pathname: canonicalPath, search, hash }} replace state={state} />;
+  }
+
+  return <MyGmCareerLayout route={route} />;
+}
+
+function MyGmCareerLayout({ route }: { route: MyGmRoute }) {
   const { pathname } = useLocation();
   const contentRef = useRef<HTMLElement>(null);
 
@@ -79,7 +117,7 @@ export default function MyGmLayout() {
   }, [pathname]);
 
   const { career, isLoading, errorMessage, refreshCareer } =
-    useMyGmCareer(careerId);
+    useMyGmCareer(route.career_id);
 
   if (isLoading && !career) {
     return (
@@ -123,15 +161,17 @@ export default function MyGmLayout() {
 
   const context: MyGmOutletContext = {
     career,
+    careerPath: myGmCareerPath(route.career_slug),
+    titleId: route.title_id,
     refreshCareer,
   };
 
   return (
     <div className="mygm-layout" style={theme}>
       <a className="mygm-layout__skip" href="#career-content">Skip to career content</a>
-      <CareerHeader career={career} />
+      <CareerHeader career={career} careerPath={context.careerPath} />
 
-      <CareerNavigation careerId={career.id} />
+      <CareerNavigation careerPath={context.careerPath} />
 
       <main ref={contentRef} id="career-content" className="mygm-layout__content" tabIndex={-1}>
         {errorMessage && (

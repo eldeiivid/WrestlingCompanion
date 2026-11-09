@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useId } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
@@ -12,6 +13,7 @@ interface NewsWidgetProps {
 }
 
 export default function NewsWidget({ careerId }: NewsWidgetProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
 
   const { data, isLoading, errorMessage, retry } = useMyGmNews(careerId);
@@ -21,7 +23,7 @@ export default function NewsWidget({ careerId }: NewsWidgetProps) {
       <header className="news-widget__header">
         <h2 id={headingId}>Career news</h2>
 
-        <Link className="dashboard-section-link" to={`/mygm/${careerId}/news`}>
+        <Link className="dashboard-section-link" to={`${careerPath}/news`}>
           View all news
           <ArrowUpRight size={16} aria-hidden="true" />
         </Link>

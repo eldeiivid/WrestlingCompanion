@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../hooks/useMyGmCareerPath";
 import { useState } from "react";
 import {
   Link,
@@ -678,6 +679,7 @@ function BookingResultsFlow({
 }
 
 export default function BookingResultsScreen() {
+  const careerPath = useMyGmCareerPath();
   const { career, refreshCareer } = useOutletContext<MyGmOutletContext>();
 
   const navigate = useNavigate();
@@ -689,12 +691,12 @@ export default function BookingResultsScreen() {
     refreshBooking,
   } = useMyGmBooking(career.id);
 
-  const bookingPath = `/mygm/${career.id}/booking`;
+  const bookingPath = `${careerPath}/booking`;
 
   function handleShowClosed() {
     refreshCareer();
 
-    navigate(`/mygm/${career.id}`, {
+    navigate(`${careerPath}`, {
       replace: true,
     });
   }

@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useId } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Star, Trophy } from "lucide-react";
@@ -10,7 +11,6 @@ import type {
 import "./WrestlerRecentMatches.scss";
 
 interface WrestlerRecentMatchesProps {
-  careerId: string;
   history: WrestlerProfileMatchHistory;
 }
 
@@ -48,9 +48,9 @@ function getResultLabel(
 }
 
 export default function WrestlerRecentMatches({
-  careerId,
   history,
 }: WrestlerRecentMatchesProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
 
   return (
@@ -151,7 +151,7 @@ export default function WrestlerRecentMatches({
 
                     <Link
                       className="wrestler-recent-matches__link"
-                      to={`/mygm/${careerId}/history/${match.event_id}`}
+                      to={`${careerPath}/history/${match.event_id}`}
                       aria-label={`View ${match.event_name || "show"} from season ${match.season}, week ${match.week}`}
                     >
                       View show

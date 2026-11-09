@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, LoaderCircle, Swords } from "lucide-react";
@@ -46,6 +47,7 @@ function getRivalryName(rivalry: FeaturedRivalry): string {
 export default function FeaturedRivalriesWidget({
   careerId,
 }: FeaturedRivalriesWidgetProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
 
   const [selectedFeudId, setSelectedFeudId] = useState<string | null>(null);
@@ -68,7 +70,7 @@ export default function FeaturedRivalriesWidget({
 
         <Link
           className="featured-rivalries__view-all dashboard-section-link"
-          to={`/mygm/${careerId}/rivalries`}
+          to={`${careerPath}/rivalries`}
         >
           View all rivalries
           <ArrowUpRight size={16} aria-hidden="true" />

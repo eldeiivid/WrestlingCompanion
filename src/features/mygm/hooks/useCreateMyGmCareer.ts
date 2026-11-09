@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { createCareerService } from "../services/createCareerService";
+import { resolveMyGmRoute } from "../services/mygmRouteService";
 import type { CreateCareerInput } from "../types/createCareer.types";
 
 function getCreationError(error: unknown): string {
@@ -24,6 +25,7 @@ export function useCreateMyGmCareer() {
 
   const active = useRef(false);
   const inFlight = useRef(false);
+  const createdGameId = useRef<string | null>(null);
 
   useEffect(() => {
     active.current = true;
@@ -43,12 +45,19 @@ export function useCreateMyGmCareer() {
     setCreationError("");
 
     try {
-      const gameId = await createCareerService.create(input);
+      const gameId = createdGameId.current ?? await createCareerService.create(input);
+      createdGameId.current = gameId;
 
-      return active.current ? gameId : null;
+      const route = await resolveMyGmRoute(gameId, null);
+      if (!route) throw new Error("The created career could not be resolved.");
+      return active.current ? route.career_slug : null;
     } catch (error) {
       if (active.current) {
-        setCreationError(getCreationError(error));
+        setCreationError(
+          createdGameId.current
+            ? "Your career was saved, but its link could not be loaded. Try again or open it from your career list."
+            : getCreationError(error),
+        );
       }
 
       return null;

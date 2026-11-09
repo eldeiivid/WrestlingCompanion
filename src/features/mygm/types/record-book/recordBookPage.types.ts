@@ -59,6 +59,7 @@ export interface RecordBookRank {
 }
 
 export interface RecordBookTitle {
+  slug?: string;
   id: string;
   name: string;
   image_url: string | null;

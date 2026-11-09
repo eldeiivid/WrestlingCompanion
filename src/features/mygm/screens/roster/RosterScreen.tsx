@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useId, useRef, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import {
@@ -55,6 +56,7 @@ const sortOptions: FilterOption<CareerRosterFilters["sort"]>[] = [
 ];
 
 export default function RosterScreen() {
+  const careerPath = useMyGmCareerPath();
   const { career } = useOutletContext<MyGmOutletContext>();
 
   const headingId = useId();
@@ -151,7 +153,7 @@ export default function RosterScreen() {
         <div className="career-roster__header-actions">
           <Link
             className="career-roster__market"
-            to={`/mygm/${career.id}/market`}
+            to={`${careerPath}/market`}
             aria-label="Open market"
             title="Open market"
           >
@@ -424,7 +426,7 @@ export default function RosterScreen() {
             {data.roster_count === 0 ? (
               <Link
                 className="career-roster__button"
-                to={`/mygm/${career.id}/market`}
+                to={`${careerPath}/market`}
               >
                 Explore market
                 <ArrowUpRight size={16} aria-hidden="true" />
@@ -447,7 +449,6 @@ export default function RosterScreen() {
               {data.items.map((wrestler) => (
                 <li key={wrestler.id}>
                   <RosterWrestlerCard
-                    careerId={career.id}
                     championships={titlesByHolder.get(wrestler.id) ?? []}
                     wrestler={wrestler}
                     currentTick={data.current_tick}

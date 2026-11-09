@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { Fragment, useId, useState } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
@@ -186,6 +187,7 @@ function MatchHighlight({ title, match, featured = false }: MatchHighlightProps)
 }
 
 export default function LatestShowWidget({ careerId }: LatestShowWidgetProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
 
   const { data, isLoading, errorMessage, retry } = useLatestShow(careerId);
@@ -208,7 +210,7 @@ export default function LatestShowWidget({ careerId }: LatestShowWidgetProps) {
       <header className="latest-show__header">
         <h2 id={headingId}>Latest show</h2>
 
-        <Link className="dashboard-section-link" to={`/mygm/${careerId}/history`}>
+        <Link className="dashboard-section-link" to={`${careerPath}/history`}>
           View history
           <ArrowUpRight size={16} aria-hidden="true" />
         </Link>
@@ -250,7 +252,7 @@ export default function LatestShowWidget({ careerId }: LatestShowWidgetProps) {
 
             <Link
               className="latest-show__button"
-              to={`/mygm/${careerId}/booking`}
+              to={`${careerPath}/booking`}
             >
               Open booking
               <ArrowRight size={16} aria-hidden="true" />
@@ -334,7 +336,7 @@ export default function LatestShowWidget({ careerId }: LatestShowWidgetProps) {
           <footer className="latest-show__footer">
             <Link
               className="latest-show__results-link"
-              to={`/mygm/${careerId}/history/${data.event.id}`}
+              to={`${careerPath}/history/${data.event.id}`}
             >
               Full show results
               <ArrowUpRight size={17} aria-hidden="true" />

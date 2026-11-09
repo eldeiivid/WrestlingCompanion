@@ -9,6 +9,7 @@ import "./CareerHeader.scss";
 
 interface CareerHeaderProps {
   career: MyGmCareerDetails;
+  careerPath: string;
 }
 
 type CareerHeaderTheme = CSSProperties & {
@@ -35,7 +36,7 @@ const compactFansFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 1,
 });
 
-export default function CareerHeader({ career }: CareerHeaderProps) {
+export default function CareerHeader({ career, careerPath }: CareerHeaderProps) {
   const headerRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -213,7 +214,7 @@ export default function CareerHeader({ career }: CareerHeaderProps) {
         <div className="career-header__identity">
           <Link
             className="career-header__brand"
-            to={`/mygm/${career.id}`}
+            to={careerPath}
             aria-label={`Open dashboard for ${career.name} (${career.brand_name})`}
           >
             {showLogo && career.brand_logo_url ? (

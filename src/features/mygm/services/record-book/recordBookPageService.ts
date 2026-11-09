@@ -1,4 +1,5 @@
 import { supabase } from "../../../../lib/supabase";
+import { getMyGmTitleSlugs } from "../mygmRouteService";
 
 import type {
   GetRatingRecordsInput,
@@ -326,7 +327,14 @@ export async function getReignRecords(
     throw new Error("The reign records response is invalid.");
   }
 
-  return data;
+  const slugs = await getMyGmTitleSlugs(input.careerId, data.items.map(({ title }) => title.id), signal);
+  return {
+    ...data,
+    items: data.items.map((item) => ({
+      ...item,
+      title: { ...item.title, slug: slugs.get(item.title.id) },
+    })),
+  };
 }
 
 export async function getWrestlerRecords(

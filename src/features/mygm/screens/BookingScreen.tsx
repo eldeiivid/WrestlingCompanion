@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import {
@@ -102,6 +103,7 @@ function getSegmentParticipantsLabel(segment: BookingSegmentSummary): string {
 }
 
 export default function BookingScreen() {
+  const careerPath = useMyGmCareerPath();
   const { career } = useOutletContext<MyGmOutletContext>();
 
   const headingId = useId();
@@ -714,7 +716,7 @@ export default function BookingScreen() {
 
                 <Link
                   className="booking-screen__button booking-screen__button--accent"
-                  to={`/mygm/${career.id}/booking/results`}
+                  to={`${careerPath}/booking/results`}
                   aria-disabled={isBookingBusy}
                   onClick={(event) => {
                     if (isBookingBusy) {
@@ -732,7 +734,7 @@ export default function BookingScreen() {
               <footer className="booking-screen__finish">
                 <Link
                   className="booking-screen__button"
-                  to={`/mygm/${career.id}/history/${data.event.id}`}
+                  to={`${careerPath}/history/${data.event.id}`}
                 >
                   View show results
                   <ArrowRight size={17} aria-hidden="true" />

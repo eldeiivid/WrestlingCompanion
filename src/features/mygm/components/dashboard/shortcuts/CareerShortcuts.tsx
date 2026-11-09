@@ -1,13 +1,10 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useId } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, CalendarDays, History, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import "./CareerShortcuts.scss";
-
-interface CareerShortcutsProps {
-  careerId: string;
-}
 
 interface CareerShortcut {
   id: string;
@@ -41,7 +38,8 @@ const shortcuts: CareerShortcut[] = [
   },
 ];
 
-export default function CareerShortcuts({ careerId }: CareerShortcutsProps) {
+export default function CareerShortcuts() {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
 
   return (
@@ -56,7 +54,7 @@ export default function CareerShortcuts({ careerId }: CareerShortcutsProps) {
             <li key={shortcut.id}>
               <Link
                 className="career-shortcuts__link"
-                to={`/mygm/${careerId}/${shortcut.path}`}
+                to={`${careerPath}/${shortcut.path}`}
               >
                 <span className="career-shortcuts__icon" aria-hidden="true">
                   <Icon size={21} />

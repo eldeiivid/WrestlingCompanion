@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useEffect, useId, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
@@ -49,6 +50,7 @@ export default function ChampionsWidget({
   currentTick,
   championships,
 }: ChampionsWidgetProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
   const listId = useId();
   const listRef = useRef<HTMLUListElement>(null);
@@ -120,7 +122,7 @@ export default function ChampionsWidget({
       <header className="champions-widget__header">
         <h2 id={headingId}>Championships</h2>
 
-        <Link className="dashboard-section-link" to={`/mygm/${careerId}/titles`}>
+        <Link className="dashboard-section-link" to={`${careerPath}/titles`}>
           View all titles
           <ArrowUpRight size={16} aria-hidden="true" />
         </Link>
@@ -184,8 +186,8 @@ export default function ChampionsWidget({
                 <li className="champions-widget__card" key={title.id}>
                   <Link
                     className="champions-widget__card-link"
-                    to={`/mygm/${careerId}/titles/${title.id}`}
-                    aria-label={`View ${title.name}`}
+                    to={title.slug ? myGmTitlePath(careerPath, title.slug) : `${careerPath}/titles`}
+                    aria-label={title.slug ? `View ${title.name}` : "View all titles"}
                   >
                     <div className="champions-widget__visual">
                       <span className="champions-widget__category">
@@ -325,3 +327,4 @@ export default function ChampionsWidget({
     </section>
   );
 }
+import { myGmTitlePath } from "../../../routes/mygmPaths";

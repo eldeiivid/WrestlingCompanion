@@ -12,6 +12,7 @@ export const mygmService = {
       .select(
         `
       id,
+      slug,
       name,
       current_tick,
       created_at,

@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import {
@@ -61,6 +62,7 @@ function ShowMark({ src, isPle }: { src: string | null; isPle: boolean }) {
 }
 
 export default function ShowHistoryScreen() {
+  const careerPath = useMyGmCareerPath();
   const { career } = useOutletContext<MyGmOutletContext>();
   const headingId = useId();
 
@@ -133,7 +135,7 @@ export default function ShowHistoryScreen() {
 
             <Link
               className="show-history__button show-history__button--primary"
-              to={`/mygm/${career.id}/booking`}
+              to={`${careerPath}/booking`}
             >
               Go to booking
               <ArrowUpRight size={16} aria-hidden="true" />
@@ -172,7 +174,7 @@ export default function ShowHistoryScreen() {
                     >
                       <Link
                         className="show-history__card-link"
-                        to={`/mygm/${career.id}/history/${show.id}`}
+                        to={`${careerPath}/history/${show.id}`}
                         aria-label={`View ${show.name}, season ${show.season}, week ${show.week}`}
                         aria-describedby={ratingId}
                       >

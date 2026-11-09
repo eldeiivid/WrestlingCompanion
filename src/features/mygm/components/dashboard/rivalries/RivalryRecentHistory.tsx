@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -19,7 +20,6 @@ import type {
 import "./RivalryRecentHistory.scss";
 
 interface RivalryRecentHistoryProps {
-  careerId: string;
   history: RivalryHistory;
   onNavigate?: () => void;
 }
@@ -104,10 +104,10 @@ function WinnerPortrait({ wrestler }: { wrestler: RivalryWrestler }) {
 }
 
 export default function RivalryRecentHistory({
-  careerId,
   history,
   onNavigate,
 }: RivalryRecentHistoryProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
 
   return (
@@ -281,7 +281,7 @@ export default function RivalryRecentHistory({
                         {canOpenShow && (
                           <Link
                             className="rivalry-history__link"
-                            to={`/mygm/${careerId}/history/${item.event_id}`}
+                            to={`${careerPath}/history/${item.event_id}`}
                             onClick={onNavigate}
                             aria-label={`View show from season ${item.season}, week ${item.week}`}
                             title="View show"

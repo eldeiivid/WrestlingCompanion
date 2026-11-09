@@ -118,7 +118,7 @@ export default function SummaryStep({
   const brandColor =
     brand?.primary_color && /^#[0-9a-f]{6}$/i.test(brand.primary_color)
       ? brand.primary_color
-      : "#B095FF";
+      : "#C99A4E";
 
   const theme: SummaryTheme = {
     "--review-tint": `${brandColor}35`,

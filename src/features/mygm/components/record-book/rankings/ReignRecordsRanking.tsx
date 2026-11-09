@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../../hooks/useMyGmCareerPath";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Crown, Trophy, UserRound } from "lucide-react";
@@ -72,6 +73,7 @@ export default function ReignRecordsRanking({
   careerId,
   record,
 }: ReignRecordsRankingProps) {
+  const careerPath = useMyGmCareerPath();
   const presentation = recordPresentation[record];
   const isDurationRecord = record === "longest_reigns";
 
@@ -118,9 +120,11 @@ export default function ReignRecordsRanking({
           <div className="record-ranking__entry">
             <div className="reign-records-ranking__heading">
               <h3>
-                <Link to={`/mygm/${careerId}/titles/${item.title.id}`}>
-                  {item.title.name}
-                </Link>
+                {item.title.slug ? (
+                  <Link to={myGmTitlePath(careerPath, item.title.slug)}>
+                    {item.title.name}
+                  </Link>
+                ) : item.title.name}
               </h3>
 
               {item.is_current && (
@@ -135,7 +139,7 @@ export default function ReignRecordsRanking({
               <ul className="reign-records-ranking__holders">
                 {item.holders.map((holder) => (
                   <li key={holder.id}>
-                    <Link to={`/mygm/${careerId}/roster/${holder.id}`}>
+                    <Link to={`${careerPath}/roster/${holder.id}`}>
                       <Thumbnail
                         key={`holder:${holder.id}:${holder.image_url}`}
                         src={holder.image_url}
@@ -200,3 +204,4 @@ export default function ReignRecordsRanking({
     </RecordRanking>
   );
 }
+import { myGmTitlePath } from "../../../routes/mygmPaths";

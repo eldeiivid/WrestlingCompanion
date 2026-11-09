@@ -126,7 +126,6 @@ export default function WrestlerProfileView({
             />
 
             <WrestlerRecentMatches
-              careerId={careerId}
               history={data.match_history}
             />
 

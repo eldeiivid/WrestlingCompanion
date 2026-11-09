@@ -1,4 +1,5 @@
 import { supabase } from "../../../lib/supabase";
+import { getMyGmTitleSlugs } from "./mygmRouteService";
 import type { DashboardCurrentShow, MyGmDashboardData } from "../types/dashboard.types";
 
 export const dashboardService = {
@@ -36,6 +37,14 @@ export const dashboardService = {
       throw new Error("Career unavailable.");
     }
 
-    return data as MyGmDashboardData;
+    const dashboard = data as MyGmDashboardData;
+    const slugs = await getMyGmTitleSlugs(careerId, dashboard.championships.map(({ id }) => id), signal);
+    return {
+      ...dashboard,
+      championships: dashboard.championships.map((title) => ({
+        ...title,
+        slug: slugs.get(title.id),
+      })),
+    };
   },
 };

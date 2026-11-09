@@ -96,7 +96,7 @@
     &--primary {
       margin-top: 24px;
       background: t.$accent;
-      color: #fff;
+      color: t.$brand-ink;
 
       &:hover:not(:disabled) {
         background: t.$accent-hover;

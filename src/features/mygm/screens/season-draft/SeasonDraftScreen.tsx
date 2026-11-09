@@ -1,3 +1,4 @@
+import { useMyGmCareerPath } from "../../hooks/useMyGmCareerPath";
 import { useId, useState } from "react";
 import { Link, Navigate, useOutletContext } from "react-router-dom";
 
@@ -26,6 +27,7 @@ function SeasonDraftScreenContent({
   careerId,
   refreshCareer,
 }: SeasonDraftScreenContentProps) {
+  const careerPath = useMyGmCareerPath();
   const headingId = useId();
 
   const [currentStep, setCurrentStep] =
@@ -36,7 +38,7 @@ function SeasonDraftScreenContent({
   const { data, isLoading, isReady, errorMessage, retry } =
     useSeasonTransition(careerId);
 
-  const dashboardPath = `/mygm/${careerId}`;
+  const dashboardPath = `${careerPath}`;
 
   const hasBalances =
     Boolean(data?.finances_enabled) || Boolean(data?.fans_enabled);
