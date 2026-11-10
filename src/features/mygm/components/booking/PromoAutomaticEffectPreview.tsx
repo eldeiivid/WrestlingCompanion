@@ -1,6 +1,6 @@
-import { getPromoAutomaticEffect } from "../../rules/promoAutomaticEffectsRules";
-import type { BookingSegmentSummary } from "../../types/booking.types";
-import type { BookingPromoWrestlerState } from "../../types/bookingResults.types";
+import { getPromoAutomaticEffect } from "../../rules/booking/promoAutomaticEffectsRules";
+import type { BookingSegmentSummary } from "../../types/booking/booking.types";
+import type { BookingPromoWrestlerState } from "../../types/booking/bookingResults.types";
 import "./PromoAutomaticEffectPreview.scss";
 
 interface PromoAutomaticEffectPreviewProps {

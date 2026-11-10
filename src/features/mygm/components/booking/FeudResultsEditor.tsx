@@ -8,14 +8,14 @@ import {
   getBookingFeudResultsError,
   getCompatibleBookingFeuds,
   supportsBookingFeudResults,
-} from "../../rules/bookingFeudResultsRules";
+} from "../../rules/booking/bookingFeudResultsRules";
 
-import type { BookingSegmentSummary } from "../../types/booking.types";
+import type { BookingSegmentSummary } from "../../types/booking/booking.types";
 import type {
   BookingActiveFeud,
   BookingFeudActionDraft,
   BookingFeudSide,
-} from "../../types/bookingResults.types";
+} from "../../types/booking/bookingResults.types";
 
 import "./FeudResultsEditor.scss";
 

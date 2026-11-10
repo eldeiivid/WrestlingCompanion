@@ -7,15 +7,15 @@ import {
   getBookingFeudContexts,
   getBookingFeudResultsError,
   supportsBookingFeudResults,
-} from "../../rules/bookingFeudResultsRules";
-import { getPromoAutomaticEffect } from "../../rules/promoAutomaticEffectsRules";
-import { getPromoEffectField } from "../../rules/promoResultsRules";
-import { getShowFinalBalance } from "../../rules/showResultsRules";
+} from "../../rules/booking/bookingFeudResultsRules";
+import { getPromoAutomaticEffect } from "../../rules/booking/promoAutomaticEffectsRules";
+import { getPromoEffectField } from "../../rules/booking/promoResultsRules";
+import { getShowFinalBalance } from "../../rules/booking/showResultsRules";
 
 import type {
   BookingSegmentSummary,
   MyGmBookingData,
-} from "../../types/booking.types";
+} from "../../types/booking/booking.types";
 import type {
   BookingActiveFeud,
   BookingFeudActionDraft,
@@ -23,7 +23,7 @@ import type {
   BookingPromoRatingOption,
   BookingPromoWrestlerState,
   BookingResultsDraft,
-} from "../../types/bookingResults.types";
+} from "../../types/booking/bookingResults.types";
 
 import "./BookingResultsReview.scss";
 

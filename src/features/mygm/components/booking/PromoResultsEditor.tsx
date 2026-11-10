@@ -6,16 +6,16 @@ import PromoAutomaticEffectPreview from "./PromoAutomaticEffectPreview";
 import {
   getPromoEffectField,
   isValidPromoEffectAmount,
-} from "../../rules/promoResultsRules";
-import { getPromoAutomaticEffect } from "../../rules/promoAutomaticEffectsRules";
+} from "../../rules/booking/promoResultsRules";
+import { getPromoAutomaticEffect } from "../../rules/booking/promoAutomaticEffectsRules";
 
-import type { BookingSegmentSummary } from "../../types/booking.types";
+import type { BookingSegmentSummary } from "../../types/booking/booking.types";
 import type {
   BookingPromoRatingOption,
   BookingPromoResultDraft,
   BookingPromoResultsDraft,
   BookingPromoWrestlerState,
-} from "../../types/bookingResults.types";
+} from "../../types/booking/bookingResults.types";
 
 import "./PromoResultsEditor.scss";
 

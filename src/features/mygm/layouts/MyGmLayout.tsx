@@ -18,7 +18,7 @@ import { useSeasonTransition } from "../hooks/season-draft/useSeasonTransition";
 import { canonicalMyGmPath, myGmCareerPath } from "../routes/mygmPaths";
 
 import type { MyGmOutletContext } from "../types/mygm.types";
-import type { MyGmRoute } from "../routes/mygmPaths";
+import type { ResolvedMyGmRoute } from "../routes/mygmPaths";
 
 import "./MyGmLayout.scss";
 
@@ -76,8 +76,10 @@ function CareerSeasonGate({ context }: CareerSeasonGateProps) {
 export default function MyGmLayout() {
   const { careerRef = "" } = useParams();
   const titleRef = useMatch("/mygm/:careerRef/titles/:titleRef")?.params.titleRef ?? null;
+  const wrestlerRef = useMatch("/mygm/:careerRef/roster/:wrestlerRef")?.params.wrestlerRef ?? null;
   const { pathname, search, hash, state } = useLocation();
-  const { route, isLoading, hasError, retry } = useMyGmRoute(careerRef, titleRef);
+  const { route, isLoading, hasError, retry } = useMyGmRoute(careerRef, titleRef, wrestlerRef);
+  const resource = wrestlerRef ? "Wrestler" : titleRef ? "Championship" : "Career";
 
   if (isLoading || !route) {
     return (
@@ -86,7 +88,7 @@ export default function MyGmLayout() {
           <p role="status">Opening your career…</p>
         ) : (
           <section>
-            <h1>{hasError ? "Unable to open this link" : titleRef ? "Championship not found" : "Career not found"}</h1>
+            <h1>{hasError ? "Unable to open this link" : `${resource} not found`}</h1>
             <p role={hasError ? "alert" : undefined}>
               {hasError
                 ? "We couldn’t resolve this link. Please try again."
@@ -108,7 +110,7 @@ export default function MyGmLayout() {
   return <MyGmCareerLayout route={route} />;
 }
 
-function MyGmCareerLayout({ route }: { route: MyGmRoute }) {
+function MyGmCareerLayout({ route }: { route: ResolvedMyGmRoute }) {
   const { pathname } = useLocation();
   const contentRef = useRef<HTMLElement>(null);
 
@@ -162,7 +164,8 @@ function MyGmCareerLayout({ route }: { route: MyGmRoute }) {
   const context: MyGmOutletContext = {
     career,
     careerPath: myGmCareerPath(route.career_slug),
-    titleId: route.title_id,
+    titleId: "title_id" in route ? route.title_id : null,
+    wrestlerId: "wrestler_id" in route ? route.wrestler_id : null,
     refreshCareer,
   };
 

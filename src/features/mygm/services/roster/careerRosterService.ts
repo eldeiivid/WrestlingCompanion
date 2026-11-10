@@ -397,6 +397,32 @@ export async function getCareerRoster(
   };
 }
 
+export async function getCareerRosterWithSlugs(
+  input: GetCareerRosterInput,
+  signal: AbortSignal,
+): Promise<CareerRosterPage> {
+  const page = await getCareerRoster(input, signal);
+  if (page.items.length === 0) return page;
+
+  const { data, error } = await supabase
+    .from("wc_game_wrestlers")
+    .select("id,slug")
+    .eq("game_id", input.careerId)
+    .in("id", page.items.map(({ id }) => id))
+    .abortSignal(signal);
+
+  if (error) throw new Error(error.message);
+
+  const slugs = new Map((data ?? []).map(({ id, slug }) => [id, slug]));
+  return {
+    ...page,
+    items: page.items.map((wrestler) => ({
+      ...wrestler,
+      slug: slugs.get(wrestler.id),
+    })),
+  };
+}
+
 export async function getWrestlerProfile(
   careerId: string,
   wrestlerId: string,

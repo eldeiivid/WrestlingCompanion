@@ -1,8 +1,8 @@
 import { useId } from "react";
 import { Check, CircleAlert, Star, Users, Wallet } from "lucide-react";
 
-import { getShowFinalBalance } from "../../rules/showResultsRules";
-import type { BookingShowResultDraft } from "../../types/bookingResults.types";
+import { getShowFinalBalance } from "../../rules/booking/showResultsRules";
+import type { BookingShowResultDraft } from "../../types/booking/bookingResults.types";
 
 import "./ShowResultsEditor.scss";
 

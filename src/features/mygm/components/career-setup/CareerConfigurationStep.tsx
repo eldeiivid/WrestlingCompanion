@@ -3,8 +3,8 @@ import type { FormEvent, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check, Gamepad2, UserRound } from "lucide-react";
 
-import type { CareerConfigurationDraft } from "../../types/careerDraft.types";
-import type { CareerSetupCatalogs } from "../../types/careerSetup.types";
+import type { CareerConfigurationDraft } from "../../types/career-setup/careerDraft.types";
+import type { CareerSetupCatalogs } from "../../types/career-setup/careerSetup.types";
 
 import "./CareerConfigurationStep.scss";
 import { careerSetupTheme } from "./careerSetupTheme";

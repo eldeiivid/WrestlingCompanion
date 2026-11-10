@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { BrandOption } from "../../types/careerSetup.types";
+import type { BrandOption } from "../../types/career-setup/careerSetup.types";
 
 export function careerSetupTheme(brand?: BrandOption): CSSProperties {
   return {

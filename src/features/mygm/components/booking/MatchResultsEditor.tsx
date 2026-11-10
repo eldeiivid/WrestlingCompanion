@@ -1,12 +1,12 @@
 import { useId, useState } from "react";
 import { Check, CircleAlert, Star, Trophy, UserRound } from "lucide-react";
 
-import type { BookingSegmentSummary } from "../../types/booking.types";
+import type { BookingSegmentSummary } from "../../types/booking/booking.types";
 import type {
   BookingMatchRatingOption,
   BookingMatchResultDraft,
   BookingMatchResultsDraft,
-} from "../../types/bookingResults.types";
+} from "../../types/booking/bookingResults.types";
 
 import "./MatchResultsEditor.scss";
 

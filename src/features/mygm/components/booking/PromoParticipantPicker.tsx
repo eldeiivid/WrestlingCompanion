@@ -4,7 +4,7 @@ import { Check, Search, UserPlus, UserRound, X } from "lucide-react";
 import type {
   BookingPromoRole,
   BookingPromoWrestler,
-} from "../../types/booking.types";
+} from "../../types/booking/booking.types";
 
 interface PromoSlot {
   role: BookingPromoRole;

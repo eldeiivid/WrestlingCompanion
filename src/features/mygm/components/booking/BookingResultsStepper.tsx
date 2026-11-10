@@ -3,7 +3,7 @@ import { Check, LockKeyhole } from "lucide-react";
 import type {
   BookingResultsStep,
   BookingResultsStepId,
-} from "../../types/bookingResults.types";
+} from "../../types/booking/bookingResults.types";
 
 import "./BookingResultsStepper.scss";
 

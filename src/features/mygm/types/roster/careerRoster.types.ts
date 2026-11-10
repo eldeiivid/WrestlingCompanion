@@ -24,6 +24,7 @@ export interface CareerRosterMembership {
 }
 
 export interface CareerRosterWrestler {
+  slug?: string;
   id: string;
   name: string;
   gender: CareerRosterGender;

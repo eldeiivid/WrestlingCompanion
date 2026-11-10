@@ -17,9 +17,9 @@ import type { LucideIcon } from "lucide-react";
 
 import PromoParticipantPicker from "./PromoParticipantPicker";
 
-import { useBookingPromoOptions } from "../../hooks/useBookingPromoOptions";
-import { getPromoParticipantSlots } from "../../rules/promoRules";
-import { addPromo, updatePromo } from "../../services/bookingService";
+import { useBookingPromoOptions } from "../../hooks/booking/useBookingPromoOptions";
+import { getPromoParticipantSlots } from "../../rules/booking/promoRules";
+import { addPromo, updatePromo } from "../../services/booking/bookingService";
 
 import type {
   AddBookingPromoInput,
@@ -27,7 +27,7 @@ import type {
   BookingPromoOptions,
   BookingPromoTypeId,
   BookingPromoWrestler,
-} from "../../types/booking.types";
+} from "../../types/booking/booking.types";
 
 import "./PromoEditor.scss";
 

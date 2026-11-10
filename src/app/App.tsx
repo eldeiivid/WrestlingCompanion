@@ -5,11 +5,11 @@ import CreateAccountScreen from "../features/auth/screens/CreateAccountScreen";
 import LobbyScreen from "../features/lobby/screens/LobbyScreen";
 import { useAuth } from "../features/auth/hooks/useAuth";
 import MyGmCareersScreen from "../features/mygm/screens/MyGmCareersScreen";
-import NewCareerScreen from "../features/mygm/screens/NewCareerScreen";
+import NewCareerScreen from "../features/mygm/screens/career-setup/NewCareerScreen";
 import MyGmLayout from "../features/mygm/layouts/MyGmLayout";
 import DashboardScreen from "../features/mygm/screens/DashboardScreen";
-import BookingScreen from "../features/mygm/screens/BookingScreen";
-import BookingResultsScreen from "../features/mygm/screens/BookingResultsScreen";
+import BookingScreen from "../features/mygm/screens/booking/BookingScreen";
+import BookingResultsScreen from "../features/mygm/screens/booking/BookingResultsScreen";
 import ShowHistoryScreen from "../features/mygm/screens/show-history/ShowHistoryScreen";
 import ShowDetailScreen from "../features/mygm/screens/show-history/ShowDetailScreen";
 import RivalriesScreen from "../features/mygm/screens/rivalries/RivalriesScreen";
@@ -108,7 +108,7 @@ export default function App() {
 
         <Route path="roster" element={<RosterScreen />} />
 
-        <Route path="roster/:wrestlerId" element={<WrestlerProfileScreen />} />
+        <Route path="roster/:wrestlerRef" element={<WrestlerProfileScreen />} />
 
         <Route path="market" element={<MarketScreen />} />
 

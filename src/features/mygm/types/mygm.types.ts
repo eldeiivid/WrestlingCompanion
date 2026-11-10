@@ -34,5 +34,6 @@ export interface MyGmOutletContext {
   career: MyGmCareerDetails;
   careerPath: string;
   titleId: string | null;
+  wrestlerId: string | null;
   refreshCareer: () => void;
 }

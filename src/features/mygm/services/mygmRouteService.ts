@@ -1,5 +1,5 @@
 import { supabase } from "../../../lib/supabase";
-import type { MyGmRoute } from "../routes/mygmPaths";
+import type { MyGmRoute, MyGmWrestlerRoute } from "../routes/mygmPaths";
 
 export async function resolveMyGmRoute(
   careerRef: string,
@@ -34,4 +34,21 @@ export async function getMyGmTitleSlugs(
 
   if (error) throw error;
   return new Map((data ?? []).map(({ id, slug }) => [id, slug]));
+}
+
+export async function resolveMyGmWrestlerRoute(
+  careerRef: string,
+  wrestlerRef: string,
+  signal: AbortSignal,
+): Promise<MyGmWrestlerRoute | null> {
+  const { data, error } = await supabase
+    .rpc("wc_resolve_mygm_wrestler_route", {
+      p_career_ref: careerRef,
+      p_wrestler_ref: wrestlerRef,
+    })
+    .abortSignal(signal)
+    .maybeSingle<MyGmWrestlerRoute>();
+
+  if (error) throw error;
+  return data;
 }

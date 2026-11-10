@@ -12,7 +12,7 @@ import {
   UserRound,
 } from "lucide-react";
 
-import type { BookingSegmentSummary } from "../../types/booking.types";
+import type { BookingSegmentSummary } from "../../types/booking/booking.types";
 
 import "./BookingSegmentCard.scss";
 

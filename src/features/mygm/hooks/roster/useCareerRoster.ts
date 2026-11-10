@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCareerRoster } from "../../services/roster/careerRosterService";
+import { getCareerRosterWithSlugs } from "../../services/roster/careerRosterService";
 import type {
   CareerRosterFilters,
   CareerRosterPage,
@@ -128,7 +128,7 @@ export function useCareerRoster(careerId: string, pageSize = 12) {
 
     async function loadRoster() {
       try {
-        const data = await getCareerRoster(
+        const data = await getCareerRosterWithSlugs(
           {
             championsOnly,
             careerId,

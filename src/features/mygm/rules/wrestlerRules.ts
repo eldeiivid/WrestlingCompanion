@@ -1,4 +1,4 @@
-import type { RosterWrestler } from "../types/roster.types";
+import type { RosterWrestler } from "../types/career-setup/roster.types";
 
 type WrestlerClassData = Pick<
   RosterWrestler,

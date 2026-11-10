@@ -27,6 +27,14 @@ Build `/mygm/${career_slug}` or `/mygm/${career_slug}/titles/${title_slug}` from
 
 Run [verify_mygm_slugs.sql](verify_mygm_slugs.sql) after installation to check collisions, renames, UUID resolution, title scoping, and ownership. It rolls back its fixtures.
 
+### Roster profiles
+
+Apply [mygm_wrestler_slugs.sql](mygm_wrestler_slugs.sql) once after `mygm_slugs.sql`. It backfills `wc_game_wrestlers.slug` and assigns stable, unique slugs within each career on insert.
+
+For roster links, read `id,slug` from `wc_game_wrestlers` filtered by `game_id` and by the wrestler UUIDs on the current roster page. Join by `id`. To resolve a profile, call `wc_resolve_mygm_wrestler_route` with `p_career_ref` and `p_wrestler_ref`. Both accept either a slug or a UUID. The RPC returns one row with `career_id`, `career_slug`, `wrestler_id` and `wrestler_slug`, or zero rows when the profile is missing or inaccessible. It uses the existing career resolver and the caller's roster permissions.
+
+Build `/mygm/${career_slug}/roster/${wrestler_slug}` for links and redirects. Keep using the returned UUIDs for existing profile, contract history, and mutation RPCs.
+
 # Manual rivalry editing
 
 ## Finishing and deleting

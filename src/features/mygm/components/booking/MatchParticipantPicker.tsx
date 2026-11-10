@@ -1,8 +1,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Check, Search, UserPlus, UserRound, X } from "lucide-react";
 
-import type { BookingMatchWrestler } from "../../types/booking.types";
-import type { MatchGenderFilter } from "../../rules/matchParticipantRules";
+import type { BookingMatchWrestler } from "../../types/booking/booking.types";
+import type { MatchGenderFilter } from "../../rules/booking/matchParticipantRules";
 
 interface ParticipantSlot {
   side: number;

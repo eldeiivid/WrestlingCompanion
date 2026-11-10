@@ -1,27 +1,27 @@
 import { useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { ArrowRight, Check, CircleAlert, Trophy } from "lucide-react";
-import { useBookingMatchOptions } from "../../hooks/useBookingMatchOptions";
-import { getMatchFeudSuggestions } from "../../rules/matchParticipantRules";
+import { useBookingMatchOptions } from "../../hooks/booking/useBookingMatchOptions";
+import { getMatchFeudSuggestions } from "../../rules/booking/matchParticipantRules";
 import type {
   MatchFeudSuggestion,
   MatchGenderFilter,
-} from "../../rules/matchParticipantRules";
+} from "../../rules/booking/matchParticipantRules";
 import {
   getEligibleInterferenceAttackers,
   getEligibleMatchTitles,
   getSuggestedInterference,
   getSuggestedInterferenceTargetId,
   getSuggestedMatchTitleId,
-} from "../../rules/matchRules";
-import { addMatch, updateMatch } from "../../services/bookingService";
+} from "../../rules/booking/matchRules";
+import { addMatch, updateMatch } from "../../services/booking/bookingService";
 import type {
   AddBookingMatchInput,
   BookingEditableMatch,
   BookingMatchInterferenceInput,
   BookingMatchOptions,
   BookingMatchTitleOption,
-} from "../../types/booking.types";
+} from "../../types/booking/booking.types";
 import "./MatchEditor.scss";
 import MatchParticipantPicker, {
   MatchEditorImage,

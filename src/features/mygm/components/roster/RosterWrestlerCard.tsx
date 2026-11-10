@@ -3,6 +3,7 @@ import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Clock3, Mic, Sparkles, TriangleAlert, UserRound } from "lucide-react";
 import type { DashboardChampionship } from "../../types/dashboard.types";
+import { myGmWrestlerPath } from "../../routes/mygmPaths";
 
 import type {
   CareerRosterCategory,
@@ -85,7 +86,7 @@ export default function RosterWrestlerCard({
     <article className="roster-wrestler-card" data-titleholder={championships.length > 0} aria-labelledby={headingId}>
       <Link
         className="roster-wrestler-card__link"
-        to={`${careerPath}/roster/${wrestler.id}`}
+        to={myGmWrestlerPath(careerPath, wrestler.slug ?? wrestler.id)}
         aria-label={`View profile: ${wrestler.name}`}
         aria-describedby={contractId}
       >
