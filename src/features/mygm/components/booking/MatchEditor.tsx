@@ -1,6 +1,6 @@
 import { useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { ArrowRight, Check, CircleAlert, Trophy } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, CircleAlert, Trophy } from "lucide-react";
 import { useBookingMatchOptions } from "../../hooks/booking/useBookingMatchOptions";
 import { getMatchFeudSuggestions } from "../../rules/booking/matchParticipantRules";
 import type {
@@ -186,6 +186,8 @@ function MatchEditorForm({
   const isEditing = initialSegment !== null;
   const participantsTitleId = useId();
   const saveReadinessId = useId();
+  const stipulationOptionsId = useId();
+  const stipulationToggleRef = useRef<HTMLButtonElement>(null);
 
   const [segmentId] = useState(() => initialSegment?.id ?? crypto.randomUUID());
 
@@ -194,6 +196,7 @@ function MatchEditorForm({
   const [stipulationId, setStipulationId] = useState(
     initialSegment?.stipulation_id ?? "",
   );
+  const [stipulationsExpanded, setStipulationsExpanded] = useState(false);
 
   const [participantIds, setParticipantIds] = useState<string[]>(() =>
     getInitialParticipantIds(options, initialSegment),
@@ -428,6 +431,7 @@ function MatchEditorForm({
 
     setFormatId(nextFormatId);
     setStipulationId("");
+    setStipulationsExpanded(false);
     setParticipantIds(Array<string>(participantCount).fill(""));
     setTitleId("");
     setRivalrySuggestions([]);
@@ -634,7 +638,17 @@ function MatchEditorForm({
             </select>
           </label>
 
-          <fieldset className="match-editor__stipulations" disabled={!formatId}>
+          <fieldset
+            className="match-editor__stipulations"
+            disabled={!formatId}
+            onKeyDown={(event) => {
+              if (event.key !== "Escape" || !stipulationsExpanded) return;
+              event.preventDefault();
+              event.stopPropagation();
+              setStipulationsExpanded(false);
+              stipulationToggleRef.current?.focus();
+            }}
+          >
             <legend>Stipulation</legend>
 
             {!formatId ? (
@@ -646,41 +660,54 @@ function MatchEditorForm({
                 No stipulations are available for this format.
               </p>
             ) : (
-              <div className="match-editor__stipulation-grid">
-                {availableStipulations.map((stipulation) => (
-                  <label
-                    className="match-editor__stipulation"
-                    key={stipulation.id}
-                  >
-                    <input
-                      type="radio"
-                      name={`${participantsTitleId}-stipulation`}
-                      value={stipulation.id}
-                      checked={stipulationId === stipulation.id}
-                      required
-                      onChange={() => {
+              <>
+                <button
+                  ref={stipulationToggleRef}
+                  className="match-editor__stipulation match-editor__stipulation-toggle"
+                  type="button"
+                  aria-expanded={stipulationsExpanded}
+                  aria-controls={stipulationOptionsId}
+                  onClick={() => setStipulationsExpanded((expanded) => !expanded)}
+                >
+                  <span className="match-editor__stipulation-copy">
+                    <strong>{selectedStipulation?.name ?? "Choose a stipulation"}</strong>
+                    {selectedStipulation && financesEnabled && (
+                      <span>{formatMoney(selectedStipulation.cost)}</span>
+                    )}
+                  </span>
+                  <ChevronDown size={18} aria-hidden="true" />
+                </button>
+
+                <div
+                  className="match-editor__stipulation-grid"
+                  id={stipulationOptionsId}
+                  hidden={!stipulationsExpanded}
+                >
+                  {stipulationsExpanded && availableStipulations.map((stipulation) => (
+                    <button
+                      className="match-editor__stipulation"
+                      key={stipulation.id}
+                      type="button"
+                      aria-pressed={stipulationId === stipulation.id}
+                      onClick={() => {
                         setStipulationId(stipulation.id);
+                        setStipulationsExpanded(false);
                         setSaveError("");
+                        stipulationToggleRef.current?.focus();
                       }}
-                    />
-
-                    <span
-                      className="match-editor__stipulation-image"
-                      aria-hidden="true"
                     >
-                      <MatchEditorImage src={stipulation.image_url} />
-                    </span>
-
-                    <span className="match-editor__stipulation-copy">
-                      <strong>{stipulation.name}</strong>
-
-                      {financesEnabled && (
-                        <span>{formatMoney(stipulation.cost)}</span>
-                      )}
-                    </span>
-                  </label>
-                ))}
-              </div>
+                      <span className="match-editor__stipulation-image" aria-hidden="true">
+                        <MatchEditorImage src={stipulation.image_url} />
+                      </span>
+                      <span className="match-editor__stipulation-copy">
+                        <strong>{stipulation.name}</strong>
+                        {financesEnabled && <span>{formatMoney(stipulation.cost)}</span>}
+                      </span>
+                      {stipulationId === stipulation.id && <Check size={18} aria-hidden="true" />}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
           </fieldset>
         </section>

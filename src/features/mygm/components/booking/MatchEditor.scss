@@ -134,49 +134,58 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 10px;
+    margin-top: 10px;
+
+    &[hidden] {
+      display: none;
+    }
   }
 
   &__stipulation {
-    position: relative;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     gap: 12px;
     min-height: 72px;
-    padding: 10px 34px 10px 10px;
+    padding: 10px;
     min-width: 0;
-    overflow: hidden;
     background: t.$background;
     border: 1px solid rgba(t.$text, 0.1);
     border-radius: 14px;
+    color: var(--match-ink);
+    font: inherit;
+    text-align: left;
     cursor: pointer;
 
-    > input {
-      position: absolute;
-      z-index: 1;
-      top: 50%;
-      right: 10px;
-      width: 18px;
-      height: 18px;
-      margin: 0;
-      transform: translateY(-50%);
-      accent-color: var(--match-accent);
+    > svg {
+      flex-shrink: 0;
+      margin-left: auto;
     }
 
-    &:has(> input:checked) {
+    &[aria-pressed="true"] {
       background: color-mix(in srgb, var(--match-accent) 8%, #{t.$background});
       border-color: var(--match-ink);
       box-shadow: inset 0 0 0 1px var(--match-ink);
     }
 
-    &:has(> input:focus-visible) {
+    &:focus-visible {
       outline: 2px solid var(--match-accent);
       outline-offset: 3px;
     }
 
-    &:has(> input:disabled) {
+    &:disabled {
       opacity: 0.55;
       cursor: not-allowed;
+    }
+  }
+
+  &__stipulation-toggle {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 12px;
+
+    &[aria-expanded="true"] > svg {
+      transform: rotate(180deg);
     }
   }
 
@@ -266,6 +275,7 @@
   &__teams {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    align-items: start;
     gap: 20px;
   }
 
@@ -411,15 +421,11 @@
 
   &__roster-picker {
     min-width: 0;
-    margin-top: 16px;
-    padding: 16px;
+    padding: 12px;
+    scroll-margin-block: 12px;
     background: t.$background;
     border: 1px solid color-mix(in srgb, var(--match-accent) 30%, transparent);
-    border-radius: 20px;
-
-    &[hidden] {
-      display: none;
-    }
+    border-radius: 12px;
   }
 
   &__picker-header {
@@ -488,7 +494,7 @@
   &__roster-options {
     display: grid;
     gap: 8px;
-    max-height: 360px;
+    max-height: min(280px, 36dvh);
     margin: 16px 0 0;
     padding: 4px;
     overflow-y: auto;
@@ -830,8 +836,7 @@
 @container (min-width: 560px) {
   .match-editor {
     &__configuration,
-    &__teams,
-    &__roster-options {
+    &__teams {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -866,7 +871,7 @@
       background: rgba(t.$text, 0.05);
     }
 
-    &__stipulation:hover {
+    &__stipulation:hover:not(:disabled) {
       border-color: var(--match-ink);
     }
   }
